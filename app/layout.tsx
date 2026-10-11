@@ -1,26 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Outfit, Syne } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, Outfit } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { profile } from "@/lib/content";
 import "./globals.css";
 
-const syne = Syne({
+const display = Fraunces({
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
-  weight: ["500", "600", "700", "800"],
 });
 
-const outfit = Outfit({
+const body = Outfit({
   subsets: ["latin"],
-  variable: "--font-body",
   weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-body",
 });
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
   weight: ["400", "500"],
+  variable: "--font-mono",
 });
 
 const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -30,27 +31,44 @@ const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "tarooq — systems engineer",
-    template: "%s — tarooq",
+    default: "Tareq Al-Ghazzi — Head of Cloud Services, MENA",
+    template: "%s — Tareq Al-Ghazzi",
   },
   description: profile.deck,
-  authors: [{ name: profile.name, url: profile.github }],
+  authors: [{ name: profile.name, url: profile.linkedin }],
   openGraph: {
-    title: "tarooq — keep the secret on the device",
+    title: "Tareq Al-Ghazzi — Cloud is a regional capability",
     description: profile.deck,
-    type: "website",
+    type: "profile",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07080d",
+  themeColor: "#071018",
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: profile.name,
+    jobTitle: profile.role,
+    email: profile.email,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Riyadh",
+      addressCountry: "SA",
+    },
+    sameAs: [profile.linkedin],
+    knowsLanguage: ["English", "Arabic"],
+    alumniOf: "Ajman University of Science and Technology",
+  };
+
   return (
-    <html lang="en" className={`${syne.variable} ${outfit.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a className="skip" href="#content">
           Skip to content
         </a>

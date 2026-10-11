@@ -4,7 +4,7 @@ import { profile } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Contact tarooq about a vault, a native client, a pipeline, or a platform build.",
+  description: "Contact Tareq Al-Ghazzi about regional cloud strategy, FinOps, AI platforms, or governance.",
 };
 
 export default function ContactPage() {
@@ -12,36 +12,32 @@ export default function ContactPage() {
     <div className="shell">
       <header className="page-hero">
         <p className="kicker">Contact</p>
-        <h1>Say the thing.</h1>
+        <h1>Bring the constraint.</h1>
         <p className="deck">
-          A vault, a desktop client, a pipeline that should fail closed, or a platform that needs a
-          harder edge. Write it down.
+          A region, a landing zone, a cost model, or an AI platform that needs a governor. Write the context, the constraint, and what done looks like.
         </p>
       </header>
       <section className="split">
         <ContactForm />
         <div className="channels">
           <article className="channel">
-            <p className="kicker">Direct</p>
-            <h3>Email</h3>
+            <p className="kicker">Email</p>
+            <h3>Direct</h3>
             <p>
               <a href={`mailto:${profile.email}`}>{profile.email}</a>
             </p>
           </article>
           <article className="channel">
-            <p className="kicker">Code</p>
-            <h3>GitHub</h3>
+            <p className="kicker">LinkedIn</p>
+            <h3>{profile.name}</h3>
             <p>
-              <a href={profile.github}>{profile.handle}</a>
+              <a href={profile.linkedin}>linkedin.com/in/tareq-alghazzi</a>
             </p>
           </article>
           <article className="channel">
-            <p className="kicker">Good notes look like</p>
-            <h3>Context, constraint, deadline.</h3>
-            <p>
-              What exists today, what must stay on the device, and what “done” means. A red-gate
-              story is welcome.
-            </p>
+            <p className="kicker">Based</p>
+            <h3>{profile.location}</h3>
+            <p>{profile.role}</p>
           </article>
         </div>
       </section>

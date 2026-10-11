@@ -48,7 +48,7 @@ export function ContactForm() {
   if (sent) {
     return (
       <div className="form" role="status">
-        <h2 style={{ fontSize: "2.2rem" }}>Got it.</h2>
+        <h2 style={{ fontSize: "2.2rem" }}>Received.</h2>
         <p className="status">
           The note is on its way to {profile.email}. The first time this relay is used, FormSubmit
           sends a confirmation link to that inbox. After it is confirmed, messages arrive directly.
@@ -103,7 +103,7 @@ export function ContactForm() {
       </div>
       <div className="field">
         <label htmlFor="message">
-          <span>What should we build, fix, or review?</span>
+          <span>What is the mandate?</span>
         </label>
         <textarea
           id="message"

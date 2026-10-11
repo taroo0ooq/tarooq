@@ -1,47 +1,37 @@
 import Link from "next/link";
-import { Console } from "@/components/Console";
-import { SignalField } from "@/components/SignalField";
-import { principles, profile, projects, ticker } from "@/lib/content";
+import { MandateBoard } from "@/components/MandateBoard";
+import { convictions, profile, roles, ticker } from "@/lib/content";
 
 export default function HomePage() {
   const loop = [...ticker, ...ticker];
+  const featured = roles.slice(0, 4);
 
   return (
     <>
       <section className="hero shell">
-        <SignalField />
-        <div className="hero-copy">
+        <div>
           <p className="eyebrow">
-            <span>{profile.role}</span>
-            <span>Zero-knowledge · native clients · green gates</span>
+            {profile.location} · {profile.role}
           </p>
           <h1>
-            Keep the secret <em>on the device.</em>
+            Cloud is a <em>regional</em> capability.
           </h1>
           <p className="deck">{profile.deck}</p>
           <div className="actions">
-            <Link className="btn btn-signal" href="/work">
-              See the work
+            <Link className="btn btn-gold" href="/experience">
+              Read the record
             </Link>
             <Link className="btn btn-ghost" href="/contact">
-              Start a conversation
+              Start a brief
             </Link>
           </div>
-          <div className="readout">
-            <span>
-              Signal
-              <strong>Local-first security</strong>
-            </span>
-            <span>
-              Proof
-              <strong>Two vaults, one live platform</strong>
-            </span>
-            <span>
-              Gate
-              <strong>SAST and DAST fail closed</strong>
-            </span>
-          </div>
         </div>
+        <aside className="now-card">
+          <p className="kicker">Now</p>
+          <strong>Mobiz IT</strong>
+          <p>Head of Cloud Services. Regional cloud and AI strategy, FinOps, and platform governance from Riyadh.</p>
+          <p className="meta-line">November 2025 — Present</p>
+        </aside>
       </section>
 
       <div className="marquee" aria-hidden="true">
@@ -55,16 +45,12 @@ export default function HomePage() {
       <section className="shell">
         <div className="section-head">
           <div>
-            <p className="kicker">How the work is built</p>
-            <h2>Three rules. No slide deck.</h2>
+            <p className="kicker">Position</p>
+            <h2>Three lines I will not trade.</h2>
           </div>
-          <p>
-            {profile.name} builds software where the cryptographic core is shared, the clients stay
-            thin, and a red scan blocks the merge.
-          </p>
         </div>
         <div className="principle-grid">
-          {principles.map((item) => (
+          {convictions.map((item) => (
             <article className="principle" key={item.index}>
               <div className="index">{item.index}</div>
               <h3>{item.title}</h3>
@@ -77,53 +63,35 @@ export default function HomePage() {
       <section className="shell">
         <div className="section-head">
           <div>
-            <p className="kicker">Selected work</p>
-            <h2>Shipped in public.</h2>
+            <p className="kicker">Mandate</p>
+            <h2>What the region is being built to do.</h2>
           </div>
-          <p>
-            <Link href="/work">The full set, with the constraints attached.</Link>
-          </p>
+          <p>Select a line of the current role. The detail is the work, not a slogan.</p>
         </div>
-        <div className="card-grid">
-          {projects.map((project) => (
-            <article className="card" key={project.slug}>
-              <div className="index">{project.index}</div>
-              <h3>{project.name}</h3>
-              <p>{project.summary}</p>
-              <div className="meta">
-                <span className="evidence" data-kind={project.evidence}>
-                  {project.status}
-                </span>
-                {project.stack.slice(0, 3).map((item) => (
-                  <span className="chip" key={item}>
-                    {item}
-                  </span>
-                ))}
-              </div>
-              <a className="stretch" href={project.href}>
-                {project.hrefLabel}
-              </a>
-            </article>
-          ))}
-        </div>
+        <MandateBoard />
       </section>
 
       <section className="shell">
         <div className="section-head">
           <div>
-            <p className="kicker">Ask the terminal</p>
-            <h2>Type into the work.</h2>
+            <p className="kicker">Record</p>
+            <h2>Where the judgment was earned.</h2>
           </div>
           <p>
-            A live index of the same knowledge on the expertise page. Try whoami, work, crypto, or
-            contact.
+            <Link href="/experience">The full career, from regional leadership back to the network labs.</Link>
           </p>
         </div>
-        <Console />
-        <div className="actions">
-          <Link className="btn btn-ghost" href="/expertise">
-            Open the full expertise map
-          </Link>
+        <div className="card-grid">
+          {featured.map((role) => (
+            <Link className="card" key={role.id} href="/experience">
+              <div className="index">{role.span}</div>
+              <h3>{role.org}</h3>
+              <p>
+                {role.title}. {role.summary}
+              </p>
+              <span className="stretch">{role.place}</span>
+            </Link>
+          ))}
         </div>
       </section>
     </>

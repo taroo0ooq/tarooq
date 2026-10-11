@@ -1,315 +1,343 @@
 export const profile = {
-  name: "tarooq",
-  handle: "taroo0ooq",
-  role: "Systems engineer",
+  name: "Tareq Al-Ghazzi",
+  short: "Al-Ghazzi",
+  role: "Head of Cloud Services, MENA",
+  location: "Riyadh, Saudi Arabia",
   email: "justbe_83@hotmail.com",
-  github: "https://github.com/taroo0ooq",
-  statement: "Keep the secret on the device.",
-  deck: "Zero-knowledge vaults, native clients, and delivery gates that stay shut until the scans are green.",
+  linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
+  statement: "Cloud is a regional capability.",
+  deck: "Strategy, governance, and execution for enterprise cloud and AI across MENA. FinOps, landing zones, and security sit in the design, not in a later phase.",
 } as const;
 
-export const principles = [
+export const convictions = [
   {
     index: "01",
-    title: "The secret stays local",
-    body: "Master passwords and vault records are designed to never leave the device in plaintext. Recovery is a passphrase the operator holds, not an account on someone else's server.",
+    title: "Cloud is not infrastructure",
+    body: "A regional cloud is a capability: one strategy, one operating model, and technology decisions that can be explained in financial and regulatory terms.",
   },
   {
     index: "02",
-    title: "The gate is the merge",
-    body: "GitHub Actions is the source of truth. SAST, DAST, footprint, and end-to-end checks fail closed. A red required-gate means the next phase does not start.",
+    title: "Maturity is discipline",
+    body: "Migration volume does not define maturity. Operational discipline, cost transparency, and architectures that survive Dev, SIT, UAT, and Production do.",
   },
   {
     index: "03",
-    title: "One core, every surface",
-    body: "The cryptographic engine is shared. Desktop, mobile, browser, and API are clients of that core — Tauri, Flutter, Manifest V3, and Go — instead of four copies of the lock.",
+    title: "AI needs a governor",
+    body: "AI is a competitive advantage when the platform is ready and the control is real. Ungoverned, it is only a faster way to create risk.",
   },
 ] as const;
 
-export type Evidence = "Shipped" | "Production" | "Practice";
-
-export type Project = {
-  slug: string;
-  index: string;
-  name: string;
-  status: string;
-  evidence: Evidence;
-  summary: string;
-  highlights: string[];
-  stack: string[];
-  href: string;
-  hrefLabel: string;
-  group: "Security" | "Native" | "Product";
-};
-
-export const projects: Project[] = [
-  {
-    slug: "keyvault",
-    index: "01",
-    name: "KeyVault",
-    status: "Engineering underway",
-    evidence: "Shipped",
-    group: "Security",
-    summary:
-      "Local-first, zero-knowledge password manager. The vault lives on the device. The merge lives behind a required CI gate.",
-    highlights: [
-      "Argon2id KDF, AES-256-GCM and XChaCha20-Poly1305 records, buffers zeroized on drop",
-      "Rust core with a C ABI, a loopback daemon, and a native messaging host",
-      "Tauri desktop, Flutter mobile, and a Manifest V3 autofill extension",
-      "Fail-closed SAST and DAST: CodeQL, Semgrep, cargo-audit, cargo-deny, gitleaks, TruffleHog, OWASP ZAP",
-      "TOTP, HIBP k-anonymity, CSV import and export, trash, optional SQLCipher",
-      "Release footprint target under 15 MB idle RAM and desktop binary",
-    ],
-    stack: ["Rust", "Tauri", "Flutter", "TypeScript", "Playwright"],
-    href: "https://github.com/taroo0ooq/keyvault",
-    hrefLabel: "github.com/taroo0ooq/keyvault",
-  },
-  {
-    slug: "localvault",
-    index: "02",
-    name: "LocalVault",
-    status: "v1 stages complete",
-    evidence: "Shipped",
-    group: "Security",
-    summary:
-      "Multi-user zero-knowledge vault. A Docker Desktop host, light clients, and access over the LAN or a tunnel.",
-    highlights: [
-      "Go API plus web, Manifest V3 extension, Tauri desktop, and Flutter mobile with OS autofill",
-      "Argon2id device profiles and AES-256-GCM",
-      "Enrollment order: username, PIN, recovery passphrase",
-      "Stages S0 through S8 marked complete, including hardening and full DAST",
-      "Release path with SBOM, checksums, and optional cosign",
-    ],
-    stack: ["Go", "TypeScript", "Tauri", "Flutter", "Docker"],
-    href: "https://github.com/taroo0ooq/localvault",
-    hrefLabel: "github.com/taroo0ooq/localvault",
-  },
-  {
-    slug: "waraq-windows",
-    index: "03",
-    name: "Waraq for Windows",
-    status: "Windows port",
-    evidence: "Shipped",
-    group: "Native",
-    summary:
-      "Windows port of the GPL-3 live wallpaper app. Video and GIF render behind the desktop through a WorkerW host.",
-    highlights: [
-      "C# / .NET 8 and WPF",
-      "Wallpaper host strategy: WorkerW on Progman, across the virtual desktop",
-      "Apply a local video or GIF, stop on demand, and tear down when the app exits",
-      "Upstream macOS app is Swift; this program is the Windows client",
-    ],
-    stack: ["C#", ".NET 8", "WPF"],
-    href: "https://github.com/taroo0ooq/waraq-windows",
-    hrefLabel: "github.com/taroo0ooq/waraq-windows",
-  },
-  {
-    slug: "syriantalent",
-    index: "04",
-    name: "SyrianTalent",
-    status: "In production",
-    evidence: "Production",
-    group: "Product",
-    summary:
-      "Arabic-first job platform connecting employers and job seekers in Syria. Live on Vercel.",
-    highlights: [
-      "Next.js and TypeScript product UI, Arabic-first",
-      "Prisma and Supabase for data",
-      "WhatsApp reach through WAHA",
-      "Develop branch for features, main for production releases",
-    ],
-    stack: ["Next.js", "TypeScript", "Prisma", "Supabase", "Vercel"],
-    href: "https://syriantalent-rosy.vercel.app",
-    hrefLabel: "syriantalent-rosy.vercel.app",
-  },
-];
-
-export type Domain = {
+export type Mandate = {
   id: string;
   title: string;
-  evidence: Evidence;
   summary: string;
-  knowledge: string[];
-  showsUpIn: string[];
+  points: string[];
 };
 
-export const domains: Domain[] = [
+export const mandates: Mandate[] = [
   {
-    id: "crypto",
-    title: "Zero-knowledge cryptography",
-    evidence: "Shipped",
+    id: "strategy",
+    title: "Regional cloud strategy",
     summary:
-      "Vault crypto designed so a server, if one exists at all, cannot read the secret. The key is derived on the device and the records are authenticated encryption.",
-    knowledge: [
-      "Argon2id as the password KDF, including memory and iteration profiles per device",
-      "AES-256-GCM and XChaCha20-Poly1305 for records",
-      "Master secret kept off the wire and out of plaintext storage",
-      "Sensitive material zeroized when it is dropped",
-      "Platform wrappers for DPAPI, Keychain, and KeyStore",
-      "TOTP second factors inside the vault, including a mobile FFI path",
-      "HIBP range queries (k-anonymity) for breach checks",
-      "Optional SQLCipher storage and a recovery passphrase at enroll",
+      "One cloud and AI strategy across countries, tied to architecture, money, regulation, and the business result.",
+    points: [
+      "Own the regional strategy and the execution, not a slide that stops at the subscription",
+      "Align enterprise architecture with financial governance and regulatory requirements",
+      "Standardize how markets adopt the platform instead of inventing a new one each time",
     ],
-    showsUpIn: ["KeyVault", "LocalVault"],
   },
   {
-    id: "rust",
-    title: "Rust systems and FFI",
-    evidence: "Shipped",
+    id: "governance",
+    title: "Landing zones and governance",
     summary:
-      "The cryptographic engine is a Rust workspace. Other languages talk to it through a small C ABI and a loopback daemon, not through a reimplementation.",
-    knowledge: [
-      "vault-core: KDF, vault crypto, generator, SQL schema",
-      "A local daemon for health, API, and DAST against loopback",
-      "vault-ffi C ABI for Flutter and other non-Rust clients",
-      "Native messaging host for Chrome and Firefox",
-      "Release size and idle working-set budgets, measured in script",
-      "cargo-audit, cargo-deny, and clippy as merge gates",
+      "CAF and Well-Architected landing zones, with the same operating model from Dev/SIT through UAT and Production.",
+    points: [
+      "Governance model aligned to the Cloud Adoption Framework and the Well-Architected Framework",
+      "Standard landing-zone architecture across environments",
+      "Guardrails that teams can build inside, not a review board that arrives after go-live",
     ],
-    showsUpIn: ["KeyVault"],
   },
   {
-    id: "clients",
-    title: "Desktop, mobile, and browser clients",
-    evidence: "Shipped",
+    id: "finops",
+    title: "FinOps",
     summary:
-      "The same vault shows up as a desktop app, a phone app, and a browser extension. Each client is thin. Autofill is part of the product, not a later idea.",
-    knowledge: [
-      "Tauri v2 shells on Windows and macOS",
-      "Flutter UI with dart:ffi into the native core",
-      "Android Autofill and iOS credential-provider direction",
-      "Manifest V3 extensions: autofill, autosave, generate-and-fill, TOTP reveal",
-      "Secure tunnel pairing through cloudflared or ngrok when a client is off-box",
-      "Playwright coverage for the extension",
+      "Cost visibility, accountability, and optimization treated as part of the architecture.",
+    points: [
+      "FinOps operating model across markets",
+      "Cost intelligence that leadership can act on",
+      "Reliability, performance, and spend designed together",
     ],
-    showsUpIn: ["KeyVault", "LocalVault"],
   },
   {
-    id: "delivery",
-    title: "Security delivery pipelines",
-    evidence: "Shipped",
+    id: "ai",
+    title: "AI platform readiness",
     summary:
-      "CI is the primary path. Local builds are for iteration. A merge needs a green required-gate, and open automated findings block the next phase.",
-    knowledge: [
-      "GitHub Actions workflows for CI, SAST, DAST, E2E, and FFI",
-      "CodeQL, Semgrep, npm audit, Flutter analyze",
-      "Secret scanning with gitleaks and TruffleHog",
-      "OWASP ZAP baseline with fail-closed auth probes",
-      "SBOM, checksums, and optional cosign on release",
-      "Residual-risk registers and stage handover documents",
+      "Enterprise workloads and LLM initiatives on a platform that is actually ready: identity, data, cost, and control included.",
+    points: [
+      "AI-driven workload enablement",
+      "Platform readiness for advanced workloads and enterprise LLM initiatives",
+      "Automation that removes manual operations and shortens delivery",
     ],
-    showsUpIn: ["KeyVault", "LocalVault"],
   },
   {
-    id: "go",
-    title: "Go services and local hosting",
-    evidence: "Shipped",
+    id: "security",
+    title: "Security, IAM, resilience",
     summary:
-      "LocalVault's host is a Go API in Docker Desktop. Clients stay light. The box on the desk is the trust boundary.",
-    knowledge: [
-      "Multi-user vault API and enrollment",
-      "Docker Compose deploy for the host",
-      "Health checks on loopback",
-      "Web client, importers, and shared TypeScript packages beside the API",
-      "LAN access and Cloudflare or ngrok tunnel edges",
+      "Identity, compliance, and resilience designed per jurisdiction, with disaster recovery and high availability as strategy rather than a ticket.",
+    points: [
+      "Regional security and IAM standardization across jurisdictions",
+      "Multicloud security, identity, and compliance frameworks",
+      "Disaster recovery and high availability by design",
+      "DevSecOps practice across the landscape",
     ],
-    showsUpIn: ["LocalVault"],
-  },
-  {
-    id: "windows",
-    title: "Windows native applications",
-    evidence: "Shipped",
-    summary:
-      "Desktop software on Windows, from a cryptographic daemon to a wallpaper host that has to negotiate with the shell.",
-    knowledge: [
-      "C# / .NET 8 and WPF application structure",
-      "WorkerW / Progman wallpaper hosting across the virtual desktop",
-      "Video and GIF wallpaper lifecycle: apply, stop, exit teardown",
-      "WinUI 3 exploration beside the WPF host",
-      "PowerShell build, footprint, and automation scripts",
-    ],
-    showsUpIn: ["Waraq for Windows", "KeyVault"],
-  },
-  {
-    id: "product",
-    title: "Product web and data",
-    evidence: "Production",
-    summary:
-      "Arabic-first product work in production: a hiring platform with a real database, messaging, and a release branch that is not the development branch.",
-    knowledge: [
-      "Next.js and TypeScript application UI",
-      "Prisma with Supabase",
-      "WhatsApp integration through WAHA",
-      "Vercel production deploys",
-      "Feature work on develop, production only from main",
-    ],
-    showsUpIn: ["SyrianTalent"],
-  },
-  {
-    id: "azure",
-    title: "Microsoft cloud and identity",
-    evidence: "Practice",
-    summary:
-      "Platform work across Azure and Entra: clusters, app hosting, identity, data, cost, and model deployments. The public artifact is older. The practice is current.",
-    knowledge: [
-      "Azure Kubernetes Service, including Automatic readiness and networking choices",
-      "App Service, Container Apps, and Functions hosting decisions",
-      "Entra ID app registration, OAuth, and agent identity token exchange",
-      "Blob, file, queue, and table storage, plus lifecycle tiers",
-      "Service Bus and Event Hubs",
-      "Quotas, cost, zone redundancy, and compliance posture",
-      "Microsoft Foundry model deployment, evaluation, and fine-tuning",
-      "Earlier public work: SharePoint 2016 high availability on Azure, in PowerShell",
-    ],
-    showsUpIn: ["Azure SharePoint HA"],
-  },
-  {
-    id: "integration",
-    title: "Integrations and automation",
-    evidence: "Practice",
-    summary:
-      "Glue between systems: ServiceNow automation, scripted infrastructure, and MCP tools that let an agent talk to an operational platform.",
-    knowledge: [
-      "ServiceNow integration work, including a private MCP server",
-      "PowerShell for Windows and Azure automation",
-      "Python tooling around platform APIs",
-      "GitHub Actions as the policy surface, not a side script",
-    ],
-    showsUpIn: ["ServiceNow MCP"],
   },
 ];
 
-export const languages: { name: string; usedIn: string }[] = [
-  { name: "Rust", usedIn: "KeyVault core, FFI, daemon" },
-  { name: "TypeScript", usedIn: "LocalVault clients, extensions, SyrianTalent" },
-  { name: "Go", usedIn: "LocalVault API" },
-  { name: "Dart", usedIn: "Flutter vault and SyrianTalent mobile" },
-  { name: "C#", usedIn: "Waraq for Windows" },
-  { name: "Swift", usedIn: "Waraq macOS sources in the Windows port repo" },
-  { name: "Python", usedIn: "ServiceNow tooling and earlier platform scripts" },
-  { name: "PowerShell", usedIn: "Footprint, Azure, and Windows automation" },
-  { name: "Kotlin", usedIn: "Android edges of the mobile clients" },
+export type Era = "Leadership" | "Architecture" | "Engineering";
+
+export type Role = {
+  id: string;
+  org: string;
+  title: string;
+  start: string;
+  end: string;
+  span: string;
+  place: string;
+  era: Era;
+  summary: string;
+  points: string[];
+};
+
+export const roles: Role[] = [
+  {
+    id: "mobiz",
+    org: "Mobiz IT",
+    title: "Head of Cloud Services",
+    start: "November 2025",
+    end: "Present",
+    span: "November 2025 — Present",
+    place: "Riyadh, Saudi Arabia",
+    era: "Leadership",
+    summary:
+      "Accountable for the regional cloud and AI strategy across countries, and for keeping architecture, financial governance, compliance, and business objectives on the same page.",
+    points: [
+      "Established a regional cloud governance model aligned to CAF and the Well-Architected Framework",
+      "Implemented FinOps discipline for cost visibility, accountability, and optimization across markets",
+      "Standardized landing-zone architecture and operating models across Dev/SIT, UAT, and Production",
+      "Enabled AI platform readiness for advanced workloads and enterprise LLM initiatives",
+      "Led regional security and IAM standardization across jurisdictions",
+      "Designed the resilience strategy, including disaster recovery and high availability",
+      "Built and scaled cross-functional cloud and platform engineering teams",
+    ],
+  },
+  {
+    id: "albilad",
+    org: "Bank Albilad",
+    title: "Lead Cloud Architect",
+    start: "June 2022",
+    end: "February 2026",
+    span: "June 2022 — February 2026",
+    place: "Riyadh, Saudi Arabia",
+    era: "Leadership",
+    summary:
+      "Responsible for how Azure is used at enterprise scale: landing zones, network patterns, automation, AI use cases, and cost governance. Led cloud engineers and architects, with infra, applications, data, and security.",
+    points: [
+      "Designed and evolved CAF and Well-Architected landing zones and core services for multi-environment estates",
+      "Drove automation, DevOps, and AI-driven improvements to cut manual operations and speed delivery",
+      "Embedded FinOps and guardrails so cost, reliability, and performance are part of the design",
+      "Aligned VPs and chiefs on trade-offs, and turned incidents into standards",
+    ],
+  },
+  {
+    id: "ajlan",
+    org: "Ajlan & Bros Holding Group Abilitii",
+    title: "Cloud Solution Architect",
+    start: "March 2022",
+    end: "December 2022",
+    span: "March 2022 — December 2022",
+    place: "Riyadh, Saudi Arabia",
+    era: "Architecture",
+    summary:
+      "Reported to the CEO of AjlanTech. Led the cloud solution offering with a new cloud vendor, aimed at Vision 2030 work across industries.",
+    points: [
+      "Positioned offerings across IaaS, PaaS, and SaaS, plus AI and IoT",
+      "Worked with the commercial team from greenfield creation through to acquisition contexts",
+    ],
+  },
+  {
+    id: "crayon",
+    org: "Crayon",
+    title: "Cloud Solution Architect",
+    start: "March 2018",
+    end: "February 2022",
+    span: "March 2018 — February 2022",
+    place: "Riyadh, Saudi Arabia",
+    era: "Architecture",
+    summary:
+      "Cloud pre-sales architect for enterprise accounts and financial services. Owned the technical path from feasibility and architecture to PoC, compliance, and the decision in the room with senior executives.",
+    points: [
+      "Architected Azure and Microsoft 365 / EMS workloads, including hybrid estates",
+      "Chose between lift-and-shift and new Dev or Production platforms",
+      "Led compliance assessments on proposed Azure architectures",
+      "Ran technical and economic value discussions that drove implementation decisions",
+      "Owned onboarding quality with Microsoft Services or partners, and the usage targets after",
+    ],
+  },
+  {
+    id: "dimensions",
+    org: "Dimensions Cloud",
+    title: "Cloud and Infrastructure Architect",
+    start: "September 2016",
+    end: "March 2018",
+    span: "September 2016 — March 2018",
+    place: "Riyadh, Saudi Arabia",
+    era: "Architecture",
+    summary:
+      "Microsoft cloud pre-sales and P-Seller. Advised on architecture and deployment of workloads to Office 365 and Azure, and carried the customer engagement through PoCs and executive value discussions.",
+    points: [
+      "End-to-end cloud deployment experience for Office 365 and Azure",
+      "Implementation projects and proofs of concept",
+      "Technical and economic conversations with senior customer executives",
+    ],
+  },
+  {
+    id: "alnafitha",
+    org: "Alnafitha International Information Technology",
+    title: "Microsoft Cloud Solution Architect",
+    start: "July 2014",
+    end: "August 2016",
+    span: "July 2014 — August 2016",
+    place: "Jeddah, Saudi Arabia",
+    era: "Architecture",
+    summary:
+      "Advised on architecture and deployment of cloud workloads to Office 365 and Azure, from feasibility and proposal through compliance, migration approach, and onboarding.",
+    points: [
+      "Technical architecture for selected applications and workloads",
+      "Compliance assessments on proposed Azure designs",
+      "Hybrid Office 365 architectures, and lift-and-shift or new-platform paths to Azure",
+      "Documented practices for client engineering and architecture teams",
+    ],
+  },
+  {
+    id: "rtech",
+    org: "R-Tech Saudi Arabia",
+    title: "Microsoft Engineer",
+    start: "October 2012",
+    end: "July 2014",
+    span: "October 2012 — July 2014",
+    place: "Jeddah, Saudi Arabia",
+    era: "Engineering",
+    summary: "Technical Solution Professional, on the Microsoft engineering side of customer work in Jeddah.",
+    points: ["Technical solution work ahead of the later pre-sales architecture roles"],
+  },
+  {
+    id: "alsaqer",
+    org: "United Al-Saqer Group",
+    title: "Senior Technical Engineer",
+    start: "July 2010",
+    end: "December 2011",
+    span: "July 2010 — December 2011",
+    place: "Abu Dhabi, United Arab Emirates",
+    era: "Engineering",
+    summary:
+      "Planned and implemented a purpose-built application estate for Abu Dhabi Motors: BMW showroom, maintenance, and service.",
+    points: [
+      "Built and rebuilt servers, hardware, storage, and services to project standards",
+      "Installed systems infrastructure and asset-management applications",
+      "Wrote installation and configuration procedures and kept system standards current",
+      "Ran project segments to the agreed commitments, and kept suppliers and the steering committee aligned",
+    ],
+  },
+  {
+    id: "nevotek",
+    org: "Nevotek",
+    title: "Customer Service Engineer",
+    start: "March 2007",
+    end: "May 2010",
+    span: "March 2007 — May 2010",
+    place: "Dubai, United Arab Emirates",
+    era: "Engineering",
+    summary: "Planned and implemented purpose-built applications for Cisco IP phone systems.",
+    points: [
+      "Delivered project segments to the stated objectives and resources",
+      "Directed technical and personnel resources against quality, time, and budget",
+      "Kept results legible to management and the steering committee",
+    ],
+  },
+  {
+    id: "binsalmeen",
+    org: "Bin Salmeen Computers",
+    title: "Senior Network Engineer",
+    start: "June 2005",
+    end: "June 2006",
+    span: "June 2005 — June 2006",
+    place: "Abu Dhabi, United Arab Emirates",
+    era: "Engineering",
+    summary: "Designed and installed customer network projects, and administered the internal network and website.",
+    points: ["Network project design and installation", "Internal network and website administration"],
+  },
+  {
+    id: "ligroup",
+    org: "LI Group",
+    title: "Network, Database and Website Administrator",
+    start: "January 2004",
+    end: "June 2005",
+    span: "January 2004 — June 2005",
+    place: "Abu Dhabi, United Arab Emirates",
+    era: "Engineering",
+    summary:
+      "Network administration, website work in FrontPage and Flash, and small operational databases in Access.",
+    points: ["Network administration", "Website design and build", "Access databases for day-to-day operations"],
+  },
+  {
+    id: "ajman-role",
+    org: "Ajman University of Science and Technology",
+    title: "Network Administrator",
+    start: "September 2001",
+    end: "December 2003",
+    span: "September 2001 — December 2003",
+    place: "Abu Dhabi, United Arab Emirates",
+    era: "Engineering",
+    summary: "Administered the university network labs: performance of the network, and support for students using the labs and equipment.",
+    points: ["Network lab administration", "Student support on lab equipment"],
+  },
 ];
+
+export const eras = ["All", "Leadership", "Architecture", "Engineering"] as const;
+
+export const certifications = [
+  "Microsoft Certified: Azure Security Engineer Associate",
+  "AZ-300 Microsoft Azure Architect Technologies",
+  "AWS Certified Solutions Architect – Associate",
+  "Microsoft Private Cloud Professional 2012 SP1",
+  "MCPS: Microsoft Certified Professional",
+];
+
+export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
+
+export const languages = [
+  { name: "English", note: "Working language for regional leadership, architecture, and executive briefings." },
+  { name: "Arabic", note: "Working language across the Kingdom and the wider region." },
+];
+
+export const education = {
+  school: "Ajman University of Science and Technology",
+  degree: "Bachelor's degree, Computer Information Systems",
+  years: "2001 — 2004",
+};
 
 export const ticker = [
-  "Rust",
-  "Argon2id",
-  "AES-256-GCM",
-  "XChaCha20",
-  "Tauri",
-  "Flutter",
-  "Manifest V3",
-  "Go",
-  "Docker",
-  ".NET 8",
-  "Next.js",
-  "Supabase",
-  "Azure",
-  "Entra ID",
-  "SAST",
-  "DAST",
-  "OWASP ZAP",
-  "Playwright",
+  "Microsoft Azure",
+  "CAF",
+  "Well-Architected",
+  "FinOps",
+  "Landing zones",
+  "DevSecOps",
+  "IAM",
+  "AI readiness",
+  "Disaster recovery",
+  "High availability",
+  "Azure DevOps",
+  "Microsoft 365",
+  "Multicloud security",
 ];
-
-export const groups = ["All", "Security", "Native", "Product"] as const;

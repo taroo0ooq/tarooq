@@ -13,30 +13,20 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#07080d",
+          background: "#071018",
           color: "#f4f1ea",
           padding: "64px",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", fontSize: 28, letterSpacing: 4, color: "#9db4ff" }}>
-            TARO OQ · SYSTEMS
-          </div>
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 16,
-              background: "#e8ff47",
-            }}
-          />
+        <div style={{ display: "flex", fontSize: 28, letterSpacing: 3, color: "#e4b15a" }}>
+          TAREQ AL-GHAZZI · RIYADH
         </div>
-        <div style={{ display: "flex", flexDirection: "column", fontSize: 84, lineHeight: 0.95, fontWeight: 700 }}>
-          <span>Keep the secret</span>
-          <span style={{ color: "#e8ff47" }}>on the device.</span>
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 76, lineHeight: 0.98 }}>
+          <span>Cloud is a</span>
+          <span style={{ color: "#e4b15a" }}>regional capability.</span>
         </div>
-        <div style={{ display: "flex", fontSize: 28, color: "#b4b8c7" }}>
-          Zero-knowledge vaults · native clients · green gates
+        <div style={{ display: "flex", fontSize: 28, color: "#b7c0d0" }}>
+          Head of Cloud Services, MENA · Azure · FinOps · AI
         </div>
       </div>
     ),

@@ -5,12 +5,12 @@ export function Footer() {
     <footer className="site-footer">
       <div className="footer-inner">
         <p>
-          {profile.name} · {profile.role}
+          {profile.name}
           <br />
-          Palette: luminous blue on ink, chartreuse hook. Late-2026 signal theme.
+          {profile.role} · {profile.location}
         </p>
         <p>
-          <a href={profile.github}>GitHub</a>
+          <a href={profile.linkedin}>LinkedIn</a>
           {" · "}
           <a href={`mailto:${profile.email}`}>{profile.email}</a>
         </p>

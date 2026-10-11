@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { profile } from "@/lib/content";
 
 const links = [
-  { href: "/work", label: "Work" },
+  { href: "/experience", label: "Experience" },
   { href: "/expertise", label: "Expertise" },
   { href: "/contact", label: "Contact" },
 ];
@@ -18,8 +19,8 @@ export function Nav() {
     <header className="site-header">
       <div className="header-inner">
         <Link href="/" className="brand" onClick={() => setOpen(false)}>
-          <span className="mark">tq</span>
-          tarooq
+          <span className="mark">T</span>
+          {profile.short}
         </Link>
         <button
           className="nav-toggle"
@@ -42,8 +43,7 @@ export function Nav() {
             </Link>
           ))}
           <Link href="/contact" className="pill" onClick={() => setOpen(false)}>
-            <span className="dot" aria-hidden="true" />
-            Open for a build
+            Start a brief
           </Link>
         </nav>
       </div>
