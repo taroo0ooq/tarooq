@@ -3,7 +3,7 @@ export const profile = {
   short: "Al-Ghazzi",
   role: "Head of Cloud Services, MENA",
   location: "Riyadh, Saudi Arabia",
-  email: "justbe_83@hotmail.com",
+  email: "tareq.alghazzi@outlook.com",
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "Cloud is a regional capability.",
   deck: "Strategy, governance, and execution for enterprise cloud and AI across MENA. FinOps, landing zones, and security sit in the design, not in a later phase.",
