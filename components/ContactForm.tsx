@@ -53,9 +53,7 @@ export function ContactForm() {
     return (
       <div className="card" role="status">
         <h2 className="serif">Received.</h2>
-        <p className="status">
-          The note is on its way. The first time this relay is used, FormSubmit sends a confirmation link to the inbox. After it is confirmed, messages arrive directly.
-        </p>
+        <p className="status">The note is on its way.</p>
       </div>
     );
   }

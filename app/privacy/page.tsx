@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <header className="page-head">
         <p className="eyebrow">Privacy</p>
         <h1 className="serif">Privacy</h1>
-        <p>Last updated: October 15, 2026</p>
+        <p>Last updated: October 19, 2026</p>
       </header>
       <div className="legal">
         <p>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
           <li>Company (optional)</li>
         </ul>
         <p>
-          This information is sent through FormSubmit and is used only to respond to your inquiry. A hidden field is used
+          This information is sent through Resend and is used only to respond to your inquiry. A hidden field is used
           solely to reduce automated submissions.
         </p>
         <h3>Information related to LinkedIn (site owner only)</h3>
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
         <p>We share Personal Information only with:</p>
         <ul>
           <li>
-            <strong>FormSubmit</strong> — to deliver contact form submissions
+            <strong>Resend</strong> — to deliver contact form submissions
           </li>
           <li>
             <strong>Vercel</strong> — for website hosting
