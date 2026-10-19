@@ -1,5 +1,8 @@
 import { validateContact, type ContactInput } from "@/lib/contact";
-import { inbox } from "@/lib/inbox";
+import { deliverContact } from "@/lib/deliver";
+
+const deliveryError = "The note could not be delivered. Try again later.";
+const unconfiguredError = "The mailbox is not ready to receive notes yet. Try again later.";
 
 export async function POST(request: Request) {
   let payload: Partial<ContactInput>;
@@ -27,34 +30,19 @@ export async function POST(request: Request) {
     return Response.json({ ok: true, dryRun: true });
   }
 
-  const subject = input.topic.trim() || `Note from ${input.name.trim()}`;
-  const upstream = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(inbox)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      name: input.name.trim(),
-      email: input.email.trim(),
-      message: [input.message.trim(), input.company.trim() ? `Company: ${input.company.trim()}` : ""]
-        .filter(Boolean)
-        .join("\n\n"),
-      _subject: subject,
-      _template: "table",
-      _captcha: "false",
-    }),
+  const result = await deliverContact({
+    name: input.name,
+    email: input.email,
+    topic: input.topic,
+    message: input.message,
+    company: input.company,
   });
 
-  if (!upstream.ok) {
+  if (!result.ok) {
+    const unconfigured = result.reason === "unconfigured";
     return Response.json(
-      {
-        ok: false,
-        errors: {
-          message: "The mailbox relay did not accept this note. Try again later.",
-        },
-      },
-      { status: 502 },
+      { ok: false, errors: { message: unconfigured ? unconfiguredError : deliveryError } },
+      { status: unconfigured ? 503 : 502 },
     );
   }
 
