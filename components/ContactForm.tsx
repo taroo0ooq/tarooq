@@ -1,10 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { profile } from "@/lib/content";
+import { topics } from "@/lib/content";
 import type { ContactErrors } from "@/lib/contact";
 
-const empty = { name: "", email: "", topic: "", message: "", company: "" };
+const empty = { name: "", email: "", topic: topics[0], message: "", company: "", website: "" };
 
 export function ContactForm() {
   const [fields, setFields] = useState(empty);
@@ -31,15 +31,19 @@ export function ContactForm() {
       const data = (await response.json()) as { ok: boolean; errors?: ContactErrors };
       if (!response.ok || !data.ok) {
         const next = data.errors ?? {};
-        const fieldKeys = ["name", "email", "topic", "company"] as const;
-        const hasFieldError = fieldKeys.some((key) => next[key]) || (next.message && fields.message.trim().length < 12);
+        if (next.website) {
+          setFormError("Something blocked the send.");
+          return;
+        }
+        const fieldKeys = ["name", "email", "topic", "company", "message"] as const;
+        const hasFieldError = fieldKeys.some((key) => next[key]);
         if (hasFieldError) setErrors(next);
         else setFormError(next.message ?? "Something blocked the send.");
         return;
       }
       setSent(true);
     } catch {
-      setFormError("The network dropped the note. Email directly.");
+      setFormError("The network dropped the note. Try again.");
     } finally {
       setPending(false);
     }
@@ -47,86 +51,92 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="form" role="status">
-        <h2 style={{ fontSize: "2.2rem" }}>Received.</h2>
+      <div className="card" role="status">
+        <h2 className="serif">Received.</h2>
         <p className="status">
-          The note is on its way to {profile.email}. The first time this relay is used, FormSubmit
-          sends a confirmation link to that inbox. After it is confirmed, messages arrive directly.
+          The note is on its way. The first time this relay is used, FormSubmit sends a confirmation link to the inbox. After it is confirmed, messages arrive directly.
         </p>
       </div>
     );
   }
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate>
-      <div className="field">
-        <label htmlFor="name">
-          <span>Name</span>
-        </label>
-        <input
-          id="name"
-          name="name"
-          value={fields.name}
-          autoComplete="name"
-          aria-invalid={Boolean(errors.name)}
-          onChange={(event) => update("name", event.target.value)}
-        />
-        {errors.name ? <span className="error">{errors.name}</span> : null}
+    <form onSubmit={onSubmit} noValidate>
+      <div className="row">
+        <div className="field">
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            name="name"
+            placeholder="Your name"
+            autoComplete="name"
+            value={fields.name}
+            aria-invalid={Boolean(errors.name)}
+            onChange={(event) => update("name", event.target.value)}
+          />
+          {errors.name ? <p className="error">{errors.name}</p> : null}
+        </div>
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@company.com"
+            autoComplete="email"
+            value={fields.email}
+            aria-invalid={Boolean(errors.email)}
+            onChange={(event) => update("email", event.target.value)}
+          />
+          {errors.email ? <p className="error">{errors.email}</p> : null}
+        </div>
       </div>
       <div className="field">
-        <label htmlFor="email">
-          <span>Email</span>
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={fields.email}
-          autoComplete="email"
-          aria-invalid={Boolean(errors.email)}
-          onChange={(event) => update("email", event.target.value)}
-        />
-        {errors.email ? <span className="error">{errors.email}</span> : null}
-      </div>
-      <div className="field">
-        <label htmlFor="topic">
-          <span>Topic</span>
-        </label>
-        <input
-          id="topic"
-          name="topic"
-          value={fields.topic}
-          aria-invalid={Boolean(errors.topic)}
-          onChange={(event) => update("topic", event.target.value)}
-        />
-        {errors.topic ? <span className="error">{errors.topic}</span> : null}
-      </div>
-      <div className="field">
-        <label htmlFor="message">
-          <span>What is the mandate?</span>
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          value={fields.message}
-          aria-invalid={Boolean(errors.message)}
-          onChange={(event) => update("message", event.target.value)}
-        />
-        {errors.message ? <span className="error">{errors.message}</span> : null}
-      </div>
-      <div className="honeypot" aria-hidden="true">
         <label htmlFor="company">Company</label>
         <input
           id="company"
           name="company"
-          tabIndex={-1}
-          autoComplete="off"
+          placeholder="Optional"
+          autoComplete="organization"
           value={fields.company}
+          aria-invalid={Boolean(errors.company)}
           onChange={(event) => update("company", event.target.value)}
         />
+        {errors.company ? <p className="error">{errors.company}</p> : null}
       </div>
-      <button className="btn btn-signal" type="submit" disabled={pending}>
-        {pending ? "Sending…" : "Send the note"}
+      <div className="field">
+        <label htmlFor="topic">Topic</label>
+        <select id="topic" name="topic" value={fields.topic} onChange={(event) => update("topic", event.target.value)}>
+          {topics.map((topic) => (
+            <option key={topic}>{topic}</option>
+          ))}
+        </select>
+      </div>
+      <div className="field">
+        <label htmlFor="message">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          placeholder="How can I help?"
+          value={fields.message}
+          aria-invalid={Boolean(errors.message)}
+          onChange={(event) => update("message", event.target.value)}
+        />
+        {errors.message ? <p className="error">{errors.message}</p> : null}
+      </div>
+      <div className="hp" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={fields.website}
+          onChange={(event) => update("website", event.target.value)}
+        />
+      </div>
+      <button className="btn btn-purple" type="submit" disabled={pending}>
+        {pending ? "Sending…" : "Send message"}
       </button>
       {formError ? <p className="error">{formError}</p> : null}
     </form>

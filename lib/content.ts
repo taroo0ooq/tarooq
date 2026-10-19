@@ -3,11 +3,57 @@ export const profile = {
   short: "Al-Ghazzi",
   role: "Head of Cloud Services, MENA",
   location: "Riyadh, Saudi Arabia",
-  email: "tareq.alghazzi@outlook.com",
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
-  statement: "Cloud is a regional capability.",
-  deck: "Strategy, governance, and execution for enterprise cloud and AI across MENA. FinOps, landing zones, and security sit in the design, not in a later phase.",
+  statement: "I build cloud platforms that actually survive reality.",
+  deck: "Tareq Al-Ghazzi, Head of Cloud Services, MENA. Azure platforms that survive reality: landing zones, migrations, FinOps, and governance for regulated organizations.",
+  availability:
+    "Available for cloud strategy, architecture reviews, migration programs, and regulated Azure delivery across MENA.",
 } as const;
+
+export const about = [
+  "I build cloud platforms that actually survive reality. Not slideware. Not best-effort. Not “it works in the lab.”",
+  "I have designed, governed, and delivered secure Azure environments for banks and regulated organizations across Saudi Arabia and the wider MENA region. The work covers Cloud Adoption Framework and Well-Architected landing zones, infrastructure migrations, identity and access, FinOps, and governance that holds up in production and audit.",
+  "I currently lead Cloud Services for MENA at Mobiz IT. Previously I served as Lead Cloud Architect at Bank Albilad, driving multi-year Azure transformations.",
+  "My focus is simple: platforms that stay reliable when things break, stay compliant when auditors arrive, and stay cost-efficient when scale hits. If your cloud has to work in production — not just in a proposal — that is the work I do.",
+] as const;
+
+export const approach = [
+  "I start from the reality of production, not the ideal architecture diagram.",
+  "Most cloud problems are not technical in isolation. They appear when landing zones are incomplete, identity is an afterthought, migrations ignore dependencies, security controls exist only on paper, or cost is never owned. The platforms I design assume failure, expect auditors, and treat cost as a continuous concern.",
+  "The work is opinionated where it needs to be, on security baselines, landing zone structure, and identity patterns, and flexible where the business requires it. The goal is always the same: a platform that the organization can actually operate, that survives incidents, and that passes scrutiny.",
+  "If a design only works in a workshop or a proposal, it is not finished.",
+] as const;
+
+export const expertise = [
+  {
+    title: "Azure landing zones and architecture",
+    body: "CAF, WAF, and landing-zone designs that are implemented, not only documented. Identity, networking, security, management, and governance from day one.",
+  },
+  {
+    title: "Large-scale migrations",
+    body: "Controlled IaaS and VM migrations with cutover planning, dependency mapping, and a rollback path.",
+  },
+  {
+    title: "Security and compliance",
+    body: "Security remediation and audit-ready evidence for regulated markets. Controls that exist in the platform, not only on paper.",
+  },
+  {
+    title: "Identity and access",
+    body: "Identity architecture and privileged access for regulated environments.",
+  },
+  {
+    title: "FinOps and cost governance",
+    body: "Cost visibility, rightsizing, and ongoing optimization so the platform stays efficient as it scales.",
+  },
+  {
+    title: "Governance and operating models",
+    body: "Ownership, policy, monitoring, and the processes that keep the platform healthy after the project ends.",
+  },
+  {
+    title: "Engagement design",
+    body: "Gap analysis, realistic scoping, and statements of work that align effort, risk, and deliverables.",
+  },
+] as const;
 
 export const convictions = [
   {
@@ -119,7 +165,7 @@ export const roles: Role[] = [
     place: "Riyadh, Saudi Arabia",
     era: "Leadership",
     summary:
-      "Accountable for the regional cloud and AI strategy across countries, and for keeping architecture, financial governance, compliance, and business objectives on the same page.",
+      "Leading Azure strategy, architecture, and delivery across MENA. Landing zones, migrations, security remediation, FinOps, and practical AI platforms for regulated clients. The work has to hold up in production and in audit.",
     points: [
       "Established a regional cloud governance model aligned to CAF and the Well-Architected Framework",
       "Implemented FinOps discipline for cost visibility, accountability, and optimization across markets",
@@ -140,7 +186,7 @@ export const roles: Role[] = [
     place: "Riyadh, Saudi Arabia",
     era: "Leadership",
     summary:
-      "Responsible for how Azure is used at enterprise scale: landing zones, network patterns, automation, AI use cases, and cost governance. Led cloud engineers and architects, with infra, applications, data, and security.",
+      "Led multi-year Azure work for a regulated Saudi bank: landing zones, migration programs, security and compliance alignment, and internal capability building. The focus was platforms that survive operations and audit, not slideware.",
     points: [
       "Designed and evolved CAF and Well-Architected landing zones and core services for multi-environment estates",
       "Drove automation, DevOps, and AI-driven improvements to cut manual operations and speed delivery",
@@ -290,8 +336,8 @@ export const roles: Role[] = [
     points: ["Network administration", "Website design and build", "Access databases for day-to-day operations"],
   },
   {
-    id: "ajman-role",
-    org: "Ajman University of Science and Technology",
+    id: "labs-role",
+    org: "Abu Dhabi, UAE",
     title: "Network Administrator",
     start: "September 2001",
     end: "December 2003",
@@ -325,6 +371,308 @@ export const education = {
   degree: "Bachelor's degree, Computer Information Systems",
   years: "2001 — 2004",
 };
+
+export const storyChapters = [
+  {
+    id: "now",
+    year: "Now",
+    kicker: "Chapter 6 · A regional capability",
+    title: "Head of Cloud Services, MENA",
+    roleIds: ["mobiz"],
+    tiles: ["CAF / WAF governance", "FinOps discipline", "AI platform readiness", "Resilience by design", "Building teams"],
+  },
+  {
+    id: "bank",
+    year: "2022",
+    kicker: "Chapter 5 · Cloud at bank scale",
+    title: "Riyadh, from alliance to the bank",
+    roleIds: ["albilad", "ajlan"],
+    tiles: [],
+  },
+  {
+    id: "architect",
+    year: "2016",
+    kicker: "Chapter 4 · The architect years",
+    title: "Pre-sales architecture for enterprise and FSI",
+    roleIds: ["crayon", "dimensions"],
+    tiles: [],
+  },
+  {
+    id: "microsoft",
+    year: "2012",
+    kicker: "Chapter 3 · Meeting Microsoft",
+    title: "Office 365 and early Azure in Jeddah",
+    roleIds: ["alnafitha", "rtech"],
+    tiles: [],
+  },
+  {
+    id: "wires",
+    year: "2005",
+    kicker: "Chapter 2 · Wires and phones",
+    title: "Networks, Cisco phones, and a BMW showroom",
+    roleIds: ["alsaqer", "nevotek", "binsalmeen"],
+    tiles: [],
+  },
+  {
+    id: "began",
+    year: "2001",
+    kicker: "Chapter 1 · Where it began",
+    title: "Labs, websites, and a CIS degree",
+    roleIds: ["ligroup", "labs-role"],
+    tiles: [],
+    showEducation: true,
+  },
+] as const;
+
+export const courseTopics = [
+  { id: "cloud", title: "Cloud", line: "Azure, AWS, and Google Cloud." },
+  { id: "devops", title: "DevOps", line: "How the platform gets shipped." },
+  { id: "ai", title: "AI", line: "Foundations and the model providers." },
+  { id: "agents", title: "Agents", line: "Build an agent, then run a team of them." },
+] as const;
+
+export const courses = [
+  {
+    topic: "cloud",
+    title: "Azure",
+    note: "Build cloud foundations",
+    tone: "t-az",
+    items: [
+      { name: "Azure Fundamentals (AZ-900)", detail: "Microsoft Learn · beginner", href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/" },
+      { name: "Azure Administrator (AZ-104) path", detail: "Microsoft Learn · intermediate", href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/" },
+      { name: "Cloud Adoption Framework", detail: "Microsoft · strategy and governance", href: "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/" },
+    ],
+  },
+  {
+    topic: "devops",
+    title: "DevOps",
+    note: "Ship faster, safer",
+    tone: "t-do",
+    items: [
+      { name: "DevOps Engineer (AZ-400) path", detail: "Microsoft Learn · advanced", href: "https://learn.microsoft.com/en-us/credentials/certifications/devops-engineer/" },
+      { name: "GitHub Skills", detail: "GitHub · Actions and Git", href: "https://skills.github.com/" },
+      { name: "DevOps Roadmap", detail: "roadmap.sh · guided path", href: "https://roadmap.sh/devops" },
+    ],
+  },
+  {
+    topic: "ai",
+    title: "AI",
+    note: "Understand the why and how",
+    tone: "t-ai",
+    items: [
+      { name: "Elements of AI", detail: "University of Helsinki · beginner", href: "https://www.elementsofai.com/" },
+      { name: "Azure AI Fundamentals (AI-900)", detail: "Microsoft Learn · beginner", href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/" },
+      { name: "Machine Learning Crash Course", detail: "Google · intermediate", href: "https://developers.google.com/machine-learning/crash-course" },
+    ],
+  },
+  {
+    topic: "agents",
+    title: "AI Agents",
+    note: "Build what is next",
+    tone: "t-ag",
+    items: [
+      { name: "AI Agents for Beginners", detail: "Microsoft · free lessons on GitHub", href: "https://github.com/microsoft/ai-agents-for-beginners" },
+      { name: "Agents Course", detail: "Hugging Face · hands-on", href: "https://huggingface.co/learn/agents-course" },
+      { name: "Short courses on agents and LLMs", detail: "DeepLearning.AI · short and practical", href: "https://www.deeplearning.ai/short-courses/" },
+    ],
+  },
+  {
+    topic: "cloud",
+    title: "AWS",
+    note: "Amazon's cloud, from the source",
+    tone: "t-az",
+    items: [
+      { name: "AWS Cloud Practitioner Essentials", detail: "AWS Skill Builder · free, fundamental", href: "https://skillbuilder.aws/learn/94T2BEN85A/aws-cloud-practitioner-essentials" },
+      { name: "Cloud Essentials learning plan", detail: "AWS Training · guided path", href: "https://aws.amazon.com/training/learn-about/cloud-practitioner/" },
+      { name: "AWS Well-Architected Foundations", detail: "AWS Skill Builder · free, intermediate", href: "https://explore.skillbuilder.aws/learn/course/108/aws-well-architected-foundations" },
+    ],
+  },
+  {
+    topic: "cloud",
+    title: "Google Cloud",
+    note: "Paths and hands-on labs",
+    tone: "t-do",
+    items: [
+      { name: "Getting Started with Google Cloud", detail: "Google Skills · beginner path", href: "https://www.skills.google/paths/8" },
+      { name: "Cloud Engineer path", detail: "Google Skills · hands-on", href: "https://www.skills.google/paths/11" },
+      { name: "Cloud Digital Leader path", detail: "Google Skills · business foundations", href: "https://www.skills.google/paths/9" },
+    ],
+  },
+  {
+    topic: "ai",
+    title: "OpenAI",
+    note: "Academy courses",
+    tone: "t-ai",
+    items: [
+      { name: "AI foundations", detail: "OpenAI Academy · beginner", href: "https://academy.openai.com/public/courses/ai-foundations-juzjs" },
+      { name: "Applied AI foundations", detail: "OpenAI Academy · workflows", href: "https://academy.openai.com/public/courses/applied-ai-foundations-hgk7r" },
+      { name: "Agents and workflows", detail: "OpenAI Academy · directing agents", href: "https://academy.openai.com/public/courses/agents-and-workflows-bieml" },
+    ],
+  },
+  {
+    topic: "ai",
+    title: "Anthropic",
+    note: "Claude Academy",
+    tone: "t-ag",
+    items: [
+      { name: "Claude 101", detail: "Claude Academy · beginner", href: "https://academy.claude.com/courses/claude-101" },
+      { name: "Claude Code 101", detail: "Claude Academy · coding agent", href: "https://academy.claude.com/courses/claude-code-101" },
+      { name: "Introduction to Model Context Protocol", detail: "Claude Academy · MCP", href: "https://academy.claude.com/courses/introduction-to-model-context-protocol" },
+    ],
+  },
+  {
+    topic: "ai",
+    title: "xAI",
+    note: "Build with the Grok API",
+    tone: "t-az",
+    items: [
+      { name: "API quickstart", detail: "xAI · official guide", href: "https://docs.x.ai/developers/quickstart" },
+      { name: "Tools overview", detail: "xAI · search, code, and functions", href: "https://docs.x.ai/developers/tools/overview" },
+      { name: "API overview", detail: "xAI · models and first calls", href: "https://docs.x.ai/overview" },
+    ],
+  },
+  {
+    topic: "agents",
+    title: "Hermes Agent",
+    note: "Nous Research",
+    tone: "t-do",
+    items: [
+      { name: "Learning path", detail: "Hermes Agent · official path", href: "https://hermes-agent.nousresearch.com/docs/getting-started/learning-path" },
+      { name: "Quickstart", detail: "Hermes Agent · first conversation", href: "https://hermes-agent.nousresearch.com/docs/getting-started/quickstart" },
+      { name: "Skills", detail: "Hermes Agent · extend the agent", href: "https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" },
+    ],
+  },
+  {
+    topic: "agents",
+    title: "Paperclip",
+    note: "Run a company of agents",
+    tone: "t-ag",
+    items: [
+      { name: "Quickstart path", detail: "Paperclip · first agent in minutes", href: "https://docs.paperclip.ing/guides/getting-started/five-minute-path/" },
+      { name: "Key concepts", detail: "Paperclip · companies, agents, and tasks", href: "https://docs.paperclip.ing/guides/welcome/key-concepts/" },
+      { name: "Hire your first agent", detail: "Paperclip · the CEO agent", href: "https://docs.paperclip.ing/guides/getting-started/your-first-agent/" },
+    ],
+  },
+] as const;
+
+export const businessPage = {
+  audience:
+    "For banks, government, and regulated enterprises across MENA that need Azure platforms which stay compliant, operable, and cost-transparent in production.",
+  model: "Same operating model from Dev/SIT through UAT and Production.",
+  regulatedTitle: "Built for regulated MENA realities",
+  regulated:
+    "Designs and delivery for regulated environments. The work assumes auditors will arrive, production will have incidents, and cost must remain transparent as the platform scales.",
+  contexts: [
+    "Regulated banking and financial services",
+    "Government and government-linked entities",
+    "Large enterprises with multi-market or multi-jurisdiction needs",
+  ],
+  processTitle: "How the work progresses",
+  differenceTitle: "How this is different",
+  differences: [
+    "Hands-on architecture and delivery. Strategy does not stop at the subscription.",
+    "One operating model across Dev/SIT, UAT, and Production. No separate “production is different” design.",
+    "Built for regulated MENA conditions: jurisdiction-specific controls, audit readiness, and cost transparency from the start.",
+  ],
+  engagement:
+    "Typical work includes regional strategy and a landing zone foundation, migration program support, security and compliance remediation, and an operating model with team enablement.",
+  credibility: "Led by Tareq Al-Ghazzi, Head of Cloud Services, MENA.",
+  closeTitle: "Let's talk about the constraint.",
+  close:
+    "Share the region, the regulatory context, and what “done” needs to look like. We'll map the practical path from there.",
+} as const;
+
+export const offers = [
+  {
+    kicker: "Advisory",
+    title: "Cloud and AI strategy",
+    tone: "t-az",
+    summary: "Own the regional strategy and the execution, not a slide that stops at the subscription.",
+    points: [
+      "Align enterprise architecture with financial governance and regulatory requirements",
+      "Standardize how markets adopt the platform",
+      "FinOps operating model and a cost view leadership can act on",
+    ],
+    gets: [
+      "Regional target architecture aligned to regulatory and financial governance needs",
+      "FinOps operating model with a cost view leadership can act on",
+      "Prioritized roadmap that connects strategy to funded execution",
+      "Clear view of constraints (regulatory, organizational, technical) before design begins",
+    ],
+    cta: "Plan the regional strategy",
+  },
+  {
+    kicker: "Execution",
+    title: "Landing zones and delivery",
+    tone: "t-do",
+    summary: "CAF and Well-Architected landing zones, with guardrails teams can build inside.",
+    points: [
+      "The same architecture across Dev/SIT, UAT, and Production",
+      "AI platform readiness for advanced workloads and enterprise LLM initiatives",
+      "Automation that removes manual operations and shortens delivery",
+    ],
+    gets: [
+      "Production-ready CAF/WAF landing zone with consistent guardrails in every environment",
+      "Migration patterns and automation that internal teams can run and maintain",
+      "AI-ready platform foundations for advanced and LLM workloads",
+      "Reduced manual operations through automation built into the design",
+    ],
+    cta: "Start the landing zone",
+  },
+  {
+    kicker: "Enablement",
+    title: "Security, resilience, teams",
+    tone: "t-ai",
+    summary: "Identity, compliance, and resilience designed per jurisdiction, with a team that can run it.",
+    points: [
+      "Regional security and IAM standardization",
+      "Disaster recovery and high availability by design",
+      "Cross-functional cloud and platform engineering teams",
+    ],
+    gets: [
+      "Jurisdiction-specific security and IAM baseline, ready for audit",
+      "Disaster recovery and high availability designed in, not added later",
+      "Operating model and team structure that can sustain the standard after handover",
+      "Clear ownership so the platform remains healthy in production",
+    ],
+    cta: "Review the operating model",
+  },
+] as const;
+
+export const steps = [
+  {
+    n: "01",
+    title: "Discover",
+    body: "The region, the constraint, and what done looks like.",
+    outcome: "Constraint map, regulatory scope, and a shared definition of “done.”",
+  },
+  {
+    n: "02",
+    title: "Design",
+    body: "Landing zones, FinOps, and the operating model.",
+    outcome: "Target architecture, FinOps model, and guardrails that apply consistently across environments.",
+  },
+  {
+    n: "03",
+    title: "Deliver",
+    body: "Governance, automation, and AI readiness in the same design.",
+    outcome: "Implemented landing zone, automation, and platform patterns the team can build on.",
+  },
+  {
+    n: "04",
+    title: "Sustain",
+    body: "Security, resilience, and a team that keeps the standard.",
+    outcome: "Handover, runbooks, and an operating model that preserves the standard in production.",
+  },
+] as const;
+
+export const topics = [
+  "Business transformation",
+  "Cloud and AI strategy",
+  "FinOps and landing zones",
+  "AI platform readiness",
+  "Something else",
+] as const;
 
 export const ticker = [
   "Microsoft Azure",

@@ -1,5 +1,5 @@
-import { profile } from "@/lib/content";
 import { validateContact, type ContactInput } from "@/lib/contact";
+import { inbox } from "@/lib/inbox";
 
 export async function POST(request: Request) {
   let payload: Partial<ContactInput>;
@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     topic: String(payload.topic ?? ""),
     message: String(payload.message ?? ""),
     company: String(payload.company ?? ""),
+    website: String(payload.website ?? ""),
   };
 
   const errors = validateContact(input);
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const subject = input.topic.trim() || `Note from ${input.name.trim()}`;
-  const upstream = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(profile.email)}`, {
+  const upstream = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(inbox)}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +37,9 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       name: input.name.trim(),
       email: input.email.trim(),
-      message: input.message.trim(),
+      message: [input.message.trim(), input.company.trim() ? `Company: ${input.company.trim()}` : ""]
+        .filter(Boolean)
+        .join("\n\n"),
       _subject: subject,
       _template: "table",
       _captcha: "false",
@@ -48,7 +51,7 @@ export async function POST(request: Request) {
       {
         ok: false,
         errors: {
-          message: "The mailbox relay did not accept this note. Use email instead.",
+          message: "The mailbox relay did not accept this note. Try again later.",
         },
       },
       { status: 502 },

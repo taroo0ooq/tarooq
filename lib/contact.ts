@@ -4,6 +4,7 @@ export type ContactInput = {
   topic: string;
   message: string;
   company: string;
+  website: string;
 };
 
 export type ContactErrors = Partial<Record<keyof ContactInput, string>>;
@@ -17,8 +18,11 @@ export function validateContact(input: ContactInput): ContactErrors {
   const topic = input.topic.trim();
   const message = input.message.trim();
 
-  if (input.company.trim()) {
-    errors.company = "Bot check failed.";
+  if (input.website.trim()) {
+    errors.website = "Bot check failed.";
+  }
+  if (input.company.trim().length > 120) {
+    errors.company = "Keep the company name under 120 characters.";
   }
   if (name.length < 2 || name.length > 80) {
     errors.name = "Use a name between 2 and 80 characters.";

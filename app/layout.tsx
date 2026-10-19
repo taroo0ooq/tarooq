@@ -1,27 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, IBM_Plex_Mono, Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { profile } from "@/lib/content";
 import "./globals.css";
 
-const display = Fraunces({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
-});
+const themeScript = `(function(){try{var stored=localStorage.getItem("tarooq-theme");var theme=stored==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",theme);document.documentElement.style.colorScheme=theme;var color=theme==="dark"?"#070910":"#f8f7fc";document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}catch(e){}})();`;
 
-const body = Outfit({
+const body = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600", "700", "800"],
   variable: "--font-body",
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
 });
 
 const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -37,15 +28,18 @@ export const metadata: Metadata = {
   description: profile.deck,
   authors: [{ name: profile.name, url: profile.linkedin }],
   openGraph: {
-    title: "Tareq Al-Ghazzi — Cloud is a regional capability",
+    title: "Tareq Al-Ghazzi — I build cloud platforms that actually survive reality",
     description: profile.deck,
     type: "profile",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#071018",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8f7fc" },
+    { media: "(prefers-color-scheme: dark)", color: "#070910" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -54,7 +48,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "Person",
     name: profile.name,
     jobTitle: profile.role,
-    email: profile.email,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Riyadh",
@@ -66,13 +59,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   };
 
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body>
+    <html lang="en" className={body.variable} suppressHydrationWarning>
+      <body className={body.className}>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a className="skip" href="#content">
           Skip to content
         </a>
         <Nav />
+        <ScrollReveal />
         <main id="content">{children}</main>
         <Footer />
       </body>

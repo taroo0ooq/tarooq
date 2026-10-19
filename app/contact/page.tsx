@@ -9,38 +9,22 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="shell">
-      <header className="page-hero">
-        <p className="kicker">Contact</p>
-        <h1>Bring the constraint.</h1>
-        <p className="deck">
-          A region, a landing zone, a cost model, or an AI platform that needs a governor. Write the context, the constraint, and what done looks like.
-        </p>
-      </header>
-      <section className="split">
-        <ContactForm />
-        <div className="channels">
-          <article className="channel">
-            <p className="kicker">Email</p>
-            <h3>Direct</h3>
-            <p>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            </p>
-          </article>
-          <article className="channel">
-            <p className="kicker">LinkedIn</p>
-            <h3>{profile.name}</h3>
-            <p>
-              <a href={profile.linkedin}>linkedin.com/in/tareq-alghazzi</a>
-            </p>
-          </article>
-          <article className="channel">
-            <p className="kicker">Based</p>
-            <h3>{profile.location}</h3>
-            <p>{profile.role}</p>
-          </article>
+    <section className="contact">
+      <div className="contact-wrap">
+        <div>
+          <p className="eyebrow">Contact me</p>
+          <h1 className="serif">Let&apos;s build something resilient.</h1>
+          <p className="intro">
+            A region, a landing zone, a cost model, or an AI platform that needs a governor. Write the context, the constraint, and what done looks like.
+          </p>
+          <p className="direct">
+            LinkedIn: <a href={profile.linkedin}>tareq-alghazzi</a>
+            <br />
+            Based in {profile.location}.
+          </p>
         </div>
-      </section>
-    </div>
+        <ContactForm />
+      </div>
+    </section>
   );
 }
