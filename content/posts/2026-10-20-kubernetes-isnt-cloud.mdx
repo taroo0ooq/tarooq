@@ -1,0 +1,39 @@
+---
+title: Knowing Kubernetes isn't knowing the cloud
+date: 2026-10-20
+description: Kubernetes is one valuable skill on a cloud platform, but identity, networking, governance and cost are what make someone a cloud expert.
+lang: ar
+image: /posts/2026-10-20-kubernetes-isnt-cloud.png
+imageAlt: "Kubernetes containers at the center of a wider cloud platform with identity, network, firewall, policy, and cost."
+linkedinStatus: hold
+linkedinUrn: ""
+linkedinUrl: ""
+linkedinText: |
+  موظفك الجديد بيعرف Kubernetes من جوا لبرا. وبعدين بيوصل لعنده أول سؤال عن الـ identity أو الـ networking أو التكلفة. شو بيصير بعدها؟
+  
+  في سوء فهم بسيط بشوفه كتير، إنه اللي بيعرف Kubernetes أو containers يعني بيعرف الـ cloud وصار خبير فيه، وهاد مو صحيح أبداً.
+  
+  الـ Kubernetes هو service وحدة شغالة جوا منصة أكبر بكتير والـ cluster غالباً هو الجزء السهل. الجزء الصعب هو كل شي حواليه الـ landing zone اللي قاعد فيها ومين مالك الـ subscription وكيف الـ identity بتنزل من Entra ID والـ RBAC لحد الـ pods، وبعدين الـ Private Link والـ DNS والـ egress من خلال Azure Firewall، وتكلفة كل node pool ما حدا عمله scale down يوم الخميس.
+  فممكن تبني AKS نظيف ومرتب وتعلق بـ private DNS zone، أو Azure Policy بتمنع الـ public IP، أو فاتورة Log Analytics عم تكبر كل شهر لأنه كل container عم يكتب logs بأعلى مستوى.
+  
+  طيب هل الـ Kubernetes مهارة مهمة؟ أكيد ومهمة كتير! بس هي مهارة وحدة على المنصة مو المنصة نفسها.
+  
+  الـ containers بتقلك كيف التطبيق شغال. والـ cloud بيقلك وين عايش، ومين بيقدر يوصله، ومين بيدفع حقه.
+  
+  إذا عم توظف لشغل cloud، شو السؤال اللي بتسأله وما بيقدر يجاوب عليه شخص كل خبرته Kubernetes؟
+  
+  https://alghazzi.org/posts/2026-10-20-kubernetes-isnt-cloud
+---
+
+موظفك الجديد بيعرف Kubernetes من جوا لبرا. وبعدين بيوصل لعنده أول سؤال عن الـ identity أو الـ networking أو التكلفة. شو بيصير بعدها؟
+
+في سوء فهم بسيط بشوفه كتير، إنه اللي بيعرف Kubernetes أو containers يعني بيعرف الـ cloud وصار خبير فيه، وهاد مو صحيح أبداً.
+
+الـ Kubernetes هو service وحدة شغالة جوا منصة أكبر بكتير والـ cluster غالباً هو الجزء السهل. الجزء الصعب هو كل شي حواليه الـ landing zone اللي قاعد فيها ومين مالك الـ subscription وكيف الـ identity بتنزل من Entra ID والـ RBAC لحد الـ pods، وبعدين الـ Private Link والـ DNS والـ egress من خلال Azure Firewall، وتكلفة كل node pool ما حدا عمله scale down يوم الخميس.
+فممكن تبني AKS نظيف ومرتب وتعلق بـ private DNS zone، أو Azure Policy بتمنع الـ public IP، أو فاتورة Log Analytics عم تكبر كل شهر لأنه كل container عم يكتب logs بأعلى مستوى.
+
+طيب هل الـ Kubernetes مهارة مهمة؟ أكيد ومهمة كتير! بس هي مهارة وحدة على المنصة مو المنصة نفسها.
+
+الـ containers بتقلك كيف التطبيق شغال. والـ cloud بيقلك وين عايش، ومين بيقدر يوصله، ومين بيدفع حقه.
+
+إذا عم توظف لشغل cloud، شو السؤال اللي بتسأله وما بيقدر يجاوب عليه شخص كل خبرته Kubernetes؟

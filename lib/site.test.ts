@@ -47,4 +47,23 @@ describe("site url", () => {
     const image = Array.isArray(images) ? images[0] : images;
     assert.equal(image && typeof image === "object" && "url" in image ? image.url : "", "/opengraph-image");
   });
+
+  it("lets a page replace the share image", () => {
+    const metadata = pageMetadata("/posts/example", {
+      title: "Example",
+      description: "A note",
+      openGraph: {
+        type: "article",
+        images: [{ url: "/posts/example.png", alt: "Diagram" }],
+      },
+      twitter: { images: ["/posts/example.png"] },
+    });
+    const images = metadata.openGraph?.images;
+    const image = Array.isArray(images) ? images[0] : images;
+    assert.equal(image && typeof image === "object" && "url" in image ? image.url : "", "/posts/example.png");
+    assert.equal(image && typeof image === "object" && "alt" in image ? image.alt : "", "Diagram");
+    const twitterImages = metadata.twitter?.images;
+    const twitterImage = Array.isArray(twitterImages) ? twitterImages[0] : twitterImages;
+    assert.equal(twitterImage, "/posts/example.png");
+  });
 });

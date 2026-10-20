@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
       { source: "/expertise", destination: "/business", permanent: false },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/posts/new",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+    ];
+  },
   outputFileTracingIncludes: {
     "/posts": ["./content/posts/**/*"],
     "/posts/[slug]": ["./content/posts/**/*"],

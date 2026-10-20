@@ -1,11 +1,17 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { renderMarkdown } from "./markdown";
+
+export { renderMarkdown };
 
 export type PostMeta = {
   slug: string;
   title: string;
   date: string;
   description: string;
+  lang: string;
+  image: string;
+  imageAlt: string;
   linkedinText: string;
   linkedinStatus: string;
   linkedinUrn: string;
@@ -28,43 +34,6 @@ function unquote(value: string) {
   return trimmed;
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function inline(value: string) {
-  return escapeHtml(value)
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-}
-
-export function renderMarkdown(markdown: string) {
-  const blocks = markdown.replace(/\r\n/g, "\n").trim().split(/\n{2,}/);
-  return blocks
-    .map((block) => {
-      const lines = block.split("\n").filter((line) => line.length > 0);
-      if (lines.length === 0) return "";
-      if (lines.every((line) => /^#{1,3} /.test(line))) {
-        return lines
-          .map((line) => {
-            const level = line.match(/^#+/)?.[0].length ?? 1;
-            const tag = `h${Math.min(level + 1, 4)}`;
-            return `<${tag}>${inline(line.replace(/^#{1,3} /, ""))}</${tag}>`;
-          })
-          .join("");
-      }
-      if (lines.every((line) => /^[-*] /.test(line))) {
-        return `<ul>${lines.map((line) => `<li>${inline(line.replace(/^[-*] /, ""))}</li>`).join("")}</ul>`;
-      }
-      return `<p>${lines.map((line) => inline(line)).join("<br>")}</p>`;
-    })
-    .join("\n");
-}
-
 export function parseFrontmatter(raw: string) {
   const text = raw.replace(/^\uFEFF/, "");
   if (!text.startsWith("---\n") && !text.startsWith("---\r\n")) {
@@ -80,17 +49,34 @@ export function parseFrontmatter(raw: string) {
     const match = /^([A-Za-z0-9]+):\s*(.*)$/.exec(lines[index]);
     if (!match) continue;
     if (match[2] === "|") {
-      const collected: string[] = [];
-      while (index + 1 < lines.length && /^( {2}|\t)/.test(lines[index + 1])) {
-        index += 1;
-        collected.push(lines[index].replace(/^(?: {2}|\t)/, ""));
-      }
-      data[match[1]] = collected.join("\n").trim();
+      const blockValue = takeBlock(lines, index);
+      index = blockValue.index;
+      data[match[1]] = blockValue.value;
     } else {
       data[match[1]] = unquote(match[2]);
     }
   }
   return { data, body };
+}
+
+function takeBlock(lines: string[], index: number) {
+  const collected: string[] = [];
+  let indent = "";
+  while (index + 1 < lines.length) {
+    const next = lines[index + 1];
+    if (next.trim() === "") {
+      index += 1;
+      collected.push("");
+      continue;
+    }
+    const indentMatch = /^( +|\t+)/.exec(next);
+    if (!indentMatch) break;
+    if (!indent) indent = indentMatch[1];
+    if (!next.startsWith(indent)) break;
+    index += 1;
+    collected.push(next.slice(indent.length));
+  }
+  return { value: collected.join("\n").trim(), index };
 }
 
 function readPost(fileName: string): PostMeta | null {
@@ -104,11 +90,14 @@ function readPost(fileName: string): PostMeta | null {
     title: data.title,
     date: data.date,
     description: data.description ?? "",
+    lang: data.lang ?? "",
+    image: data.image ?? "",
+    imageAlt: data.imageAlt ?? "",
     linkedinText: data.linkedinText ?? "",
     linkedinStatus: data.linkedinStatus ?? "hold",
     linkedinUrn: data.linkedinUrn ?? "",
     linkedinUrl: data.linkedinUrl ?? "",
-    html: renderMarkdown(body),
+    html: renderMarkdown(body, data.lang ?? ""),
   };
 }
 

@@ -5,6 +5,8 @@ export const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID || "77qvkeuxzk5
 export const LINKEDIN_VERSION = process.env.LINKEDIN_VERSION || "202609";
 export const STATE_COOKIE = "li_oauth_state";
 export const SETUP_COOKIE = "li_setup";
+export const NEXT_COOKIE = "li_oauth_next";
+export const AUTHOR_PATH = "/posts/new";
 
 // LinkedIn redirect URIs are exact origins. tarooq.vercel.app still serves this app, so it stays registered.
 const extraOrigins = ["https://tarooq.vercel.app", "http://localhost:3000"];
@@ -47,10 +49,26 @@ export function statesMatch(left: string, right: string) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-function secretKey() {
+export function tokensMatch(left: string, right: string) {
+  const a = createHash("sha256").update(left).digest();
+  const b = createHash("sha256").update(right).digest();
+  return timingSafeEqual(a, b);
+}
+
+export function authorReturnPath(value: string | null | undefined) {
+  return value === AUTHOR_PATH ? AUTHOR_PATH : "";
+}
+
+export function signingKey() {
   const secret = process.env.LINKEDIN_CLIENT_SECRET;
-  if (!secret) throw new Error("LINKEDIN_CLIENT_SECRET is not set.");
+  if (!secret) return null;
   return createHash("sha256").update(secret).digest();
+}
+
+function secretKey() {
+  const key = signingKey();
+  if (!key) throw new Error("LINKEDIN_CLIENT_SECRET is not set.");
+  return key;
 }
 
 export type SetupPayload = {

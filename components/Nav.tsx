@@ -10,7 +10,7 @@ const links = [
   { href: "/#story", label: "Story", isActive: (pathname: string, hash: string) => pathname === "/" && hash === "#story" },
   { href: "/for-you", label: "For You", isActive: (pathname: string, _hash: string) => pathname === "/for-you" },
   { href: "/business", label: "Business", isActive: (pathname: string, _hash: string) => pathname === "/business" },
-  { href: "/posts", label: "Posts", isActive: (pathname: string, _hash: string) => pathname === "/posts" || pathname.startsWith("/posts/") },
+  { href: "/posts", label: "Posts", isActive: (pathname: string, _hash: string) => pathname === "/posts" || (pathname.startsWith("/posts/") && pathname !== "/posts/new") },
   { href: "/contact", label: "Contact", isActive: (pathname: string, _hash: string) => pathname === "/contact" },
 ];
 

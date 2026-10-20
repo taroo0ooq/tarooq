@@ -39,3 +39,22 @@ jobs:
           fi
           git commit -m "chore: record LinkedIn post ids [linkedin]"
           git push
+
+  deploy:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK_URL" ]; then
+            echo "VERCEL_DEPLOY_HOOK_URL is not set. Skipping deploy hook."
+            exit 0
+          fi
+          code=$(curl -sS -o /dev/null -w "%{http_code}" -X POST "$VERCEL_DEPLOY_HOOK_URL" 2>/dev/null) || code="000"
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "Vercel deploy hook returned ${code}."
+            exit 1
+          fi
+          echo "Vercel deploy hook accepted."
