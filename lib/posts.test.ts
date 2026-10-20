@@ -50,7 +50,7 @@ describe("markdown", () => {
 });
 
 describe("kubernetes post", () => {
-  it("stays unpublished, in Arabic, with the illustration", () => {
+  it("is released to LinkedIn, in Arabic, with the illustration", () => {
     const post = getPost("2026-10-20-kubernetes-isnt-cloud");
     assert.ok(post);
     assert.equal(post.title, "Knowing Kubernetes isn't knowing the cloud");
@@ -59,9 +59,7 @@ describe("kubernetes post", () => {
     assert.equal(post.image, "/posts/2026-10-20-kubernetes-isnt-cloud.png");
     assert.match(post.imageAlt, /Kubernetes containers at the center/);
     assert.match(post.imageAlt, /identity, network, firewall, policy, and cost/);
-    assert.equal(post.linkedinStatus, "hold");
-    assert.equal(post.linkedinUrn, "");
-    assert.equal(post.linkedinUrl, "");
+    assert.ok(["ready", "posted"].includes(post.linkedinStatus));
     assert.equal(post.linkedinText.includes("مهمة كتير?!"), false);
     assert.match(post.linkedinText, /مهمة كتير!/);
     assert.match(post.linkedinText, /\n\nhttps:\/\/alghazzi\.org\/posts\/2026-10-20-kubernetes-isnt-cloud$/);
