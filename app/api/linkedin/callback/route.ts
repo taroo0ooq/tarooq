@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
+  NEXT_COOKIE,
   SETUP_COOKIE,
   STATE_COOKIE,
+  authorReturnPath,
   exchangeCode,
   fetchMember,
   isRegisteredOrigin,
@@ -11,6 +13,7 @@ import {
   statesMatch,
   unregisteredOriginMessage,
 } from "@/lib/linkedin";
+import { OWNER_COOKIE, SESSION_SECONDS, isOwner, sealOwnerSession } from "@/lib/owner-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,6 +39,14 @@ function page(status: number, message: string) {
       "X-Robots-Tag": "noindex",
     },
   });
+}
+
+function finish(response: NextResponse, secure: boolean) {
+  response.cookies.set({ name: STATE_COOKIE, value: "", httpOnly: true, sameSite: "lax", secure, path: "/", maxAge: 0 });
+  response.cookies.set({ name: NEXT_COOKIE, value: "", httpOnly: true, sameSite: "lax", secure, path: "/", maxAge: 0 });
+  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("X-Robots-Tag", "noindex");
+  return response;
 }
 
 function readCookie(request: Request, name: string) {
@@ -73,6 +84,28 @@ export async function GET(request: Request) {
   try {
     const exchanged = await exchangeCode(origin, code);
     const member = await fetchMember(exchanged.accessToken);
+    const secure = origin.startsWith("https://");
+    const nextPath = authorReturnPath(readCookie(request, NEXT_COOKIE));
+    if (nextPath) {
+      if (!process.env.LINKEDIN_PERSON_ID) {
+        return finish(page(500, "LINKEDIN_PERSON_ID is not set."), secure);
+      }
+      if (!isOwner(member.personId)) {
+        return finish(page(403, "This LinkedIn account cannot author posts."), secure);
+      }
+      const response = NextResponse.redirect(new URL(nextPath, origin), 303);
+      response.cookies.set({
+        name: OWNER_COOKIE,
+        value: sealOwnerSession(member.personId),
+        httpOnly: true,
+        sameSite: "lax",
+        secure,
+        path: "/",
+        maxAge: SESSION_SECONDS,
+      });
+      return finish(response, secure);
+    }
+
     const expiresAt = new Date(Date.now() + Math.max(0, exchanged.expiresIn) * 1000).toISOString().slice(0, 10);
     const sealed = sealSetup({
       accessToken: exchanged.accessToken,
@@ -87,9 +120,17 @@ export async function GET(request: Request) {
     }
 
     const response = NextResponse.redirect(new URL("/linkedin/connected", origin), 303);
-    const secure = origin.startsWith("https://");
     response.cookies.set({
       name: STATE_COOKIE,
+      value: "",
+      httpOnly: true,
+      sameSite: "lax",
+      secure,
+      path: "/",
+      maxAge: 0,
+    });
+    response.cookies.set({
+      name: NEXT_COOKIE,
       value: "",
       httpOnly: true,
       sameSite: "lax",
