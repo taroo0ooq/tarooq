@@ -127,12 +127,12 @@ describe("post urls", () => {
     assert.equal(shifted, "Hello\n\nhttps://alghazzi.org/posts/2026-10-20-hello-2");
 
     const appended = alignPostUrl(
-      "See also https://alghazzi.org/posts/2026-10-12-regional-capability",
+      "See also https://alghazzi.org/posts/2026-09-01-earlier-note",
       origin,
       "2026-10-20",
       "hello",
     );
-    assert.match(appended, /2026-10-12-regional-capability/);
+    assert.match(appended, /2026-09-01-earlier-note/);
     assert.match(appended, /https:\/\/alghazzi\.org\/posts\/2026-10-20-hello$/);
   });
 });
