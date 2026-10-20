@@ -1,12 +1,40 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { topics } from "@/lib/content";
+import { translateContactError, type ContactErrorCatalog } from "@/lib/contact-i18n";
 import type { ContactErrors } from "@/lib/contact";
+import type { Locale } from "@/lib/locale";
 
-const empty = { name: "", email: "", topic: topics[0], message: "", company: "", website: "" };
+export type ContactFormCopy = {
+  name: string;
+  namePlaceholder: string;
+  email: string;
+  emailPlaceholder: string;
+  company: string;
+  companyPlaceholder: string;
+  topic: string;
+  message: string;
+  messagePlaceholder: string;
+  website: string;
+  send: string;
+  sending: string;
+  received: string;
+  receivedNote: string;
+  blocked: string;
+  network: string;
+  errors: ContactErrorCatalog;
+};
 
-export function ContactForm() {
+export function ContactForm({
+  locale,
+  topics,
+  copy,
+}: {
+  locale: Locale;
+  topics: readonly string[];
+  copy: ContactFormCopy;
+}) {
+  const empty = { name: "", email: "", topic: topics[0] ?? "", message: "", company: "", website: "" };
   const [fields, setFields] = useState(empty);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [pending, setPending] = useState(false);
@@ -15,6 +43,10 @@ export function ContactForm() {
 
   function update(key: keyof typeof empty, value: string) {
     setFields((current) => ({ ...current, [key]: value }));
+  }
+
+  function show(message: string | undefined) {
+    return translateContactError(message, copy.errors, copy.blocked, locale);
   }
 
   async function onSubmit(event: FormEvent) {
@@ -32,18 +64,23 @@ export function ContactForm() {
       if (!response.ok || !data.ok) {
         const next = data.errors ?? {};
         if (next.website) {
-          setFormError("Something blocked the send.");
+          setFormError(copy.blocked);
           return;
         }
         const fieldKeys = ["name", "email", "topic", "company", "message"] as const;
         const hasFieldError = fieldKeys.some((key) => next[key]);
-        if (hasFieldError) setErrors(next);
-        else setFormError(next.message ?? "Something blocked the send.");
+        if (hasFieldError) {
+          const localized: ContactErrors = {};
+          for (const key of fieldKeys) {
+            if (next[key]) localized[key] = show(next[key]);
+          }
+          setErrors(localized);
+        } else setFormError(show(next.message));
         return;
       }
       setSent(true);
     } catch {
-      setFormError("The network dropped the note. Try again.");
+      setFormError(copy.network);
     } finally {
       setPending(false);
     }
@@ -52,8 +89,8 @@ export function ContactForm() {
   if (sent) {
     return (
       <div className="card" role="status">
-        <h2 className="serif">Received.</h2>
-        <p className="status">The note is on its way.</p>
+        <h2 className="serif">{copy.received}</h2>
+        <p className="status">{copy.receivedNote}</p>
       </div>
     );
   }
@@ -62,11 +99,11 @@ export function ContactForm() {
     <form onSubmit={onSubmit} noValidate>
       <div className="row">
         <div className="field">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">{copy.name}</label>
           <input
             id="name"
             name="name"
-            placeholder="Your name"
+            placeholder={copy.namePlaceholder}
             autoComplete="name"
             value={fields.name}
             aria-invalid={Boolean(errors.name)}
@@ -75,12 +112,13 @@ export function ContactForm() {
           {errors.name ? <p className="error">{errors.name}</p> : null}
         </div>
         <div className="field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{copy.email}</label>
           <input
             id="email"
             name="email"
             type="email"
-            placeholder="you@company.com"
+            dir="ltr"
+            placeholder={copy.emailPlaceholder}
             autoComplete="email"
             value={fields.email}
             aria-invalid={Boolean(errors.email)}
@@ -90,11 +128,11 @@ export function ContactForm() {
         </div>
       </div>
       <div className="field">
-        <label htmlFor="company">Company</label>
+        <label htmlFor="company">{copy.company}</label>
         <input
           id="company"
           name="company"
-          placeholder="Optional"
+          placeholder={copy.companyPlaceholder}
           autoComplete="organization"
           value={fields.company}
           aria-invalid={Boolean(errors.company)}
@@ -103,7 +141,7 @@ export function ContactForm() {
         {errors.company ? <p className="error">{errors.company}</p> : null}
       </div>
       <div className="field">
-        <label htmlFor="topic">Topic</label>
+        <label htmlFor="topic">{copy.topic}</label>
         <select id="topic" name="topic" value={fields.topic} onChange={(event) => update("topic", event.target.value)}>
           {topics.map((topic) => (
             <option key={topic}>{topic}</option>
@@ -111,11 +149,11 @@ export function ContactForm() {
         </select>
       </div>
       <div className="field">
-        <label htmlFor="message">Message</label>
+        <label htmlFor="message">{copy.message}</label>
         <textarea
           id="message"
           name="message"
-          placeholder="How can I help?"
+          placeholder={copy.messagePlaceholder}
           value={fields.message}
           aria-invalid={Boolean(errors.message)}
           onChange={(event) => update("message", event.target.value)}
@@ -123,7 +161,7 @@ export function ContactForm() {
         {errors.message ? <p className="error">{errors.message}</p> : null}
       </div>
       <div className="hp" aria-hidden="true">
-        <label htmlFor="website">Website</label>
+        <label htmlFor="website">{copy.website}</label>
         <input
           id="website"
           name="website"
@@ -134,7 +172,7 @@ export function ContactForm() {
         />
       </div>
       <button className="btn btn-purple" type="submit" disabled={pending}>
-        {pending ? "Sending…" : "Send message"}
+        {pending ? copy.sending : copy.send}
       </button>
       {formError ? <p className="error">{formError}</p> : null}
     </form>

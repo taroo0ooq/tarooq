@@ -13,7 +13,7 @@ function riyadhHour(date = new Date()) {
   return Number(part?.value ?? "0") % 24;
 }
 
-export function RiyadhClock() {
+export function RiyadhClock({ label, waiting, hourLabel }: { label: string; waiting: string; hourLabel: string }) {
   const [hour, setHour] = useState<number | null>(null);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ export function RiyadhClock() {
   }, []);
 
   return (
-    <div className="clock" role="img" aria-label={hour == null ? "Riyadh time" : `Riyadh, ${hour}:00`}>
-      <span className="clock-label">Riyadh</span>
+    <div className="clock" role="img" aria-label={hour == null ? waiting : hourLabel.replace("{{hour}}", String(hour))}>
+      <span className="clock-label">{label}</span>
       <div className="hours" aria-hidden="true">
         {Array.from({ length: 24 }, (_, index) => (
           <span className={index === hour ? "hour active" : "hour"} key={index} />

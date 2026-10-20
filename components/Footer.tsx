@@ -1,30 +1,34 @@
 import { MailLink } from "@/components/MailLink";
-import { profile } from "@/lib/content";
+import { tx } from "@/components/RichText";
+import { getCopy } from "@/lib/copy";
+import { localizePath, type Locale } from "@/lib/locale";
 
-export function Footer() {
+export function Footer({ locale }: { locale: Locale }) {
+  const { profile, ui } = getCopy(locale);
+  const text = (value: string) => tx(locale, value);
   return (
     <footer className="site-footer">
       <div>
-        <strong>
+        <strong dir="ltr">
           tarooq<i>.</i>
         </strong>
         <p>
-          {profile.name}
+          {text(profile.name)}
           <br />
-          {profile.role}
+          {text(profile.role)}
           <br />
-          Based in {profile.location}. Working across the MENA region.
+          {text(ui.footer.based.replace("{{location}}", profile.location))}
         </p>
-        <p className="footer-note">{profile.availability}</p>
-        <p className="footer-line">{profile.statement}</p>
+        <p className="footer-note">{text(profile.availability)}</p>
+        <p className="footer-line">{text(profile.statement)}</p>
       </div>
       <div className="elsewhere">
-        <span>Elsewhere</span>
-        <MailLink />
-        <a href="/contact">Get in Touch</a>
+        <span>{ui.footer.elsewhere}</span>
+        <MailLink href={localizePath("/contact", locale)} label={ui.footer.email} />
+        <a href={localizePath("/contact", locale)}>{ui.footer.contact}</a>
         <a href={profile.linkedin}>LinkedIn</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/posts">Posts</a>
+        <a href={localizePath("/privacy", locale)}>{ui.footer.privacy}</a>
+        <a href={localizePath("/posts", locale)}>{ui.footer.posts}</a>
       </div>
     </footer>
   );

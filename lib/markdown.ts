@@ -7,7 +7,7 @@ function escapeHtml(value: string) {
 }
 
 /** Keep a whole English phrase together inside Arabic, including spaces between its words. */
-function isolateLatinText(text: string) {
+export function isolateLatinText(text: string) {
   return text.replace(
     /&(?:#\d+|#x[\da-fA-F]+|[a-zA-Z]+);|[A-Za-z][A-Za-z0-9+#/_'-]*(?:[ \t]+[A-Za-z][A-Za-z0-9+#/_'-]*)*/g,
     (token) => (token.startsWith("&") ? token : `\u2066${token}\u2069`),

@@ -21,7 +21,7 @@ export function applyTheme(theme: "light" | "dark") {
   }
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ darkLabel, lightLabel }: { darkLabel: string; lightLabel: string }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function ThemeToggle() {
     <button
       className="theme-toggle"
       type="button"
-      aria-label={next === "dark" ? "Switch to dark mode" : "Switch to light mode"}
+      aria-label={next === "dark" ? darkLabel : lightLabel}
       aria-pressed={theme === "dark"}
       onClick={() => {
         const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";

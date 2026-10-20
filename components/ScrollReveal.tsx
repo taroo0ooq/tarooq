@@ -42,7 +42,8 @@ export function ScrollReveal() {
         const cover = (viewHeight - rect.top) / (Math.max(rect.height, 1) + viewHeight);
         if (scene.dataset.scene === "x") {
           const turned = easeIn(clamp((cover - 0.02) / 0.2));
-          const dir = scene.dataset.dir === "1" ? 1 : -1;
+          const rtl = document.documentElement.dir === "rtl" ? -1 : 1;
+          const dir = (scene.dataset.dir === "1" ? 1 : -1) * rtl;
           reveal.style.opacity = turned.toFixed(3);
           reveal.style.translate = `${((1 - turned) * dir * 100).toFixed(2)}% 0`;
           return;

@@ -1,43 +1,61 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Readex_Pro } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { profile } from "@/lib/content";
-import { siteUrl } from "@/lib/site";
-import "./globals.css";
+import { getCopy } from "@/lib/copy";
+import { absoluteUrl, siteUrl } from "@/lib/site";
+import "../globals.css";
 
 const themeScript = `(function(){try{var stored=localStorage.getItem("tarooq-theme");var theme=stored==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",theme);document.documentElement.style.colorScheme=theme;var color=theme==="dark"?"#070910":"#f8f7fc";document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}catch(e){}})();`;
 
-const body = Inter({
+const latin = Inter({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
   variable: "--font-body",
+  display: "swap",
+  preload: false,
 });
 
-const homeTitle = "Tareq Al-Ghazzi — Head of Cloud Services, MENA";
-const shareTitle = "Tareq Al-Ghazzi — I build cloud platforms that actually survive reality";
+const arabic = Readex_Pro({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arabic",
+  display: "swap",
+});
+
+const copy = getCopy("ar");
+const { profile, education, ui } = copy;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: homeTitle,
-    template: "%s — Tareq Al-Ghazzi",
+    default: ui.meta.homeTitle,
+    template: `%s — ${ui.meta.titleSuffix}`,
   },
   description: profile.deck,
-  authors: [{ name: profile.name, url: profile.linkedin }],
-  alternates: { canonical: siteUrl },
+  authors: [{ name: "Tareq Al-Ghazzi", url: profile.linkedin }],
+  alternates: {
+    canonical: absoluteUrl("/ar"),
+    languages: {
+      en: absoluteUrl("/"),
+      ar: absoluteUrl("/ar"),
+      "x-default": absoluteUrl("/"),
+    },
+  },
   openGraph: {
-    title: shareTitle,
+    title: ui.meta.shareTitle,
     description: profile.deck,
     type: "profile",
-    url: siteUrl,
+    url: absoluteUrl("/ar"),
     siteName: profile.name,
+    locale: "ar_SA",
+    alternateLocale: ["en_US"],
   },
   twitter: {
     card: "summary_large_image",
-    title: shareTitle,
+    title: ui.meta.shareTitle,
     description: profile.deck,
   },
 };
@@ -55,32 +73,33 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@context": "https://schema.org",
     "@type": "Person",
     name: profile.name,
-    url: siteUrl,
+    alternateName: "Tareq Al-Ghazzi",
+    url: absoluteUrl("/ar"),
     jobTitle: profile.role,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Riyadh",
+      addressLocality: ui.meta.locality,
       addressCountry: "SA",
     },
     sameAs: [profile.linkedin],
-    knowsLanguage: ["English", "Arabic"],
-    alumniOf: "Ajman University of Science and Technology",
+    knowsLanguage: ["Arabic", "English"],
+    alumniOf: education.school,
   };
 
   return (
-    <html lang="en" className={body.variable} suppressHydrationWarning>
-      <body className={body.className}>
+    <html lang="ar" dir="rtl" className={`${latin.variable} ${arabic.variable}`} suppressHydrationWarning>
+      <body className={arabic.className}>
         <Script id="theme-init" strategy="beforeInteractive">
           {themeScript}
         </Script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a className="skip" href="#content">
-          Skip to content
+          {ui.skip}
         </a>
-        <Nav />
+        <Nav locale="ar" labels={ui.nav} darkLabel={ui.theme.dark} lightLabel={ui.theme.light} />
         <ScrollReveal />
         <main id="content">{children}</main>
-        <Footer />
+        <Footer locale="ar" />
       </body>
     </html>
   );
