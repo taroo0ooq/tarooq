@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { certifications, courseTopics, courses } from "@/lib/content";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata("/for-you", {
   title: "For You",
   description: "Courses and official learning paths Tareq Al-Ghazzi points people to across Azure, AWS, Google Cloud, DevOps, OpenAI, Anthropic, xAI, and agents. These are recommendations, not his certifications.",
-};
+});
 
 export default function ForYouPage() {
   return (

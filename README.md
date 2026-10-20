@@ -27,10 +27,12 @@ The form delivers only after these variables are set on the Vercel project and p
 
 Create the Resend account with the same address that should receive notes (`tareq.alghazzi@outlook.com`, unless you set `CONTACT_INBOX`). With the default sender, Resend delivers only to the email address on that account. That is enough for this form, which only notifies that inbox.
 
-`tarooq.vercel.app` cannot be a sending domain. To send from a domain you control, verify it at https://resend.com/domains and set `CONTACT_FROM` to an address on that domain (for example `Tarooq <notes@yourdomain>`).
+A `vercel.app` hostname cannot be a sending domain. To send from a domain you control, verify it at https://resend.com/domains and set `CONTACT_FROM` to an address on that domain (for example `Tarooq <notes@alghazzi.org>`).
 
 ## Deploy
 
-Next.js on Vercel. Pages render with no environment variables.
+Next.js on Vercel. The canonical site is https://alghazzi.org. Metadata, the sitemap, robots.txt, and share links use that origin. Set `NEXT_PUBLIC_SITE_URL` to override it. `www.alghazzi.org` redirects to the apex.
 
-The `tarooq` project is often deployed by upload, and the Git connection may be incomplete. Merging this change does not by itself update https://tarooq.vercel.app. After `RESEND_API_KEY` is saved on Production, redeploy that project from the Vercel dashboard or the deployments API so the new route and the variable are both live. Changing environment variables requires a new deployment.
+Pages render with no environment variables.
+
+The `tarooq` project is often deployed by upload, and the Git connection may be incomplete. Merging a change does not by itself update https://alghazzi.org. After `RESEND_API_KEY` is saved on Production, redeploy that project from the Vercel dashboard or the deployments API so the new route and the variable are both live. Changing environment variables requires a new deployment.

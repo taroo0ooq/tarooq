@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
 import { profile } from "@/lib/content";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata("/contact", {
   title: "Contact",
   description: "Contact Tareq Al-Ghazzi about regional cloud strategy, FinOps, AI platforms, or governance.",
-};
+});
 
 export default function ContactPage() {
   return (

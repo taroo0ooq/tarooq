@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { absoluteUrl } from "../lib/site-url.mjs";
 
 const token = process.env.LINKEDIN_ACCESS_TOKEN || "";
 const personId = process.env.LINKEDIN_PERSON_ID || "";
@@ -90,7 +91,7 @@ async function publishFile(fileName) {
       isReshareDisabledByAuthor: false,
       content: {
         article: {
-          source: `https://tarooq.vercel.app/posts/${slug}`,
+          source: absoluteUrl(`/posts/${slug}`),
           title: data.title,
           description: (data.description || data.title).slice(0, 400),
         },
@@ -150,7 +151,7 @@ linkedinUrn: ""
 linkedinUrl: ""
 linkedinText: |
   Hello
-  https://tarooq.vercel.app/posts/2026-10-12-cloud
+  ${absoluteUrl("/posts/2026-10-12-cloud")}
 ---
 
 Body

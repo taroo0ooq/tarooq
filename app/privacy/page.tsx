@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { MailLink } from "@/components/MailLink";
 import { profile } from "@/lib/content";
+import { pageMetadata, siteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata("/privacy", {
   title: "Privacy",
-  description:
-    "How personal information is collected, used, and protected on tarooq.vercel.app, including the contact form and the site owner's LinkedIn publishing.",
-};
+  description: `How personal information is collected, used, and protected on ${siteUrl}, including the contact form and the site owner's LinkedIn publishing.`,
+});
 
 export default function PrivacyPage() {
   return (
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       </header>
       <div className="legal">
         <p>
-          This privacy policy describes how personal information is collected, used, and protected on tarooq.vercel.app (the
+          This privacy policy describes how personal information is collected, used, and protected on {siteUrl} (the
           “Site”) and in connection with the LinkedIn publishing feature used by the site owner.
         </p>
         <p>
