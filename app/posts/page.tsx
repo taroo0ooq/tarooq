@@ -25,6 +25,7 @@ export default function PostsPage() {
         <div className="post-list">
           {posts.map((post) => (
             <Link className="post-card" href={`/posts/${post.slug}`} key={post.slug}>
+              {post.image ? <img className="post-card-image" src={post.image} alt={post.imageAlt} /> : null}
               <time dateTime={post.date}>{formatPostDate(post.date)}</time>
               <h2 className="serif">{post.title}</h2>
               <p>{post.description}</p>

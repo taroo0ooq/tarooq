@@ -6,6 +6,9 @@ export type PostMeta = {
   title: string;
   date: string;
   description: string;
+  lang: string;
+  image: string;
+  imageAlt: string;
   linkedinText: string;
   linkedinStatus: string;
   linkedinUrn: string;
@@ -36,13 +39,29 @@ function escapeHtml(value: string) {
     .replace(/"/g, "&quot;");
 }
 
-function inline(value: string) {
-  return escapeHtml(value)
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+/** Keep a whole English phrase together inside Arabic, including spaces between its words. */
+function isolateLatinText(text: string) {
+  return text.replace(
+    /&(?:#\d+|#x[\da-fA-F]+|[a-zA-Z]+);|[A-Za-z][A-Za-z0-9+#/_'-]*(?:[ \t]+[A-Za-z][A-Za-z0-9+#/_'-]*)*/g,
+    (token) => (token.startsWith("&") ? token : `\u2066${token}\u2069`),
+  );
 }
 
-export function renderMarkdown(markdown: string) {
+function isolateLatinHtml(html: string) {
+  return html
+    .split(/(<[^>]+>)/g)
+    .map((part) => (part.startsWith("<") ? part : isolateLatinText(part)))
+    .join("");
+}
+
+function inline(value: string, lang = "") {
+  const html = escapeHtml(value)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  return lang === "ar" ? isolateLatinHtml(html) : html;
+}
+
+export function renderMarkdown(markdown: string, lang = "") {
   const blocks = markdown.replace(/\r\n/g, "\n").trim().split(/\n{2,}/);
   return blocks
     .map((block) => {
@@ -53,14 +72,14 @@ export function renderMarkdown(markdown: string) {
           .map((line) => {
             const level = line.match(/^#+/)?.[0].length ?? 1;
             const tag = `h${Math.min(level + 1, 4)}`;
-            return `<${tag}>${inline(line.replace(/^#{1,3} /, ""))}</${tag}>`;
+            return `<${tag}>${inline(line.replace(/^#{1,3} /, ""), lang)}</${tag}>`;
           })
           .join("");
       }
       if (lines.every((line) => /^[-*] /.test(line))) {
-        return `<ul>${lines.map((line) => `<li>${inline(line.replace(/^[-*] /, ""))}</li>`).join("")}</ul>`;
+        return `<ul>${lines.map((line) => `<li>${inline(line.replace(/^[-*] /, ""), lang)}</li>`).join("")}</ul>`;
       }
-      return `<p>${lines.map((line) => inline(line)).join("<br>")}</p>`;
+      return `<p>${lines.map((line) => inline(line, lang)).join("<br>")}</p>`;
     })
     .join("\n");
 }
@@ -80,17 +99,34 @@ export function parseFrontmatter(raw: string) {
     const match = /^([A-Za-z0-9]+):\s*(.*)$/.exec(lines[index]);
     if (!match) continue;
     if (match[2] === "|") {
-      const collected: string[] = [];
-      while (index + 1 < lines.length && /^( {2}|\t)/.test(lines[index + 1])) {
-        index += 1;
-        collected.push(lines[index].replace(/^(?: {2}|\t)/, ""));
-      }
-      data[match[1]] = collected.join("\n").trim();
+      const blockValue = takeBlock(lines, index);
+      index = blockValue.index;
+      data[match[1]] = blockValue.value;
     } else {
       data[match[1]] = unquote(match[2]);
     }
   }
   return { data, body };
+}
+
+function takeBlock(lines: string[], index: number) {
+  const collected: string[] = [];
+  let indent = "";
+  while (index + 1 < lines.length) {
+    const next = lines[index + 1];
+    if (next.trim() === "") {
+      index += 1;
+      collected.push("");
+      continue;
+    }
+    const indentMatch = /^( +|\t+)/.exec(next);
+    if (!indentMatch) break;
+    if (!indent) indent = indentMatch[1];
+    if (!next.startsWith(indent)) break;
+    index += 1;
+    collected.push(next.slice(indent.length));
+  }
+  return { value: collected.join("\n").trim(), index };
 }
 
 function readPost(fileName: string): PostMeta | null {
@@ -104,11 +140,14 @@ function readPost(fileName: string): PostMeta | null {
     title: data.title,
     date: data.date,
     description: data.description ?? "",
+    lang: data.lang ?? "",
+    image: data.image ?? "",
+    imageAlt: data.imageAlt ?? "",
     linkedinText: data.linkedinText ?? "",
     linkedinStatus: data.linkedinStatus ?? "hold",
     linkedinUrn: data.linkedinUrn ?? "",
     linkedinUrl: data.linkedinUrl ?? "",
-    html: renderMarkdown(body),
+    html: renderMarkdown(body, data.lang ?? ""),
   };
 }
 

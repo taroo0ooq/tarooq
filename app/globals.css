@@ -608,7 +608,45 @@ a { color: inherit; }
 }
 .prose h2 { font-size: 1.8rem; }
 .prose a { color: var(--purple-ink); font-weight: 700; }
-.prose ul { padding-left: 1.2rem; }
+.prose ul { padding-inline-start: 1.2rem; }
+
+.article-ar .prose {
+  font-family: var(--font-arabic), "Readex Pro", "Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;
+  font-size: 1.22rem;
+  line-height: 2.05;
+  text-align: start;
+  unicode-bidi: isolate;
+}
+.article-ar .prose p,
+.article-ar .prose li {
+  unicode-bidi: plaintext;
+}
+.article-ar .prose h2,
+.article-ar .prose h3,
+.article-ar .prose h4 {
+  font-family: var(--font-arabic), "Readex Pro", "Noto Naskh Arabic", Georgia, serif;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.post-figure {
+  max-width: 820px;
+  margin: 0 auto 40px;
+}
+.page-head:has(+ .post-figure) { margin-bottom: 28px; }
+.post-figure img,
+.post-card-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.post-figure img {
+  border-radius: 32px;
+  box-shadow: var(--shadow-card);
+}
 
 .post-list { display: grid; gap: 16px; max-width: 760px; margin: 0 auto; }
 .post-card {
@@ -619,6 +657,10 @@ a { color: inherit; }
   display: block;
   box-shadow: var(--shadow);
   transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.post-card-image {
+  margin-bottom: 16px;
+  border-radius: 20px;
 }
 .post-card h2 {
   font-family: Georgia, "Times New Roman", serif;
