@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { absoluteUrl } from "../lib/site-url.mjs";
 
 const gatewayKey = process.env.AI_GATEWAY_API_KEY || "";
 const xaiKey = process.env.XAI_API_KEY || "";
@@ -98,7 +99,7 @@ async function main() {
         },
         {
           role: "user",
-          content: `Voice guide:\n${voice}\n\nAlready used titles:\n${known.join("\n") || "(none)"}\n\nToday is ${date}. The article URL is https://tarooq.vercel.app/posts/${date}-SLUG. Replace SLUG with your slug.`,
+          content: `Voice guide:\n${voice}\n\nAlready used titles:\n${known.join("\n") || "(none)"}\n\nToday is ${date}. The article URL is ${absoluteUrl(`/posts/${date}-SLUG`)}. Replace SLUG with your slug.`,
         },
       ],
     }),
@@ -121,7 +122,7 @@ async function main() {
   const description = String(draft.description || "").replace(/\s+/g, " ").trim();
   const bodyMarkdown = String(draft.bodyMarkdown || "").trim();
   let linkedinText = String(draft.linkedinText || "").trim();
-  const articleUrl = `https://tarooq.vercel.app/posts/${date}-${slug}`;
+  const articleUrl = absoluteUrl(`/posts/${date}-${slug}`);
   if (!title || !description || !bodyMarkdown || !linkedinText) {
     throw new Error("The model JSON is missing a required field.");
   }

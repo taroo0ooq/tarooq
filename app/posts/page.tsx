@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatPostDate, getPosts } from "@/lib/posts";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata("/posts", {
   title: "Posts",
   description: "Articles by Tareq Al-Ghazzi, with the LinkedIn post embedded once it is published.",
-};
+});
 
 export default function PostsPage() {
   const posts = getPosts();

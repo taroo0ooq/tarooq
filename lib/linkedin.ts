@@ -1,19 +1,26 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { siteUrl } from "@/lib/site";
 
 export const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID || "77qvkeuxzk5afg";
 export const LINKEDIN_VERSION = process.env.LINKEDIN_VERSION || "202609";
 export const STATE_COOKIE = "li_oauth_state";
 export const SETUP_COOKIE = "li_setup";
 
-const allowedOrigins = new Set(["https://tarooq.vercel.app", "http://localhost:3000"]);
+// LinkedIn redirect URIs are exact origins. tarooq.vercel.app still serves this app, so it stays registered.
+const extraOrigins = ["https://tarooq.vercel.app", "http://localhost:3000"];
+export const registeredOrigins = [...new Set([siteUrl, ...extraOrigins])];
+const allowedOrigins = new Set(registeredOrigins);
+
+export function unregisteredOriginMessage() {
+  return `This host is not a registered LinkedIn redirect. Use ${registeredOrigins.join(" or ")}.`;
+}
 
 export function siteOrigin(request: Request) {
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
-  const hostname = host.split(",")[0]?.trim() ?? "";
-  if (hostname.startsWith("localhost")) return `http://${hostname}`;
-  if (hostname === "tarooq.vercel.app") return "https://tarooq.vercel.app";
-  const proto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() || "https";
-  return hostname ? `${proto}://${hostname}` : "https://tarooq.vercel.app";
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(",")[0]?.trim() ?? "";
+  if (!host) return siteUrl;
+  const hostname = host.replace(/:\d+$/, "");
+  if (hostname === "localhost" || hostname === "127.0.0.1") return `http://${host}`;
+  return `https://${hostname}`;
 }
 
 export function isRegisteredOrigin(origin: string) {

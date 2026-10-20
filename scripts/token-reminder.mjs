@@ -1,3 +1,5 @@
+import { absoluteUrl } from "../lib/site-url.mjs";
+
 const expires = process.env.LINKEDIN_TOKEN_EXPIRES || "";
 const repo = process.env.GITHUB_REPOSITORY || "";
 const githubToken = process.env.GITHUB_TOKEN || "";
@@ -56,7 +58,7 @@ async function main() {
       body: [
         `The LinkedIn member token expires on ${expires}.`,
         "",
-        "1. Open https://tarooq.vercel.app/api/linkedin/start and sign in as the member who publishes.",
+        `1. Open ${absoluteUrl("/api/linkedin/start")} and sign in as the member who publishes.`,
         "2. Copy the token into the Vercel env LINKEDIN_ACCESS_TOKEN and the GitHub secret LINKEDIN_ACCESS_TOKEN.",
         "3. Copy the person id into LINKEDIN_PERSON_ID on Vercel and as a GitHub secret. The raw id or urn:li:person:<id> both work.",
         "4. Set the GitHub variable LINKEDIN_TOKEN_EXPIRES to the new YYYY-MM-DD.",

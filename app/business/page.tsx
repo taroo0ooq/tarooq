@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { businessPage, offers, steps } from "@/lib/content";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata("/business", {
   title: "Business",
   description: businessPage.audience,
-};
+});
 
 export default function BusinessPage() {
   return (

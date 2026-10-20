@@ -9,6 +9,7 @@ import {
   sealSetup,
   siteOrigin,
   statesMatch,
+  unregisteredOriginMessage,
 } from "@/lib/linkedin";
 
 export const runtime = "nodejs";
@@ -56,7 +57,7 @@ export async function GET(request: Request) {
 
   const origin = siteOrigin(request);
   if (!isRegisteredOrigin(origin)) {
-    return page(400, "This host is not a registered LinkedIn redirect. Use https://tarooq.vercel.app or http://localhost:3000.");
+    return page(400, unregisteredOriginMessage());
   }
 
   const code = url.searchParams.get("code") ?? "";
