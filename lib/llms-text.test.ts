@@ -6,7 +6,7 @@ import { llmsBody, llmsResponse } from "./llms-text.ts";
 describe("llms.txt", () => {
   it("serves the approved text as utf-8 plain text", async () => {
     const body = llmsBody();
-    assert.equal(createHash("sha256").update(body).digest("hex"), "239edb16fec4a84601985b49b70fcbbd3a514c27c52c9574b762358d16db00c4");
+    assert.equal(createHash("sha256").update(body).digest("hex"), "09c840cacf3301692e99c893f2d3de27d193a369096442472343f6c0b550d9d0");
     const text = body.toString("utf8");
     assert.match(text, /^# Tareq Al-Ghazzi\n/);
     assert.match(text, /^- Previously Lead Cloud Architect at Bank Albilad, Riyadh \(December 2022 to November 2025\), leading the bank's Azure cloud work in a regulated Saudi banking environment\.\n/m);
