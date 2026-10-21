@@ -352,11 +352,26 @@ export const roles: Role[] = [
 export const eras = ["All", "Leadership", "Architecture", "Engineering"] as const;
 
 export const certifications = [
-  "Microsoft Certified: Azure Security Engineer Associate",
-  "AZ-300 Microsoft Azure Architect Technologies",
-  "AWS Certified Solutions Architect – Associate",
-  "Microsoft Private Cloud Professional 2012 SP1",
-  "MCPS: Microsoft Certified Professional",
+  {
+    name: "Microsoft Certified: Azure Security Engineer Associate",
+    alt: "Microsoft Certified: Azure Security Engineer Associate badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/",
+    image: "/badges/azure-security-engineer-associate.png",
+  },
+  {
+    name: "AZ-300 Microsoft Azure Architect Technologies",
+    alt: "AZ-300 Microsoft Azure Architect Technologies badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-300/",
+    image: "/badges/az-300-azure-architect-technologies.png",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Associate",
+    alt: "AWS Certified Solutions Architect – Associate badge",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    image: "/badges/aws-solutions-architect-associate.png",
+  },
+  { name: "Microsoft Private Cloud Professional 2012 SP1" },
+  { name: "MCPS: Microsoft Certified Professional" },
 ];
 
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
@@ -746,7 +761,6 @@ export const ui = {
     expertiseIntro: "Practical cloud architecture and delivery for organizations that cannot afford failure or non-compliance.",
     certsEyebrow: "Certifications",
     certsTitle: "Certificates beside the work.",
-    certsNote: "Named as earned on the CV. The CV does not date them, so they are not pinned to a chapter year.",
     languagesLead: "Languages:",
     languagesJoin: " and ",
     skillsLead: "Top skills:",

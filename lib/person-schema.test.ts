@@ -32,4 +32,15 @@ describe("person schema", () => {
       "@id": personId,
     });
   });
+
+  it("keeps the short person reference off the home layouts", () => {
+    for (const layout of ["app/(en)/layout.tsx", "app/(ar)/layout.tsx"]) {
+      const source = readFileSync(layout, "utf8");
+      assert.equal(source.includes("personReference"), false);
+      assert.equal(source.includes("PersonReferenceScript"), false);
+    }
+    assert.match(readFileSync("app/(en)/(referenced)/layout.tsx", "utf8"), /PersonReferenceScript/);
+    assert.match(readFileSync("app/(ar)/ar/(referenced)/layout.tsx", "utf8"), /PersonReferenceScript/);
+    assert.match(readFileSync("components/pages/HomePage.tsx", "utf8"), /profilePageFor/);
+  });
 });
