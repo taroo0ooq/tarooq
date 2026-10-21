@@ -1307,6 +1307,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
   font-weight: 700;
 }
 .desk-check input { width: auto; }
+.desk-comment-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 8px; }
+.desk-comment-actions a { color: var(--purple-ink); font-weight: 800; }
 .desk-seo { margin-bottom: 16px; }
 .desk-seo summary { font-weight: 800; cursor: pointer; margin-bottom: 8px; }
 .desk-meta, .desk-note {

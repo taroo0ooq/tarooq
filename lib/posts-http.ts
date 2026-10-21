@@ -65,6 +65,7 @@ export async function publishHttp(draft: PostDraft, rateKey: string) {
       status: result.post.status,
       linkedinStatus: result.post.linkedinStatus,
       linkedinUrl: result.post.linkedinUrl,
+      firstComment: result.post.firstComment,
       note: result.note,
       warning: result.warning,
     });

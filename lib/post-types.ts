@@ -2,6 +2,7 @@ export type PostLang = "en" | "ar";
 export type PostStatus = "draft" | "scheduled" | "published";
 export type LinkedInMode = "site" | "both";
 export type LinkedInState = "hold" | "posted" | "failed";
+export type LinkPlacement = "text" | "comment";
 
 export type PostRow = {
   id: string;
@@ -24,6 +25,10 @@ export type PostRow = {
   linkedin_urn: string;
   linkedin_url: string;
   linkedin_error: string;
+  link_placement: LinkPlacement;
+  first_comment: string;
+  doc_path: string;
+  doc_title: string;
   created_at: string;
   updated_at: string;
 };
@@ -61,6 +66,10 @@ export type PostsDb = {
   uploadImage(objectPath: string, bytes: Buffer, contentType: string): Promise<void>;
   deleteImage(objectPath: string): Promise<void>;
   readImage(objectPath: string): Promise<{ bytes: Buffer; contentType: string } | null>;
+  uploadDocument(objectPath: string, bytes: Buffer): Promise<void>;
+  deleteDocument(objectPath: string): Promise<void>;
+  readDocument(objectPath: string): Promise<{ bytes: Buffer; contentType: string } | null>;
+  createDocumentUpload(objectPath: string): Promise<{ path: string; token: string; signedUrl: string }>;
   saveConnection(row: Omit<LinkedInConnectionRow, "updated_at">): Promise<void>;
   getConnection(): Promise<LinkedInConnectionRow | null>;
 };

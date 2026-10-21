@@ -28,6 +28,10 @@ function row(overrides: Partial<PostInsert> = {}): PostInsert {
     linkedin_urn: "",
     linkedin_url: "",
     linkedin_error: "",
+    link_placement: "comment",
+    first_comment: "",
+    doc_path: "",
+    doc_title: "",
     ...overrides,
   };
 }

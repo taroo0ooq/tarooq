@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { PostInputError } from "./post-draft.ts";
+import { PDF_INLINE_LIMIT, PostInputError } from "./post-draft.ts";
+import { assertDocumentUploadRequest } from "./post-document.ts";
 import { draftFromFormData, draftFromJson } from "./post-publish.ts";
 import { authorizePostsApi } from "./posts-http.ts";
 import { redactSecrets } from "./secrets.ts";
@@ -64,6 +65,56 @@ describe("draft parsing", () => {
     const draft = draftFromJson({ title: "Sketch", lang: "en", publish: "site", intent: "draft" });
     assert.equal(draft.body, "");
     assert.throws(() => draftFromJson({ title: "Sketch", lang: "en", publish: "site", intent: "publish" }), PostInputError);
+  });
+
+  it("accepts a site cover with a PDF and rejects an image with a PDF", () => {
+    const path = `documents/${"a".repeat(32)}.pdf`;
+    const cover = draftFromJson({
+      title: "Paper",
+      description: "One sentence.",
+      lang: "en",
+      body: "Hello.",
+      publish: "both",
+      intent: "draft",
+      imageAlt: "Page cover",
+      documentPath: path,
+      documentTitle: "The paper",
+      cover: { data: png().toString("base64"), filename: "cover.png", contentType: "image/png" },
+      linkPlacement: "comment",
+      firstComment: "https://alghazzi.org/posts/example",
+    });
+    assert.equal(cover.documentPath, path);
+    assert.equal(cover.documentTitle, "The paper");
+    assert.equal(cover.image, null);
+    assert.equal(cover.siteCover?.ext, "png");
+    assert.equal(cover.linkPlacement, "comment");
+    assert.equal(cover.firstComment, "https://alghazzi.org/posts/example");
+    assert.throws(() => draftFromJson({
+      title: "Paper",
+      description: "One sentence.",
+      lang: "en",
+      body: "Hello.",
+      publish: "site",
+      imageAlt: "Diagram",
+      imageBase64: png().toString("base64"),
+      imageFilename: "diagram.png",
+      imageContentType: "image/png",
+      documentBase64: Buffer.from("%PDF-1.7\n").toString("base64"),
+      documentTitle: "The paper",
+    }), /image or a PDF/);
+    const tooBig = Buffer.alloc(PDF_INLINE_LIMIT);
+    tooBig.write("%PDF-1.4");
+    assert.throws(() => draftFromJson({
+      title: "Paper",
+      lang: "en",
+      body: "Hello.",
+      publish: "site",
+      intent: "draft",
+      documentTitle: "The paper",
+      documentBase64: tooBig.toString("base64"),
+    }), /under 3 MB/);
+    assert.throws(() => assertDocumentUploadRequest({ size: 100 * 1024 * 1024 + 1, contentType: "application/pdf" }), /100 MB/);
+    assert.throws(() => assertDocumentUploadRequest({ size: 10, contentType: "image/png" }), /must be a PDF/);
   });
 });
 

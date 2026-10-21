@@ -36,6 +36,10 @@ export function postFromMdx(slug: string, raw: string): ImportedPost | null {
     linkedin_urn: data.linkedinUrn ?? "",
     linkedin_url: data.linkedinUrl ?? "",
     linkedin_error: "",
+    link_placement: posted ? "text" : "comment",
+    first_comment: "",
+    doc_path: "",
+    doc_title: "",
   };
 }
 
