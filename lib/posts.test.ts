@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getPost, parseFrontmatter, renderMarkdown } from "./posts.ts";
+import { getPost, getPosts, parseFrontmatter, renderMarkdown } from "./posts.ts";
 
 describe("post frontmatter", () => {
   it("reads an image, alt text, language, and a multi-paragraph commentary", () => {
@@ -72,13 +72,35 @@ describe("kubernetes post", () => {
     assert.ok((post.html.match(/<p>/g) || []).length >= 6);
   });
 
-  it("keeps the earlier post as an English article without an image", () => {
-    const post = getPost("2026-10-12-regional-capability");
-    assert.ok(post);
-    assert.equal(post.lang, "");
-    assert.equal(post.image, "");
-    assert.equal(post.html.includes("\u2066"), false);
-    assert.match(post.linkedinText, /Maturity is the operating model/);
-    assert.match(post.linkedinText, /https:\/\/alghazzi\.org\/posts\/2026-10-12-regional-capability/);
+  it("keeps an English article without an image free of direction marks", () => {
+    const raw = `---
+title: "An English note"
+date: 2026-10-01
+description: "One sentence."
+linkedinStatus: hold
+linkedinUrn: ""
+linkedinUrl: ""
+linkedinText: |
+  Opening line.
+
+  Maturity is the operating model that survives Dev, SIT, UAT, and Production.
+
+  https://alghazzi.org/posts/2026-10-01-an-english-note
+---
+
+An English article.
+
+**Cost** stays readable.
+`;
+    const { data, body } = parseFrontmatter(raw);
+    assert.equal(data.lang, undefined);
+    assert.equal(data.image, undefined);
+    assert.match(data.linkedinText, /Maturity is the operating model/);
+    assert.match(data.linkedinText, /https:\/\/alghazzi\.org\/posts\/2026-10-01-an-english-note/);
+    const html = renderMarkdown(body, data.lang ?? "");
+    assert.equal(html.includes("\u2066"), false);
+    assert.match(html, /<strong>Cost<\/strong>/);
+    assert.equal(getPost("2026-10-12-regional-capability"), null);
+    assert.equal(getPosts().some((post) => post.slug === "2026-10-12-regional-capability"), false);
   });
 });
