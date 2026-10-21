@@ -145,6 +145,7 @@ describe("commit copy", () => {
   });
 
   it("explains when the site and LinkedIn update", () => {
+    assert.match(statusNote(true), /verified commit on main/);
     assert.match(statusNote(true), /goes live on the site after the Vercel deploy/);
     assert.match(statusNote(true), /LinkedIn publishes after the GitHub workflow runs/);
     assert.match(statusNote(false), /LinkedIn stays on hold/);

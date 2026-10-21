@@ -1,4 +1,4 @@
-import { githubClientFromEnv, type GitFile, type GitHubClient } from "./github-contents";
+import { githubClientFromEnv, WORKFLOW_URL, type GitFile, type GitHubClient } from "./github-contents";
 import { cleanAlt, readImage, type ImageExt } from "./post-image";
 import {
   alignPostUrl,
@@ -29,6 +29,7 @@ export type PublishResult = {
   slug: string;
   url: string;
   commitUrl: string;
+  queued: boolean;
   linkedinStatus: "ready" | "hold";
   note: string;
 };
@@ -164,11 +165,13 @@ async function publishOnce(draft: PostDraft, client: GitHubClient, now: Date, or
   if (draft.image) {
     files.push({ path: `public/posts/${slug}.${draft.image.ext}`, bytes: draft.image.bytes });
   }
-  const { sha } = await client.commit(commitMessage(draft.title), files);
+  const committed = await client.commit(commitMessage(draft.title), files);
+  const queued = committed.queued === true || !committed.sha;
   return {
     slug: pageSlug,
     url: `${origin}/posts/${pageSlug}`,
-    commitUrl: `https://github.com/taroo0ooq/tarooq/commit/${sha}`,
+    commitUrl: queued ? WORKFLOW_URL : `https://github.com/taroo0ooq/tarooq/commit/${committed.sha}`,
+    queued,
     linkedinStatus: draft.linkedin ? "ready" as const : "hold" as const,
     note: statusNote(draft.linkedin),
   };

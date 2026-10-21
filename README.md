@@ -35,4 +35,6 @@ Next.js on Vercel. The canonical site is https://alghazzi.org. Metadata, the sit
 
 Pages render with no environment variables.
 
-The `tarooq` project is often deployed by upload, and the Git connection may be incomplete. Merging a change does not by itself update https://alghazzi.org. After `RESEND_API_KEY` is saved on Production, redeploy that project from the Vercel dashboard or the deployments API so the new route and the variable are both live. Changing environment variables requires a new deployment.
+The Vercel project is Git-linked to `main` and deploys only commits GitHub marks as Verified. A signed merge to `main` deploys production, including posts already committed there. Publishing from `/posts/new` uploads the files as Git blobs, then asks the Actions workflow to commit them. GitHub signs commits made with the Actions token.
+
+`RESEND_API_KEY` still has to be set for Production. Changing environment variables requires a new deployment.
