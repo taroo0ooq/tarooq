@@ -774,8 +774,7 @@ export const ui = {
   posts: {
     eyebrow: "Posts",
     title: "Notes from the work.",
-    intro:
-      "A few of my articles and posts on cloud, architecture, and the work behind them. Where a piece was shared on LinkedIn, the link is on the article.",
+    intro: "A few of my articles and posts on cloud, architecture, and the work behind them.",
     empty: "No posts yet.",
     all: "All posts",
     linkedin: "View on LinkedIn",
@@ -833,8 +832,7 @@ export const ui = {
     forYouDescription:
       "Courses and official learning paths Tareq Al-Ghazzi points people to across Azure, AWS, Google Cloud, DevOps, OpenAI, Anthropic, xAI, and agents. These are recommendations, not his certifications.",
     postsTitle: "Posts",
-    postsDescription:
-      "A few articles and posts by Tareq Al-Ghazzi on cloud, architecture, and the work behind them. Where a piece was shared on LinkedIn, the link is on the article.",
+    postsDescription: "A few articles and posts by Tareq Al-Ghazzi on cloud, architecture, and the work behind them.",
     contactTitle: "Contact",
     contactDescription: "Contact Tareq Al-Ghazzi about regional cloud strategy, FinOps, AI platforms, or governance.",
     privacyTitle: "Privacy",
