@@ -9,7 +9,7 @@
     "@type": "Person",
     "@id": "https://alghazzi.org/#person",
     "name": "Tareq Al-Ghazzi",
-    "alternateName": ["طارق الغزي", "Tareq Alghazzi", "Tareq Al-Gazzi", "tarooq"],
+    "alternateName": ["طارق الغزي", "Tareq Alghazzi", "Tareq Al-Gazzi", "Tareq Al Ghazzi", "tarooq"],
     "url": "https://alghazzi.org",
     "jobTitle": "Head of Cloud Services, MENA",
     "worksFor": {

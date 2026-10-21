@@ -19,7 +19,7 @@ describe("person schema", () => {
     assert.equal(page.name, "طارق الغزي | رئيس خدمات السحابة، الشرق الأوسط وشمال أفريقيا");
     assert.equal(page.mainEntity["@id"], personId);
     assert.equal(page.mainEntity.name, "طارق الغزي");
-    assert.deepEqual(page.mainEntity.alternateName, ["Tareq Al-Ghazzi", "Tareq Alghazzi", "Tareq Al-Gazzi", "tarooq"]);
+    assert.deepEqual(page.mainEntity.alternateName, ["Tareq Al-Ghazzi", "Tareq Alghazzi", "Tareq Al-Gazzi", "Tareq Al Ghazzi", "tarooq"]);
     assert.equal(page.mainEntity.url, "https://alghazzi.org");
     assert.equal(page.mainEntity.jobTitle, "Head of Cloud Services, MENA");
     const serialized = JSON.stringify(page);
