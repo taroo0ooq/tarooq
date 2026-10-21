@@ -13,7 +13,7 @@ values ($slug$2026-10-20-kubernetes-isnt-cloud$slug$, $title$Knowing Kubernetes 
 
 الـ containers بتقلك كيف التطبيق شغال. والـ cloud بيقلك وين عايش، ومين بيقدر يوصله، ومين بيدفع حقه.
 
-إذا عم توظف لشغل cloud، شو السؤال اللي بتسأله وما بيقدر يجاوب عليه شخص كل خبرته Kubernetes؟$body$, $lang$ar$lang$, $status$published$status$, $day$2026-10-20$day$, $at$2026-10-20T00:00:00+03:00$at$, $cover$/posts/2026-10-20-kubernetes-isnt-cloud.png$cover$, $alt$Kubernetes containers at the center of a wider cloud platform with identity, network, firewall, policy, and cost.$alt$, $seo_title$$seo_title$, $seo_description$$seo_description$, $linkedin$موظفك الجديد بيعرف Kubernetes من جوا لبرا. وبعدين بيوصل لعنده أول سؤال عن الـ identity أو الـ networking أو التكلفة. شو بيصير بعدها؟
+إذا عم توظف لشغل cloud، شو السؤال اللي بتسأله وما بيقدر يجاوب عليه شخص كل خبرته Kubernetes؟$body$, $lang$ar$lang$, $status$published$status$, $day$2026-10-20$day$, $at$2026-10-20T00:00:00+03:00$at$, $cover$/posts/2026-10-20-kubernetes-isnt-cloud.png$cover$, $alt$حاويات Kubernetes في وسط منصة سحابية أوسع، مع الهوية والشبكة وجدار الحماية والسياسة والتكلفة.$alt$, $seo_title$$seo_title$, $seo_description$$seo_description$, $linkedin$موظفك الجديد بيعرف Kubernetes من جوا لبرا. وبعدين بيوصل لعنده أول سؤال عن الـ identity أو الـ networking أو التكلفة. شو بيصير بعدها؟
 
 في سوء فهم بسيط بشوفه كتير، إنه اللي بيعرف Kubernetes أو containers يعني بيعرف الـ cloud وصار خبير فيه، وهاد مو صحيح أبداً.
 

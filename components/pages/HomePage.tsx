@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { RiyadhClock } from "@/components/RiyadhClock";
 import { tx } from "@/components/RichText";
@@ -157,14 +158,24 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div data-reveal>
             <p className="eyebrow">{ui.home.certsEyebrow}</p>
             <h2>{ui.home.certsTitle}</h2>
-            <p>{text(ui.home.certsNote)}</p>
-            <div className="badges">
-              {certifications.map((item) => (
-                <span className="badge" key={item} dir="ltr">
-                  {item}
-                </span>
-              ))}
-            </div>
+            <ul className="cert-list">
+              {certifications.map((item) => {
+                const name = (
+                  <span className="cert-name" dir="ltr">
+                    {item.name}
+                  </span>
+                );
+                if (!item.image || !item.href || !item.alt) return <li key={item.name}>{name}</li>;
+                return (
+                  <li key={item.name}>
+                    <a className="cert-link" href={item.href}>
+                      <Image src={item.image} alt={item.alt} width={600} height={600} sizes="72px" className="cert-badge" />
+                      {name}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
             <p className="meta" style={{ marginTop: 18 }}>
               {ui.home.languagesLead} {languages.map((language) => text(language.name)).join(ui.home.languagesJoin)}. {ui.home.skillsLead}{" "}
               {skills.map((skill) => text(skill)).join(ui.home.skillsJoin)}.

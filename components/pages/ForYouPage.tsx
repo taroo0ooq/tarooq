@@ -43,7 +43,7 @@ export function ForYouPage({ locale }: { locale: Locale }) {
         ))}
       </div>
       <p className="note">
-        {ui.forYou.held} {certifications.join(", ")}.
+        {ui.forYou.held} {certifications.map((item) => item.name).join(", ")}.
       </p>
     </main>
   );

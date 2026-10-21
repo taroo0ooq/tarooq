@@ -6,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { getCopy } from "@/lib/copy";
-import { personReference } from "@/lib/person-schema";
 import { absoluteUrl, defaultShareImage, siteUrl } from "@/lib/site";
 import "../globals.css";
 
@@ -73,15 +72,12 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const jsonLd = personReference();
-
   return (
     <html lang="ar" dir="rtl" className={`${latin.variable} ${arabic.variable}`} suppressHydrationWarning>
       <body className={arabic.className}>
         <Script id="theme-init" strategy="beforeInteractive">
           {themeScript}
         </Script>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <a className="skip" href="#content">
           {ui.skip}
         </a>

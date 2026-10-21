@@ -21,3 +21,29 @@ describe("Bank Albilad dates", () => {
     assert.equal(ar.about.some((line) => line.includes("يونيو 2022") || line.includes("فبراير 2026")), false);
   });
 });
+
+describe("certifications", () => {
+  it("drops the undated-cv note and keeps official badges off personal Credly links", () => {
+    assert.equal("certsNote" in en.ui.home, false);
+    assert.equal("certsNote" in ar.ui.home, false);
+    assert.equal(JSON.stringify(en.ui).includes("Named as earned on the CV"), false);
+    assert.equal(JSON.stringify(ar.ui).includes("مذكورة كما وردت في السيرة"), false);
+    const names = en.certifications.map((item) => item.name);
+    assert.deepEqual(names, ar.certifications.map((item) => item.name));
+    const badged = en.certifications.filter((item) => item.image);
+    assert.deepEqual(badged.map((item) => item.name), [
+      "Microsoft Certified: Azure Security Engineer Associate",
+      "AZ-300 Microsoft Azure Architect Technologies",
+      "AWS Certified Solutions Architect – Associate",
+    ]);
+    for (const item of badged) {
+      assert.equal(item.href?.includes("credly.com/badges/"), false);
+      assert.equal(item.image, ar.certifications.find((other) => other.name === item.name)?.image);
+      assert.equal(item.href, ar.certifications.find((other) => other.name === item.name)?.href);
+    }
+    assert.equal(en.certifications.find((item) => item.name.startsWith("Microsoft Certified: Azure Security"))?.alt?.endsWith("badge"), true);
+    assert.equal(ar.certifications.find((item) => item.name.startsWith("Microsoft Certified: Azure Security"))?.alt?.startsWith("شارة "), true);
+    const plain = en.certifications.filter((item) => !item.image).map((item) => item.name);
+    assert.deepEqual(plain, ["Microsoft Private Cloud Professional 2012 SP1", "MCPS: Microsoft Certified Professional"]);
+  });
+});

@@ -330,11 +330,26 @@ export const roles: Role[] = [
 export const eras = ["All", "Leadership", "Architecture", "Engineering"] as const;
 
 export const certifications = [
-  "Microsoft Certified: Azure Security Engineer Associate",
-  "AZ-300 Microsoft Azure Architect Technologies",
-  "AWS Certified Solutions Architect – Associate",
-  "Microsoft Private Cloud Professional 2012 SP1",
-  "MCPS: Microsoft Certified Professional",
+  {
+    name: "Microsoft Certified: Azure Security Engineer Associate",
+    alt: "شارة Microsoft Certified: Azure Security Engineer Associate",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/",
+    image: "/badges/azure-security-engineer-associate.png",
+  },
+  {
+    name: "AZ-300 Microsoft Azure Architect Technologies",
+    alt: "شارة AZ-300 Microsoft Azure Architect Technologies",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-300/",
+    image: "/badges/az-300-azure-architect-technologies.png",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Associate",
+    alt: "شارة AWS Certified Solutions Architect – Associate",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    image: "/badges/aws-solutions-architect-associate.png",
+  },
+  { name: "Microsoft Private Cloud Professional 2012 SP1" },
+  { name: "MCPS: Microsoft Certified Professional" },
 ];
 
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
@@ -717,7 +732,6 @@ export const ui = {
     expertiseIntro: "بنية سحابية وتنفيذ عمليان للمؤسسات التي لا تحتمل الفشل أو عدم الامتثال.",
     certsEyebrow: "الشهادات",
     certsTitle: "شهادات إلى جانب العمل.",
-    certsNote: "مذكورة كما وردت في السيرة. السيرة لا تؤرخها، لذلك ليست مربوطة بسنة فصل.",
     languagesLead: "اللغات:",
     languagesJoin: " و",
     skillsLead: "أبرز المهارات:",
