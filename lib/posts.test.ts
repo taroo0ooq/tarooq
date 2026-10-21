@@ -57,8 +57,7 @@ describe("kubernetes post", () => {
     assert.equal(post.date, "2026-10-20");
     assert.equal(post.lang, "ar");
     assert.equal(post.image, "/posts/2026-10-20-kubernetes-isnt-cloud.png");
-    assert.match(post.imageAlt, /Kubernetes containers at the center/);
-    assert.match(post.imageAlt, /identity, network, firewall, policy, and cost/);
+    assert.equal(post.imageAlt, "حاويات Kubernetes في وسط منصة سحابية أوسع، مع الهوية والشبكة وجدار الحماية والسياسة والتكلفة.");
     assert.ok(["ready", "posted"].includes(post.linkedinStatus));
     assert.equal(post.linkedinText.includes("مهمة كتير?!"), false);
     assert.match(post.linkedinText, /مهمة كتير!/);
