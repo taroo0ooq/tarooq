@@ -745,7 +745,8 @@ export const ui = {
   posts: {
     eyebrow: "مقالات",
     title: "ملاحظات من العمل.",
-    intro: "مقالات تُنشر هنا. يظهر منشور LinkedIn داخل المقالة بعد نشره.",
+    intro:
+      "بعض مقالاتي ومنشوراتي عن السحابة، والبنية، والعمل الذي وراءها. إذا شاركت نصًا على LinkedIn، فالرابط في المقالة.",
     empty: "لا مقالات بعد.",
     all: "كل المقالات",
     linkedin: "عرض على LinkedIn",
@@ -803,7 +804,8 @@ export const ui = {
     forYouDescription:
       "دورات ومسارات تعلم رسمية يرشد إليها طارق الغزي عبر Azure وAWS وGoogle Cloud وDevOps وOpenAI وAnthropic وxAI والوكلاء. هذه توصيات، وليست شهاداته.",
     postsTitle: "مقالات",
-    postsDescription: "مقالات طارق الغزي، مع تضمين منشور LinkedIn بعد نشره.",
+    postsDescription:
+      "بعض مقالات طارق الغزي ومنشوراته عن السحابة، والبنية، والعمل الذي وراءها. إذا شارك نصًا على LinkedIn، فالرابط في المقالة.",
     contactTitle: "تواصل",
     contactDescription: "تواصل مع طارق الغزي بشأن استراتيجية السحابة الإقليمية أو FinOps أو منصات الذكاء الاصطناعي أو الحوكمة.",
     privacyTitle: "الخصوصية",
