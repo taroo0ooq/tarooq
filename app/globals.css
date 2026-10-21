@@ -1342,6 +1342,21 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
   padding-top: 16px;
   border-top: 1px solid var(--line);
 }
+.desk-owner-tools {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding: 16px 18px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.desk-owner-tools h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.desk-owner-tools > p { margin: 0 0 12px; color: var(--ink-soft); }
+.desk-owner-tools .error, .desk-owner-tools .desk-note { margin-top: 12px; }
 .desk-linkedin-tools { display: grid; justify-items: start; }
 .desk-danger p { margin: 0; color: var(--ink-soft); }
 .pill {

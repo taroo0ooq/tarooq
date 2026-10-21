@@ -77,6 +77,10 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
   const [warning, setWarning] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordUrn, setRecordUrn] = useState("");
+  const [testFile, setTestFile] = useState<File | null>(null);
+  const [testPending, setTestPending] = useState(false);
+  const [testError, setTestError] = useState("");
+  const [testResult, setTestResult] = useState<{ documentUrn: string; status: string } | null>(null);
 
   const selected = selectedSlug ? posts.find((post) => post.slug === selectedSlug) ?? null : null;
   const arabic = fields.lang === "ar";
@@ -172,21 +176,11 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
     return payload;
   }
 
-  async function uploadPdf(pdf: File) {
+  async function storePdf(pdf: File): Promise<{ path: string } | { error: string }> {
     const namedPdf = pdf.name.toLowerCase().endsWith(".pdf");
     const type = pdf.type || (namedPdf ? "application/pdf" : "");
-    if (type !== "application/pdf") {
-      setError("The LinkedIn file must be a PDF.");
-      return "";
-    }
-    if (pdf.size > PDF_LIMIT) {
-      setError("The PDF must be 100 MB or smaller.");
-      return "";
-    }
-    if (!fields.documentTitle.trim()) {
-      setError("Document title is required.");
-      return "";
-    }
+    if (type !== "application/pdf") return { error: "The LinkedIn file must be a PDF." };
+    if (pdf.size > PDF_LIMIT) return { error: "The PDF must be 100 MB or smaller." };
     const response = await fetch("/api/owner/documents", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -194,19 +188,65 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
     });
     const ticket = (await response.json().catch(() => null)) as { path?: string; signedUrl?: string; error?: string } | null;
     if (!response.ok || !ticket?.signedUrl || !ticket.path) {
-      setError(ticket?.error || "Could not start the PDF upload.");
-      return "";
+      return { error: ticket?.error || "Could not start the PDF upload." };
     }
     const upload = await fetch(ticket.signedUrl, {
       method: "PUT",
       headers: { "content-type": "application/pdf" },
       body: pdf,
     });
-    if (!upload.ok) {
-      setError("The PDF upload failed.");
+    if (!upload.ok) return { error: "The PDF upload failed." };
+    return { path: ticket.path };
+  }
+
+  async function uploadPdf(pdf: File) {
+    if (!fields.documentTitle.trim()) {
+      setError("Document title is required.");
       return "";
     }
-    return ticket.path;
+    const stored = await storePdf(pdf);
+    if ("error" in stored) {
+      setError(stored.error);
+      return "";
+    }
+    return stored.path;
+  }
+
+  async function testDocumentUpload() {
+    if (!testFile) {
+      setTestError("Choose a PDF first.");
+      return;
+    }
+    setTestPending(true);
+    setTestError("");
+    setTestResult(null);
+    try {
+      const stored = await storePdf(testFile);
+      if ("error" in stored) {
+        setTestError(stored.error);
+        return;
+      }
+      const response = await fetch("/api/owner/linkedin/document-test", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ documentPath: stored.path }),
+      });
+      const payload = (await response.json().catch(() => null)) as {
+        documentUrn?: string;
+        uploaded?: boolean;
+        status?: string;
+        error?: string;
+      } | null;
+      if (!response.ok || !payload || payload.error || payload.uploaded !== true || !payload.documentUrn) {
+        setTestError(payload?.error || "The LinkedIn upload test failed.");
+        return;
+      }
+      setTestResult({ documentUrn: payload.documentUrn, status: payload.status || "" });
+    } catch {
+      setTestError("The LinkedIn upload test failed.");
+    } finally {
+      setTestPending(false);
+    }
   }
 
   async function copyFirstComment() {
@@ -316,7 +356,7 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
   }
 
   const cover = removeCover ? "" : previewUrl || selected?.coverUrl || "";
-  const busy = pending !== "";
+  const busy = pending !== "" || testPending;
 
   return (
     <div className="desk-wrap">
@@ -574,6 +614,33 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
             {cover ? <img src={cover} alt={fields.imageAlt || ""} /> : null}
             {html ? <div className="prose" dangerouslySetInnerHTML={{ __html: html }} /> : <p className="note">The preview appears as you write.</p>}
           </aside>
+          <section className="desk-owner-tools" aria-label="Owner tools">
+            <p className="eyebrow">Owner tools</p>
+            <h2>Test a PDF on LinkedIn</h2>
+            <p>This uploads the file and stops. It does not publish a post.</p>
+            <div className="field">
+              <label htmlFor="linkedinDocumentTest">PDF</label>
+              <input
+                id="linkedinDocumentTest"
+                type="file"
+                accept="application/pdf"
+                onChange={(event) => {
+                  setTestFile(event.target.files?.[0] ?? null);
+                  setTestError("");
+                  setTestResult(null);
+                }}
+              />
+            </div>
+            <button className="btn btn-ghost" type="button" disabled={busy || !testFile} onClick={testDocumentUpload}>
+              {testPending ? "Testing…" : "Test PDF upload to LinkedIn (doesn't publish)"}
+            </button>
+            {testError ? <p className="error" role="alert">{testError}</p> : null}
+            {testResult ? (
+              <p className="desk-note" role="status">
+                Uploaded {testResult.documentUrn}. Status: {testResult.status}
+              </p>
+            ) : null}
+          </section>
         </div>
       </div>
     </div>

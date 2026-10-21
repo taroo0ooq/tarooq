@@ -119,16 +119,12 @@ export async function publishToLinkedIn(input: {
       token,
     });
   } else if (document) {
-    documentUrn = await uploadLinkedInMedia({
-      kind: "document",
-      endpoint: "https://api.linkedin.com/rest/documents?action=initializeUpload",
-      urnKey: "document",
-      urnPrefix: "urn:li:document:",
-      bytes: document.bytes,
+    documentUrn = await uploadLinkedInDocument({
+      accessToken: token,
+      version: input.version,
       authorUrn: input.authorUrn,
+      bytes: document.bytes,
       fetchImpl,
-      headers,
-      token,
     });
   }
 
@@ -177,6 +173,34 @@ export async function publishToLinkedIn(input: {
     }
     throw new LinkedInPublishError(redact(`LinkedIn returned ${response.status}: ${body.slice(0, 300)}`, token), response.status);
   }
+}
+
+export async function uploadLinkedInDocument(input: {
+  accessToken: string;
+  version: string;
+  authorUrn: string;
+  bytes: Buffer;
+  fetchImpl?: typeof fetch;
+}) {
+  const fetchImpl = input.fetchImpl ?? fetch;
+  const token = input.accessToken;
+  const headers = (extra: Record<string, string> = {}) => ({
+    authorization: `Bearer ${token}`,
+    "linkedin-version": input.version,
+    "x-restli-protocol-version": "2.0.0",
+    ...extra,
+  });
+  return uploadLinkedInMedia({
+    kind: "document",
+    endpoint: "https://api.linkedin.com/rest/documents?action=initializeUpload",
+    urnKey: "document",
+    urnPrefix: "urn:li:document:",
+    bytes: input.bytes,
+    authorUrn: input.authorUrn,
+    fetchImpl,
+    headers,
+    token,
+  });
 }
 
 async function uploadLinkedInMedia(input: {

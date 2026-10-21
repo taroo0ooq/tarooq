@@ -1,5 +1,7 @@
 import { deskContext } from "./desk-context";
 import { readConnection } from "./linkedin-connection";
+import { testLinkedInDocumentUpload } from "./linkedin-document-test";
+import { LinkedInPublishError } from "./linkedin-publish";
 import {
   clearLinkedInClaim,
   createOwnerPost,
@@ -91,6 +93,34 @@ export async function createOwnerDocumentUpload(request: Request) {
     });
     return postsJson(200, await db.createDocumentUpload(newDocumentPath()));
   } catch (error) {
+    return failure(error);
+  }
+}
+
+export async function testOwnerLinkedInDocument(request: Request) {
+  const session = requireOwner(request);
+  if (!session) return ownerDenied();
+  const db = postsDbFromEnv();
+  if (!db) return postsJson(503, { error: "Supabase is not configured." });
+  const limited = rateLimit(`owner:${session.personId}:linkedin-document-test`, 4, 60 * 60 * 1000);
+  if (!limited.ok) return postsJson(429, { error: "Too many upload tests. Try again later." }, limited.retryAfter);
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return postsJson(400, { error: "Expected JSON." });
+  }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return postsJson(400, { error: "Expected a JSON object." });
+  const documentPath = (payload as Record<string, unknown>).documentPath;
+  if (typeof documentPath !== "string") return postsJson(400, { error: "Expected a document path." });
+  try {
+    const result = await testLinkedInDocumentUpload({ db, documentPath });
+    return postsJson(200, result);
+  } catch (error) {
+    if (error instanceof LinkedInPublishError) {
+      const status = error.status >= 400 && error.status <= 599 ? error.status : 502;
+      return postsJson(status, { error: redactSecrets(error.message) });
+    }
     return failure(error);
   }
 }
