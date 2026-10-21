@@ -8,6 +8,7 @@ type Result = {
   slug: string;
   url: string;
   commitUrl: string;
+  queued?: boolean;
   linkedinStatus: "ready" | "hold";
   note: string;
 };
@@ -84,12 +85,13 @@ export function PostComposer({ date, origin }: { date: string; origin: string })
   }
 
   if (result) {
+    const queued = result.queued === true;
     return (
       <div className="result-card">
-        <p className="eyebrow">Committed</p>
-        <h2 className="serif">The post is on main.</h2>
+        <p className="eyebrow">{queued ? "Queued" : "Committed"}</p>
+        <h2 className="serif">{queued ? "The workflow is committing it." : "The post is on main."}</h2>
         <p>
-          <a href={result.commitUrl}>View the commit</a>
+          <a href={result.commitUrl}>{queued ? "Watch the workflow" : "View the commit"}</a>
         </p>
         <p>{result.note}</p>
         <p className="note">

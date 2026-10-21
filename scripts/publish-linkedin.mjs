@@ -1,10 +1,20 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { absoluteUrl } from "../lib/site-url.mjs";
+import { LINKEDIN_RECORD_MESSAGE, decideLinkedIn, isDefiniteLinkedInRejection } from "../lib/publish-plan.ts";
+import { ClaimExistsError, createVerifiedGit } from "../lib/verified-git.ts";
 
 const token = process.env.LINKEDIN_ACCESS_TOKEN || "";
 const personId = process.env.LINKEDIN_PERSON_ID || "";
 const version = process.env.LINKEDIN_VERSION || "202609";
+
+class LinkedInRequestError extends Error {
+  constructor(message, status = 0) {
+    super(message);
+    this.name = "LinkedInRequestError";
+    this.status = status;
+  }
+}
 const postsDir = path.join(process.cwd(), "content", "posts");
 const publicDir = path.join(process.cwd(), "public");
 const imageByteLimit = 10 * 1024 * 1024;
@@ -182,7 +192,7 @@ async function uploadLinkedInImage(imagePath, owner) {
   });
   const initText = await init.text();
   if (!init.ok) {
-    throw new Error(`LinkedIn image initialize returned ${init.status}: ${redact(initText).slice(0, 500)}`);
+    throw new LinkedInRequestError(`LinkedIn image initialize returned ${init.status}: ${redact(initText).slice(0, 500)}`, init.status);
   }
   let payload;
   try {
@@ -206,27 +216,96 @@ async function uploadLinkedInImage(imagePath, owner) {
   });
   if (!uploaded.ok) {
     const body = await uploaded.text();
-    throw new Error(`LinkedIn image upload returned ${uploaded.status}: ${redact(body).slice(0, 500)}`);
+    throw new LinkedInRequestError(`LinkedIn image upload returned ${uploaded.status}: ${redact(body).slice(0, 500)}`, uploaded.status);
   }
   return imageUrn;
 }
 
-async function publishFile(fileName) {
+function withIds(raw, urn, url) {
+  let next = setScalar(raw, "linkedinStatus", "posted");
+  next = setScalar(next, "linkedinUrn", urn);
+  next = setScalar(next, "linkedinUrl", url);
+  return next;
+}
+
+async function releaseClaim(git, slug) {
+  try {
+    await git.deleteClaim(slug);
+  } catch (error) {
+    console.error(`Could not release the claim for ${slug}: ${redact(error instanceof Error ? error.message : error)}`);
+  }
+}
+
+function refusal(slug) {
+  return new Error(`a LinkedIn publish already started without recording an id. Refusing to post again. If LinkedIn has no post for it, delete refs/linkedin-claims/${slug} and run this workflow again.`);
+}
+
+async function recordOnMain(git, fileName, raw, urn, url) {
+  const next = withIds(raw, urn, url);
+  try {
+    const committed = await git.replaceFile(`content/posts/${fileName}`, Buffer.from(next, "utf8"), LINKEDIN_RECORD_MESSAGE);
+    writeFileSync(path.join(postsDir, fileName), next);
+    console.log(`Recorded ${fileName} ${urn} ${committed.sha}`);
+  } catch (error) {
+    throw new Error(`Could not record ${urn} on main. ${redact(error instanceof Error ? error.message : error)}`);
+  }
+}
+
+async function publishFile(fileName, git) {
   const fullPath = path.join(postsDir, fileName);
-  const raw = readFileSync(fullPath, "utf8");
+  let raw = "";
+  if (git) {
+    raw = await git.readTextFile(`content/posts/${fileName}`) || "";
+  }
+  if (!raw) {
+    if (!existsSync(fullPath)) return false;
+    raw = readFileSync(fullPath, "utf8");
+  }
   const data = parseFrontmatter(raw);
-  if (data.linkedinStatus !== "ready" || data.linkedinUrn) return false;
   const slug = fileName.slice(0, -4);
+  const claim = git ? await git.readClaim(slug) : null;
+  const decision = git
+    ? decideLinkedIn(data.linkedinStatus || "", data.linkedinUrn || "", claim)
+    : (data.linkedinStatus !== "ready" || data.linkedinUrn ? "skip" : "post");
+  if (decision === "skip") return false;
+  if (decision === "refuse") throw refusal(slug);
+  if (decision === "recover") {
+    if (claim?.state !== "posted") throw refusal(slug);
+    await recordOnMain(git, fileName, raw, claim.urn, claim.url);
+    await releaseClaim(git, slug);
+    return true;
+  }
+
   const commentary = (data.linkedinText || "").trim();
   const source = absoluteUrl(`/posts/${slug}`);
   const image = (data.image || "").trim();
   const imageAlt = (data.imageAlt || "").trim();
   if (!data.title) throw new Error("Missing title.");
   assertCommentary(commentary, source, Boolean(image));
+  if (image) imageFile(image);
+
+  if (git) {
+    try {
+      await git.createClaim(slug);
+    } catch (error) {
+      if (!(error instanceof ClaimExistsError)) throw error;
+      const again = await git.readClaim(slug);
+      const next = decideLinkedIn(data.linkedinStatus || "", data.linkedinUrn || "", again);
+      if (next === "recover" && again?.state === "posted") {
+        await recordOnMain(git, fileName, raw, again.urn, again.url);
+        await releaseClaim(git, slug);
+        return true;
+      }
+      throw refusal(slug);
+    }
+  }
 
   let imageUrn = "";
-  if (image) {
-    imageUrn = await uploadLinkedInImage(imageFile(image), personUrn(personId));
+  try {
+    if (image) imageUrn = await uploadLinkedInImage(imageFile(image), personUrn(personId));
+  } catch (error) {
+    if (git) await releaseClaim(git, slug);
+    throw error;
   }
 
   const response = await fetch("https://api.linkedin.com/rest/posts", {
@@ -245,17 +324,28 @@ async function publishFile(fileName) {
 
   if (response.status !== 201) {
     const body = await response.text();
-    throw new Error(`LinkedIn returned ${response.status}: ${redact(body).slice(0, 500)}`);
+    const definite = isDefiniteLinkedInRejection(response.status);
+    if (git && definite) await releaseClaim(git, slug);
+    const hint = git && !definite
+      ? ` The claim refs/linkedin-claims/${slug} was kept so this will not post twice.`
+      : "";
+    throw new LinkedInRequestError(`LinkedIn returned ${response.status}: ${redact(body).slice(0, 500)}${hint}`, response.status);
   }
 
   const urn = response.headers.get("x-restli-id") || "";
-  if (!urn.startsWith("urn:")) throw new Error("LinkedIn did not return a post URN.");
+  if (!urn.startsWith("urn:")) {
+    const kept = git ? ` The claim refs/linkedin-claims/${slug} was kept so this will not post twice.` : "";
+    throw new Error(`LinkedIn did not return a post URN.${kept}`);
+  }
   const url = `https://www.linkedin.com/feed/update/${urn}`;
-  let next = setScalar(raw, "linkedinStatus", "posted");
-  next = setScalar(next, "linkedinUrn", urn);
-  next = setScalar(next, "linkedinUrl", url);
-  writeFileSync(fullPath, next);
   console.log(`Posted ${slug} ${urn}`);
+  if (git) {
+    await git.writeClaim(slug, { state: "posted", urn, url });
+    await recordOnMain(git, fileName, raw, urn, url);
+    await releaseClaim(git, slug);
+  } else {
+    writeFileSync(fullPath, withIds(raw, urn, url));
+  }
   return true;
 }
 
@@ -264,6 +354,13 @@ async function main() {
     console.log("Skipping LinkedIn publish: LINKEDIN_ACCESS_TOKEN or LINKEDIN_PERSON_ID is not set.");
     return;
   }
+  const githubToken = process.env.GH_TOKEN || "";
+  if (process.env.GITHUB_ACTIONS === "true" && !githubToken) {
+    console.error("GH_TOKEN is required so the LinkedIn id is recorded with a signed commit.");
+    process.exitCode = 1;
+    return;
+  }
+  const git = githubToken ? createVerifiedGit(githubToken) : null;
   let names = [];
   try {
     names = readdirSync(postsDir).filter((name) => name.endsWith(".mdx"));
@@ -274,7 +371,7 @@ async function main() {
   const errors = [];
   for (const name of names) {
     try {
-      await publishFile(name);
+      await publishFile(name, git);
     } catch (error) {
       errors.push(`${name}: ${redact(error instanceof Error ? error.message : error)}`);
     }

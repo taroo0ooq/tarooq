@@ -45,6 +45,8 @@ describe("publish", () => {
     assert.equal(result.url, "https://alghazzi.org/posts/2026-10-20-hello-2");
     assert.equal(result.commitUrl, "https://github.com/taroo0ooq/tarooq/commit/abc123def");
     assert.equal(result.linkedinStatus, "hold");
+    assert.equal(result.queued, false);
+    assert.match(result.note, /verified commit on main/);
     assert.match(result.note, /after the Vercel deploy/);
     assert.equal(committed.length, 1);
     assert.equal(committed[0].message, "Post: Hello");
@@ -77,6 +79,21 @@ describe("publish", () => {
     assert.equal(attempts, 2);
     assert.equal(result.linkedinStatus, "ready");
     assert.equal(result.commitUrl, "https://github.com/taroo0ooq/tarooq/commit/retry-sha");
+  });
+
+  it("points at the workflow when the commit is queued for signing", async () => {
+    const client: GitHubClient = {
+      async listPostFiles() {
+        return { mdx: [], images: [] };
+      },
+      async commit() {
+        return { sha: "", queued: true };
+      },
+    };
+    const result = await publishDraft(draft({ image: null, imageAlt: "" }), { client, now, origin });
+    assert.equal(result.queued, true);
+    assert.equal(result.commitUrl, "https://github.com/taroo0ooq/tarooq/actions/workflows/publish-linkedin.yml");
+    assert.equal(result.slug, "2026-10-20-hello");
   });
 
   it("does not retry a rejected draft", async () => {

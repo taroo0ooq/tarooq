@@ -35,7 +35,7 @@ export default async function NewPostPage() {
         <h1 className="serif">{session ? "Write a post." : "Sign in to write."}</h1>
         <p>
           {session
-            ? "This commits the post to the repository. The site updates after the deploy. LinkedIn runs from the workflow only when you choose it."
+            ? "This queues a verified commit on main. The site updates after the deploy. LinkedIn runs from that workflow only when you choose it."
             : "This page is only for the site owner."}
         </p>
       </header>

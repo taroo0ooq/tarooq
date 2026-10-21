@@ -105,9 +105,9 @@ export function commitMessage(title: string) {
 }
 
 export function statusNote(linkedin: boolean) {
-  const live = "The post goes live on the site after the Vercel deploy.";
+  const live = "The workflow writes a verified commit on main. The post goes live on the site after the Vercel deploy.";
   const social = linkedin
-    ? "LinkedIn publishes after the GitHub workflow runs."
+    ? "LinkedIn publishes after the GitHub workflow runs, once."
     : "LinkedIn stays on hold, so the workflow will not post it.";
   return `${live} ${social}`;
 }
