@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostArticle } from "@/components/pages/PostArticle";
 import { postMetadata } from "@/lib/post-meta";
-import { getPost, getPosts } from "@/lib/posts";
+import { getPublishedPosts, loadPublicPosts } from "@/lib/published-posts";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
+export const revalidate = 10;
+export const dynamicParams = true;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return getPosts().map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = (await loadPublicPosts()).find((item) => item.slug === slug);
   if (!post) notFound();
   return <PostArticle post={post} locale="en" />;
 }

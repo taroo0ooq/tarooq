@@ -2,12 +2,12 @@ import Link from "next/link";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
-import { formatPostDate, getPosts, postsForLocale } from "@/lib/posts";
+import { formatPostDate, postsForLocale, type PostMeta } from "@/lib/posts";
 
-export function PostsIndex({ locale }: { locale: Locale }) {
+export function PostsIndex({ locale, posts }: { locale: Locale; posts: PostMeta[] }) {
   const { ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
-  const posts = postsForLocale(getPosts(), locale);
+  const visible = postsForLocale(posts, locale);
   return (
     <main className="page">
       <header className="page-head">
@@ -15,11 +15,11 @@ export function PostsIndex({ locale }: { locale: Locale }) {
         <h1 className="serif">{text(ui.posts.title)}</h1>
         <p>{text(ui.posts.intro)}</p>
       </header>
-      {posts.length === 0 ? (
+      {visible.length === 0 ? (
         <p className="note">{ui.posts.empty}</p>
       ) : (
         <div className="post-list">
-          {posts.map((post) => {
+          {visible.map((post) => {
             const postLocale = post.lang === "ar" ? "ar" : "en";
             const showEnglish = locale === "ar" && postLocale === "en";
             return (

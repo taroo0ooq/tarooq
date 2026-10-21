@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { localizePath } from "@/lib/locale";
-import { getPosts } from "@/lib/posts";
+import { loadPublicPosts } from "@/lib/published-posts";
 import { absoluteUrl } from "@/lib/site";
+
+export const revalidate = 10;
 
 function localized(path: string, lastModified?: string): MetadataRoute.Sitemap {
   const alternates = {
@@ -18,8 +20,8 @@ function localized(path: string, lastModified?: string): MetadataRoute.Sitemap {
   ];
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const posts = getPosts();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await loadPublicPosts();
   return [
     ...localized("/"),
     ...localized("/for-you"),

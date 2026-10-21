@@ -3,6 +3,8 @@ export const TITLE_LIMIT = 140;
 export const DESCRIPTION_LIMIT = 400;
 export const BODY_LIMIT = 20_000;
 export const ALT_LIMIT = 1000;
+export const SEO_TITLE_LIMIT = 70;
+export const SEO_DESCRIPTION_LIMIT = 160;
 
 export class PostInputError extends Error {
   status: number;
@@ -104,12 +106,26 @@ export function commitMessage(title: string) {
   return `Post: ${flat || "untitled"}`;
 }
 
-export function statusNote(linkedin: boolean) {
-  const live = "The workflow writes a verified commit on main. The post goes live on the site after the Vercel deploy.";
-  const social = linkedin
-    ? "LinkedIn publishes after the GitHub workflow runs, once."
-    : "LinkedIn stays on hold, so the workflow will not post it.";
-  return `${live} ${social}`;
+export function statusNote(linkedin: boolean, linkedinState = "hold") {
+  const live = "Saved in Supabase. The site updates within seconds, with no commit and no rebuild.";
+  if (linkedinState === "posted") return `${live} LinkedIn already has this post, so it was not sent again.`;
+  if (linkedinState === "failed") return `${live} LinkedIn did not accept it. The site copy is still saved.`;
+  if (linkedin) return `${live} LinkedIn publishes once, from the site, when the post is published.`;
+  return `${live} LinkedIn stays off for this post.`;
+}
+
+/** Interpret a datetime-local value as Asia/Riyadh, which does not observe daylight saving. */
+export function parseSchedule(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(trimmed)) {
+    const date = new Date(`${trimmed}:00+03:00`);
+    if (Number.isNaN(date.getTime())) throw new PostInputError("Schedule time is invalid.");
+    return date.toISOString();
+  }
+  const date = new Date(trimmed);
+  if (Number.isNaN(date.getTime())) throw new PostInputError("Schedule time is invalid.");
+  return date.toISOString();
 }
 
 export type PostFileInput = {

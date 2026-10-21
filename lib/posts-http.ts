@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
-import { draftFromFormData, draftFromJson, publishDraft, type PostDraft } from "./post-publish";
+import { draftFromFormData, draftFromJson, type PostDraft } from "./post-publish";
 import { PostInputError } from "./post-draft";
+import { createOwnerPost } from "./owner-actions";
 import { rateLimit } from "./rate-limit";
 import { redactSecrets } from "./secrets";
+import { postsDbFromEnv } from "./supabase-posts";
 import { tokensMatch } from "./linkedin";
 
 export function postsJson(status: number, body: unknown, retryAfter = 0) {
@@ -52,9 +54,20 @@ export async function readDraftRequest(request: Request): Promise<PostDraft> {
 export async function publishHttp(draft: PostDraft, rateKey: string) {
   const limited = rateLimit(`publish:${rateKey}`, 8, 10 * 60 * 1000);
   if (!limited.ok) return postsJson(429, { error: "Too many posts. Try again later." }, limited.retryAfter);
+  const db = postsDbFromEnv();
+  if (!db) return postsJson(503, { error: "Supabase is not configured." });
   try {
-    const result = await publishDraft(draft);
-    return postsJson(201, result);
+    const { deskContext } = await import("./desk-context");
+    const result = await createOwnerPost(db, { ...draft, intent: draft.intent || "publish" }, deskContext());
+    return postsJson(201, {
+      slug: result.post.slug,
+      url: result.url,
+      status: result.post.status,
+      linkedinStatus: result.post.linkedinStatus,
+      linkedinUrl: result.post.linkedinUrl,
+      note: result.note,
+      warning: result.warning,
+    });
   } catch (error) {
     if (error instanceof PostInputError) return postsJson(error.status, { error: redactSecrets(error.message) });
     const message = redactSecrets(error instanceof Error ? error.message : "Could not publish the post.");

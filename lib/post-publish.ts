@@ -1,18 +1,15 @@
-import { githubClientFromEnv, WORKFLOW_URL, type GitFile, type GitHubClient } from "./github-contents";
-import { cleanAlt, readImage, type ImageExt } from "./post-image";
+import { cleanAlt, readImage } from "./post-image";
 import {
-  alignPostUrl,
   BODY_LIMIT,
-  buildPostMarkdown,
-  commitMessage,
   DESCRIPTION_LIMIT,
-  pickSlug,
+  parseSchedule,
   PostInputError,
-  riyadhDate,
-  statusNote,
+  SEO_DESCRIPTION_LIMIT,
+  SEO_TITLE_LIMIT,
   TITLE_LIMIT,
 } from "./post-draft";
-import { absoluteUrl } from "./site-url.mjs";
+
+export type SaveIntent = "draft" | "publish" | "schedule" | "unpublish";
 
 export type PostDraft = {
   title: string;
@@ -22,21 +19,18 @@ export type PostDraft = {
   linkedinText: string;
   imageAlt: string;
   linkedin: boolean;
-  image: { bytes: Buffer; ext: ImageExt } | null;
+  image: { bytes: Buffer; ext: "png" | "jpg" | "webp" } | null;
+  seoTitle: string;
+  seoDescription: string;
+  intent: SaveIntent;
+  scheduledFor: string | null;
+  removeCover: boolean;
 };
 
-export type PublishResult = {
-  slug: string;
-  url: string;
-  commitUrl: string;
-  queued: boolean;
-  linkedinStatus: "ready" | "hold";
-  note: string;
-};
-
-function oneLine(value: string, label: string, limit: number) {
+function oneLine(value: string, label: string, limit: number, required: boolean) {
   const text = value.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
-  if (!text) throw new PostInputError(`${label} is required.`);
+  if (!text && required) throw new PostInputError(`${label} is required.`);
+  if (!text) return "";
   if (text.includes("\n")) throw new PostInputError(`${label} must be one line.`);
   if (text.length > limit) throw new PostInputError(`${label} must be ${limit} characters or fewer.`);
   return text;
@@ -49,6 +43,13 @@ function publishChoice(value: string) {
   throw new PostInputError('Choose publish "site" or "both".');
 }
 
+function normalizeIntent(value: string): SaveIntent {
+  const intent = value.trim().toLowerCase();
+  if (!intent) return "publish";
+  if (intent === "draft" || intent === "publish" || intent === "schedule" || intent === "unpublish") return intent;
+  throw new PostInputError("Choose draft, publish, schedule, or unpublish.");
+}
+
 export function normalizeDraft(input: {
   title: string;
   description: string;
@@ -58,24 +59,38 @@ export function normalizeDraft(input: {
   imageAlt: string;
   publish: string;
   image: { bytes: Buffer; filename?: string; contentType?: string } | null;
+  seoTitle?: string;
+  seoDescription?: string;
+  intent?: string;
+  scheduledFor?: string;
+  removeCover?: boolean;
 }): PostDraft {
   const lang = input.lang.trim().toLowerCase();
   if (lang !== "en" && lang !== "ar") throw new PostInputError('Language must be "en" or "ar".');
+  const intent = normalizeIntent(input.intent ?? "");
+  const publishing = intent === "publish" || intent === "schedule";
   const linkedin = publishChoice(input.publish);
   const body = input.body.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
-  if (!body) throw new PostInputError("Body is required.");
+  if (publishing && !body) throw new PostInputError("Body is required.");
   if (body.length > BODY_LIMIT) throw new PostInputError(`Body must be ${BODY_LIMIT} characters or fewer.`);
   const linkedinText = input.linkedinText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
   const image = readImage(input.image, linkedin);
+  const scheduledFor = intent === "schedule" ? parseSchedule(input.scheduledFor ?? "") : parseSchedule(input.scheduledFor ?? "") ;
+  if (intent === "schedule" && !scheduledFor) throw new PostInputError("Choose a time to schedule the post.");
   return {
-    title: oneLine(input.title, "Title", TITLE_LIMIT),
-    description: oneLine(input.description, "Description", DESCRIPTION_LIMIT),
+    title: oneLine(input.title, "Title", TITLE_LIMIT, true),
+    description: oneLine(input.description, "Description", DESCRIPTION_LIMIT, publishing),
     lang,
     body,
     linkedinText,
     imageAlt: cleanAlt(input.imageAlt, Boolean(image)),
     linkedin,
     image,
+    seoTitle: oneLine(input.seoTitle ?? "", "SEO title", SEO_TITLE_LIMIT, false),
+    seoDescription: oneLine(input.seoDescription ?? "", "SEO description", SEO_DESCRIPTION_LIMIT, false),
+    intent,
+    scheduledFor: intent === "draft" || intent === "unpublish" ? null : scheduledFor,
+    removeCover: input.removeCover === true,
   };
 }
 
@@ -115,8 +130,13 @@ export function draftFromJson(value: unknown) {
     body: stringField(record.body),
     linkedinText: stringField(record.linkedinText),
     imageAlt: stringField(record.imageAlt),
-    publish: stringField(record.publish) || linkedinFlag,
+    publish: stringField(record.publish) || stringField(record.linkedinMode) || linkedinFlag,
     image: imageFromJson(record),
+    seoTitle: stringField(record.seoTitle),
+    seoDescription: stringField(record.seoDescription),
+    intent: stringField(record.intent),
+    scheduledFor: stringField(record.scheduledFor),
+    removeCover: record.removeCover === true || record.removeCover === "1" || record.removeCover === "true",
   });
 }
 
@@ -131,6 +151,7 @@ export async function draftFromFormData(form: FormData) {
       contentType: file.type,
     };
   }
+  const remove = form.get("removeCover");
   return normalizeDraft({
     title: String(form.get("title") ?? ""),
     description: String(form.get("description") ?? ""),
@@ -138,57 +159,12 @@ export async function draftFromFormData(form: FormData) {
     body: String(form.get("body") ?? ""),
     linkedinText: String(form.get("linkedinText") ?? ""),
     imageAlt: String(form.get("imageAlt") ?? ""),
-    publish: String(form.get("publish") ?? ""),
+    publish: String(form.get("publish") ?? form.get("linkedinMode") ?? ""),
     image,
+    seoTitle: String(form.get("seoTitle") ?? ""),
+    seoDescription: String(form.get("seoDescription") ?? ""),
+    intent: String(form.get("intent") ?? ""),
+    scheduledFor: String(form.get("scheduledFor") ?? ""),
+    removeCover: remove === "1" || remove === "true",
   });
-}
-
-async function publishOnce(draft: PostDraft, client: GitHubClient, now: Date, origin: string) {
-  const date = riyadhDate(now);
-  const existing = await client.listPostFiles();
-  const slug = pickSlug(draft.title, date, existing.mdx, existing.images);
-  const linkedinText = alignPostUrl(draft.linkedinText, origin, date, slug);
-  const pageSlug = `${date}-${slug}`;
-  const imagePath = draft.image ? `/posts/${slug}.${draft.image.ext}` : "";
-  const markdown = buildPostMarkdown({
-    title: draft.title,
-    description: draft.description,
-    date,
-    lang: draft.lang,
-    body: draft.body,
-    linkedinText,
-    linkedin: draft.linkedin,
-    image: imagePath,
-    imageAlt: draft.imageAlt,
-  });
-  const files: GitFile[] = [{ path: `content/posts/${pageSlug}.mdx`, bytes: Buffer.from(markdown, "utf8") }];
-  if (draft.image) {
-    files.push({ path: `public/posts/${slug}.${draft.image.ext}`, bytes: draft.image.bytes });
-  }
-  const committed = await client.commit(commitMessage(draft.title), files);
-  const queued = committed.queued === true || !committed.sha;
-  return {
-    slug: pageSlug,
-    url: `${origin}/posts/${pageSlug}`,
-    commitUrl: queued ? WORKFLOW_URL : `https://github.com/taroo0ooq/tarooq/commit/${committed.sha}`,
-    queued,
-    linkedinStatus: draft.linkedin ? "ready" as const : "hold" as const,
-    note: statusNote(draft.linkedin),
-  };
-}
-
-export async function publishDraft(draft: PostDraft, deps: { client?: GitHubClient; now?: Date; origin?: string } = {}): Promise<PublishResult> {
-  const client = deps.client ?? githubClientFromEnv();
-  const now = deps.now ?? new Date();
-  const origin = (deps.origin ?? absoluteUrl("/")).replace(/\/$/, "");
-  let lastError: Error | null = null;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      return await publishOnce(draft, client, now, origin);
-    } catch (error) {
-      if (error instanceof PostInputError) throw error;
-      lastError = error instanceof Error ? error : new Error("Could not publish the post.");
-    }
-  }
-  throw lastError ?? new Error("Could not publish the post.");
 }
