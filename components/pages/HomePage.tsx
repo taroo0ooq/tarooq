@@ -1,49 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { RiyadhClock } from "@/components/RiyadhClock";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
-import { faq, faqPageFor, linkifyAnswer } from "@/content/faq";
 import { profilePageFor } from "@/lib/person-schema";
 
 const tones = ["tone-soft", "tone-paper", "tone-navy"] as const;
-
-function answerNodes(answer: string, locale: Locale) {
-  const nodes: ReactNode[] = [];
-  linkifyAnswer(answer).forEach((part, index) => {
-    if (part.href) {
-      nodes.push(
-        <a key={`${index}-link`} href={part.href} dir="ltr">
-          {part.text}
-        </a>,
-      );
-      return;
-    }
-    if (locale !== "ar") {
-      nodes.push(<span key={index}>{part.text}</span>);
-      return;
-    }
-    const latinRun = /[A-Za-z][A-Za-z0-9+#/_'-]*(?:[ \t]+[A-Za-z][A-Za-z0-9+#/_'-]*)*/g;
-    let last = 0;
-    let found = false;
-    for (const match of part.text.matchAll(latinRun)) {
-      found = true;
-      const at = match.index ?? 0;
-      if (at > last) nodes.push(<span key={`${index}-t-${last}`}>{part.text.slice(last, at)}</span>);
-      nodes.push(
-        <span dir="ltr" key={`${index}-l-${at}`}>
-          {match[0]}
-        </span>,
-      );
-      last = at + match[0].length;
-    }
-    if (!found) nodes.push(<span key={index}>{part.text}</span>);
-    else if (last < part.text.length) nodes.push(<span key={`${index}-t-${last}`}>{part.text.slice(last)}</span>);
-  });
-  return nodes;
-}
 
 export function HomePage({ locale }: { locale: Locale }) {
   const copy = getCopy(locale);
@@ -53,7 +16,6 @@ export function HomePage({ locale }: { locale: Locale }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageFor(locale)) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageFor(locale)) }} />
       <section className="hero">
         <span className="star star-a" aria-hidden="true" />
         <span className="star star-b" aria-hidden="true" />
@@ -214,21 +176,6 @@ export function HomePage({ locale }: { locale: Locale }) {
               {ui.home.languagesLead} {languages.map((language) => text(language.name)).join(ui.home.languagesJoin)}. {ui.home.skillsLead}{" "}
               {skills.map((skill) => text(skill)).join(ui.home.skillsJoin)}.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="faq scene-y" id="faq" data-scene="y">
-        <div className="scene-stick">
-          <div data-reveal>
-            <h2 className="serif">{faq[locale].heading}</h2>
-            <p className="faq-lead">{faq[locale].subline}</p>
-            {faq[locale].items.map((item) => (
-              <details key={item.question}>
-                <summary>{item.question}</summary>
-                <p>{answerNodes(item.answer, locale)}</p>
-              </details>
-            ))}
           </div>
         </div>
       </section>
