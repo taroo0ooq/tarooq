@@ -1,21 +1,22 @@
-import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { absoluteUrl } from "../lib/site-url.mjs";
+import { riyadhDate } from "../lib/post-draft.ts";
+import {
+  assertDailyDraftSecrets,
+  createDailyDraftClient,
+  dailyDraftKey,
+  formatDailyDraftFailure,
+  messageText,
+  missingDailyDraftConfig,
+  missingDailyDraftMessage,
+  normalizeGeneratedDraft,
+  parseModelJson,
+  saveDailyDraft,
+} from "../lib/daily-draft.ts";
 
-const gatewayKey = process.env.AI_GATEWAY_API_KEY || "";
-const xaiKey = process.env.XAI_API_KEY || "";
-
-function riyadhDate() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Riyadh",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const get = (type) => parts.find((part) => part.type === type)?.value ?? "";
-  return `${get("year")}-${get("month")}-${get("day")}`;
-}
+// Creates one Supabase draft for the Riyadh day.
+// Never publishes, never calls LinkedIn, and never writes a repo file.
 
 function titles(dir) {
   if (!existsSync(dir)) return [];
@@ -27,43 +28,21 @@ function titles(dir) {
     });
 }
 
-function messageText(payload) {
-  const content = payload?.choices?.[0]?.message?.content;
-  if (typeof content === "string") return content;
-  if (Array.isArray(content)) {
-    return content.map((part) => (typeof part === "string" ? part : part?.text || "")).join("");
+function fail(message) {
+  console.error(message);
+  if (process.env.GITHUB_ACTIONS === "true") {
+    console.error(`::error::${message.replace(/\s+/g, " ").trim()}`);
   }
-  throw new Error("The model response had no text.");
+  process.exitCode = 1;
 }
 
-function parseModelJson(text) {
-  const trimmed = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
-  const start = trimmed.indexOf("{");
-  const end = trimmed.lastIndexOf("}");
-  if (start === -1 || end < start) throw new Error("The model did not return JSON.");
-  return JSON.parse(trimmed.slice(start, end + 1));
+function secretValues() {
+  return [process.env.SUPABASE_SECRET_KEY || "", process.env.XAI_API_KEY || "", process.env.AI_GATEWAY_API_KEY || ""];
 }
 
-function yamlBlock(value) {
-  return String(value)
-    .replace(/\r\n/g, "\n")
-    .trim()
-    .split("\n")
-    .map((line) => `  ${line}`)
-    .join("\n");
-}
-
-async function main() {
-  if (!gatewayKey && !xaiKey) {
-    console.log("Skipping draft: no XAI_API_KEY or AI_GATEWAY_API_KEY.");
-    return;
-  }
-
-  const voicePath = path.join(process.cwd(), "content", "voice.md");
-  const postsDir = path.join(process.cwd(), "content", "posts");
-  const voice = readFileSync(voicePath, "utf8");
-  const date = riyadhDate();
-  const known = titles(postsDir);
+async function generateDraft(voice, knownTitles, date) {
+  const gatewayKey = (process.env.AI_GATEWAY_API_KEY || "").trim();
+  const xaiKey = (process.env.XAI_API_KEY || "").trim();
   const key = gatewayKey || xaiKey;
   const base = gatewayKey ? "https://ai-gateway.vercel.sh/v1" : "https://api.x.ai/v1";
   const override = process.env.XAI_MODEL || "";
@@ -94,90 +73,76 @@ async function main() {
             "description is one sentence under 180 characters.",
             "linkedinText is the LinkedIn commentary, under 1200 characters, and it must include the article URL from the user message.",
             "Do not speak as a company page.",
-            "Merging the pull request publishes linkedinText, so write it as the finished post.",
+            "The draft is reviewed before it is published, so write linkedinText as the finished post.",
           ].join(" "),
         },
         {
           role: "user",
-          content: `Voice guide:\n${voice}\n\nAlready used titles:\n${known.join("\n") || "(none)"}\n\nToday is ${date}. The article URL is ${absoluteUrl(`/posts/${date}-SLUG`)}. Replace SLUG with your slug.`,
+          content: `Voice guide:\n${voice}\n\nAlready used titles:\n${knownTitles.join("\n") || "(none)"}\n\nToday is ${date}. The article URL is ${absoluteUrl(`/posts/${date}-SLUG`)}. Replace SLUG with your slug.`,
         },
       ],
     }),
   });
 
   if (!response.ok) {
-    const body = (await response.text()).split(key).join("[redacted]");
+    const body = await response.text();
     throw new Error(`Model request failed (${response.status}): ${body.slice(0, 400)}`);
   }
-
-  const draft = parseModelJson(messageText(await response.json()));
-  const slug = String(draft.slug || "")
-    .trim()
-    .toLowerCase()
-    .replace(/^\d{4}-\d{2}-\d{2}-/, "");
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 60) {
-    throw new Error("The model returned an invalid slug.");
-  }
-  const title = String(draft.title || "").replace(/\s+/g, " ").trim();
-  const description = String(draft.description || "").replace(/\s+/g, " ").trim();
-  const bodyMarkdown = String(draft.bodyMarkdown || "").trim();
-  let linkedinText = String(draft.linkedinText || "").trim();
-  const articleUrl = absoluteUrl(`/posts/${date}-${slug}`);
-  if (!title || !description || !bodyMarkdown || !linkedinText) {
-    throw new Error("The model JSON is missing a required field.");
-  }
-  if (bodyMarkdown.split(/\s+/).length < 80) throw new Error("The article is too short to open a pull request.");
-  if (!linkedinText.includes(articleUrl)) linkedinText = `${linkedinText}\n\n${articleUrl}`;
-  if (linkedinText.length > 1200) throw new Error("linkedinText is longer than 1200 characters.");
-
-  const fileName = `${date}-${slug}.mdx`;
-  const fullPath = path.join(postsDir, fileName);
-  if (existsSync(fullPath)) {
-    console.log(`Skipping draft: ${fileName} already exists.`);
-    return;
-  }
-
-  const file = `---
-title: ${JSON.stringify(title)}
-date: ${date}
-description: ${JSON.stringify(description)}
-linkedinStatus: ready
-linkedinUrn: ""
-linkedinUrl: ""
-linkedinText: |
-${yamlBlock(linkedinText)}
----
-
-${bodyMarkdown}
-`;
-  writeFileSync(fullPath, file);
-  console.log(`Wrote content/posts/${fileName}`);
-
-  if (process.env.GITHUB_ACTIONS !== "true") {
-    console.log("Draft file written. The pull request step runs in GitHub Actions.");
-    return;
-  }
-
-  const branch = `post/${date}-${slug}`;
-  const relative = `content/posts/${fileName}`;
-  execFileSync("git", ["config", "user.name", "github-actions[bot]"], { stdio: "inherit" });
-  execFileSync("git", ["config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], { stdio: "inherit" });
-  execFileSync("git", ["checkout", "-b", branch], { stdio: "inherit" });
-  execFileSync("git", ["add", "--", relative], { stdio: "inherit" });
-  execFileSync("git", ["commit", "-m", `Post: ${title.replace(/\r?\n/g, " ").slice(0, 120)}`], { stdio: "inherit" });
-  execFileSync("git", ["push", "-u", "origin", branch], { stdio: "inherit" });
-  execFileSync(
-    "gh",
-    [
-      "pr",
-      "create",
-      "--title",
-      `Post: ${title.replace(/\r?\n/g, " ").slice(0, 120)}`,
-      "--body",
-      "Merging this pull request publishes the LinkedIn text if LINKEDIN_ACCESS_TOKEN is set. Review the article and the linkedinText before merging.",
-    ],
-    { stdio: "inherit" },
-  );
+  return normalizeGeneratedDraft(parseModelJson(messageText(await response.json())), {
+    date,
+    articleUrl: (fullSlug) => absoluteUrl(`/posts/${fullSlug}`),
+  });
 }
 
-await main();
+async function main() {
+  const missing = missingDailyDraftConfig(process.env);
+  if (missing.length > 0) {
+    fail(missingDailyDraftMessage(missing));
+    return;
+  }
+
+  try {
+    const desk = assertDailyDraftSecrets(process.env);
+    const date = riyadhDate();
+    const client = createDailyDraftClient({ url: desk.url, key: desk.key });
+    const existing = await client.findByKey(dailyDraftKey(date));
+    if (existing) {
+      console.log(`Draft for ${date} already exists (${existing.slug}, ${existing.status}). Leaving it unchanged.`);
+      return;
+    }
+
+    const voicePath = path.join(process.cwd(), "content", "voice.md");
+    if (!existsSync(voicePath)) throw new Error("content/voice.md is missing, so the draft was not created.");
+    const posts = await client.listPosts();
+    const knownTitles = [...new Set(
+      [...titles(path.join(process.cwd(), "content", "posts")), ...posts.map((post) => post.title)]
+        .map((title) => title.trim())
+        .filter(Boolean),
+    )];
+    const generated = await generateDraft(readFileSync(voicePath, "utf8"), knownTitles, date);
+    const saved = await saveDailyDraft(client, {
+      date,
+      title: generated.title,
+      description: generated.description,
+      body: generated.body,
+      linkedinText: generated.linkedinText,
+      preferredSlug: generated.preferredSlug,
+      existingSlugs: posts.map((post) => post.slug),
+      articleUrl: (fullSlug) => absoluteUrl(`/posts/${fullSlug}`),
+    });
+    if (saved.action === "exists") {
+      console.log(`Draft for ${date} already exists (${saved.slug}, ${saved.status}). Leaving it unchanged.`);
+      return;
+    }
+    console.log(`Created draft ${saved.slug} for ${date}. It is in the desk as a draft. Nothing was published.`);
+  } catch (error) {
+    fail(formatDailyDraftFailure(error, secretValues()));
+  }
+}
+
+const entry = process.argv[1] || "";
+if (entry.endsWith("draft-post.mjs")) {
+  main().catch((error) => {
+    fail(formatDailyDraftFailure(error, secretValues()));
+  });
+}

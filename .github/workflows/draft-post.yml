@@ -1,13 +1,17 @@
-name: Draft LinkedIn post
+name: Draft desk post
 
 on:
   schedule:
+    # 04:00 UTC is 07:00 in Asia/Riyadh, which does not observe daylight saving.
     - cron: "0 4 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: daily-desk-draft
+  cancel-in-progress: false
 
 jobs:
   draft:
@@ -15,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -24,5 +28,6 @@ jobs:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
           XAI_MODEL: ${{ vars.XAI_MODEL }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/draft-post.mjs
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./scripts/register-ts-test.mjs scripts/draft-post.mjs
