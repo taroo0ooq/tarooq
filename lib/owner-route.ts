@@ -9,6 +9,7 @@ import {
   updateOwnerPost,
 } from "./owner-actions";
 import { ownerDenied, readOwnerMutation, requireOwner } from "./owner-http";
+import { assertDocumentUploadRequest, newDocumentPath } from "./post-document";
 import { PostInputError } from "./post-draft";
 import { toOwnerPost } from "./post-view";
 import { postsJson } from "./posts-http";
@@ -63,6 +64,32 @@ export async function mutateOwnerPost(request: Request, slug?: string) {
     }
     if (!slug) return postsJson(201, await createOwnerPost(db, mutation.draft, ctx));
     return postsJson(200, await updateOwnerPost(db, slug, mutation.draft, ctx));
+  } catch (error) {
+    return failure(error);
+  }
+}
+
+export async function createOwnerDocumentUpload(request: Request) {
+  const session = requireOwner(request);
+  if (!session) return ownerDenied();
+  const db = postsDbFromEnv();
+  if (!db) return postsJson(503, { error: "Supabase is not configured." });
+  const limited = rateLimit(`owner:${session.personId}:document`, 30, 10 * 60 * 1000);
+  if (!limited.ok) return postsJson(429, { error: "Too many uploads. Try again later." }, limited.retryAfter);
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return postsJson(400, { error: "Expected JSON." });
+  }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return postsJson(400, { error: "Expected a JSON object." });
+  const record = payload as Record<string, unknown>;
+  try {
+    assertDocumentUploadRequest({
+      size: typeof record.size === "number" ? record.size : Number(record.size),
+      contentType: typeof record.contentType === "string" ? record.contentType : "",
+    });
+    return postsJson(200, await db.createDocumentUpload(newDocumentPath()));
   } catch (error) {
     return failure(error);
   }

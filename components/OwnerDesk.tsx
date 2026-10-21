@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { renderMarkdown } from "@/lib/markdown";
-import { formatDraftDate, LINKEDIN_LIMIT, riyadhDate } from "@/lib/post-draft";
+import { DOCUMENT_TITLE_LIMIT, FIRST_COMMENT_LIMIT, formatDraftDate, LINKEDIN_LIMIT, PDF_LIMIT, riyadhDate } from "@/lib/post-draft";
 import { postCanonicalPath } from "@/lib/post-locale";
 import type { ConnectionView, OwnerPost } from "@/lib/post-view";
 
@@ -34,6 +34,9 @@ function blank() {
     seoTitle: "",
     seoDescription: "",
     scheduledFor: "",
+    linkPlacement: "comment" as "text" | "comment",
+    firstComment: "",
+    documentTitle: "",
   };
 }
 
@@ -63,8 +66,11 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
   const [fields, setFields] = useState(blank);
   const [linkedinDirty, setLinkedinDirty] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [removeCover, setRemoveCover] = useState(false);
+  const [removeDocument, setRemoveDocument] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [pending, setPending] = useState("");
   const [error, setError] = useState(loadError);
   const [note, setNote] = useState(notice);
@@ -110,10 +116,16 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
       seoTitle: post.seoTitle,
       seoDescription: post.seoDescription,
       scheduledFor: riyadhInput(post.scheduledFor),
+      linkPlacement: post.linkPlacement,
+      firstComment: post.firstComment,
+      documentTitle: post.docTitle,
     } : blank());
     setLinkedinDirty(Boolean(post));
     setFile(null);
+    setPdfFile(null);
     setRemoveCover(false);
+    setRemoveDocument(false);
+    setCopied(false);
     setError("");
     setNote("");
     setWarning("");
@@ -139,9 +151,15 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
       seoTitle: post.seoTitle,
       seoDescription: post.seoDescription,
       scheduledFor: riyadhInput(post.scheduledFor),
+      linkPlacement: post.linkPlacement,
+      firstComment: post.firstComment,
+      documentTitle: post.docTitle,
     }));
     setLinkedinDirty(true);
     setRemoveCover(false);
+    setRemoveDocument(false);
+    setPdfFile(null);
+    setCopied(false);
   }
 
   async function readResult(response: Response) {
@@ -152,6 +170,52 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
       return null;
     }
     return payload;
+  }
+
+  async function uploadPdf(pdf: File) {
+    const namedPdf = pdf.name.toLowerCase().endsWith(".pdf");
+    const type = pdf.type || (namedPdf ? "application/pdf" : "");
+    if (type !== "application/pdf") {
+      setError("The LinkedIn file must be a PDF.");
+      return "";
+    }
+    if (pdf.size > PDF_LIMIT) {
+      setError("The PDF must be 100 MB or smaller.");
+      return "";
+    }
+    if (!fields.documentTitle.trim()) {
+      setError("Document title is required.");
+      return "";
+    }
+    const response = await fetch("/api/owner/documents", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ size: pdf.size, contentType: "application/pdf" }),
+    });
+    const ticket = (await response.json().catch(() => null)) as { path?: string; signedUrl?: string; error?: string } | null;
+    if (!response.ok || !ticket?.signedUrl || !ticket.path) {
+      setError(ticket?.error || "Could not start the PDF upload.");
+      return "";
+    }
+    const upload = await fetch(ticket.signedUrl, {
+      method: "PUT",
+      headers: { "content-type": "application/pdf" },
+      body: pdf,
+    });
+    if (!upload.ok) {
+      setError("The PDF upload failed.");
+      return "";
+    }
+    return ticket.path;
+  }
+
+  async function copyFirstComment() {
+    try {
+      await navigator.clipboard.writeText(fields.firstComment);
+      setCopied(true);
+    } catch {
+      setError("Could not copy the comment. Select it and copy it yourself.");
+    }
   }
 
   async function send(intent: string, event?: FormEvent) {
@@ -172,8 +236,21 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
       form.set("seoTitle", fields.seoTitle);
       form.set("seoDescription", fields.seoDescription);
       form.set("scheduledFor", fields.scheduledFor);
-      if (file) form.set("image", file);
+      form.set("linkPlacement", fields.linkPlacement);
+      form.set("firstComment", fields.firstComment);
+      form.set("documentTitle", fields.documentTitle);
+      const keepingPdf = Boolean(pdfFile) || Boolean(selected?.docPath && !removeDocument);
+      if (file) form.set(keepingPdf ? "cover" : "image", file);
       if (removeCover) form.set("removeCover", "1");
+      if (pdfFile) {
+        const uploaded = await uploadPdf(pdfFile);
+        if (!uploaded) return;
+        form.set("documentPath", uploaded);
+      } else if (removeDocument) {
+        form.set("removeDocument", "1");
+      } else if (selected?.docPath) {
+        form.set("documentPath", selected.docPath);
+      }
       const response = await fetch(selected ? `/api/owner/posts/${selected.slug}` : "/api/owner/posts", {
         method: selected ? "PATCH" : "POST",
         body: form,
@@ -182,6 +259,7 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
       if (!payload?.post) return;
       merge(payload.post);
       setFile(null);
+      setPdfFile(null);
       setNote(payload.note || "Saved.");
       setWarning(payload.warning || "");
     } catch {
@@ -320,6 +398,7 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
             <div className="field">
               <label htmlFor="image">Cover image</label>
               <input id="image" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => { setFile(event.target.files?.[0] ?? null); setRemoveCover(false); }} />
+              <p className="counter">Shown on the site page. A PDF post can still have a cover here. LinkedIn receives the PDF.</p>
             </div>
             <div className="field">
               <label htmlFor="imageAlt">Cover alt text</label>
@@ -329,6 +408,35 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
               <label className="desk-check">
                 <input type="checkbox" checked={removeCover} onChange={(event) => setRemoveCover(event.target.checked)} />
                 Remove the current cover
+              </label>
+            ) : null}
+            <div className="field">
+              <label htmlFor="document">LinkedIn PDF</label>
+              <input
+                id="document"
+                type="file"
+                accept="application/pdf"
+                onChange={(event) => {
+                  setPdfFile(event.target.files?.[0] ?? null);
+                  setRemoveDocument(false);
+                }}
+              />
+              <p className="counter">PDF only, up to 100 MB. The browser uploads it directly. LinkedIn gets this file, not the cover.</p>
+            </div>
+            <div className="field">
+              <label htmlFor="documentTitle">Document title</label>
+              <input
+                id="documentTitle"
+                value={fields.documentTitle}
+                maxLength={DOCUMENT_TITLE_LIMIT}
+                required={Boolean(pdfFile) || Boolean(selected?.docPath && !removeDocument)}
+                onChange={(event) => patch({ documentTitle: event.target.value })}
+              />
+            </div>
+            {selected?.docPath && !pdfFile ? (
+              <label className="desk-check">
+                <input type="checkbox" checked={removeDocument} onChange={(event) => setRemoveDocument(event.target.checked)} />
+                Remove the current PDF
               </label>
             ) : null}
             <details className="desk-seo">
@@ -360,6 +468,39 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
               />
               <p className={over ? "counter over" : "counter"}>{fields.linkedinText.length} / {LINKEDIN_LIMIT}</p>
             </div>
+            <label className="desk-check">
+              <input
+                type="checkbox"
+                checked={fields.linkPlacement === "comment"}
+                onChange={(event) => {
+                  setCopied(false);
+                  patch({ linkPlacement: event.target.checked ? "comment" : "text" });
+                }}
+              />
+              Put the link in a first comment (you post it)
+            </label>
+            {fields.linkPlacement === "comment" ? (
+              <div className="field">
+                <label htmlFor="firstComment">First comment</label>
+                <textarea
+                  id="firstComment"
+                  value={fields.firstComment}
+                  rows={3}
+                  maxLength={FIRST_COMMENT_LIMIT}
+                  onChange={(event) => {
+                    setCopied(false);
+                    patch({ firstComment: event.target.value });
+                  }}
+                />
+                <p className="counter">Leave this blank to use the post URL. This site cannot post the comment. Paste it on LinkedIn yourself.</p>
+                {selected?.linkedinUrl ? (
+                  <div className="desk-comment-actions">
+                    <button className="btn btn-ghost" type="button" onClick={copyFirstComment}>{copied ? "Copied" : "Copy"}</button>
+                    <a href={selected.linkedinUrl}>Open post on LinkedIn</a>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <fieldset className="choice">
               <legend>Where it publishes</legend>
               <label>

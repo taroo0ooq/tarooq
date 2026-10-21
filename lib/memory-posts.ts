@@ -11,6 +11,7 @@ export function createMemoryPostsDb(): PostsDb {
   const rows: PostRow[] = [];
   const claims = new Map<string, Claim>();
   const images = new Map<string, { bytes: Buffer; contentType: string }>();
+  const documents = new Map<string, { bytes: Buffer; contentType: string }>();
   let connection: LinkedInConnectionRow | null = null;
 
   function requireRow(slug: string) {
@@ -102,6 +103,23 @@ export function createMemoryPostsDb(): PostsDb {
     },
     async readImage(objectPath) {
       return images.get(objectPath) ?? null;
+    },
+    async uploadDocument(objectPath, bytes) {
+      documents.set(objectPath, { bytes: Buffer.from(bytes), contentType: "application/pdf" });
+    },
+    async deleteDocument(objectPath) {
+      documents.delete(objectPath);
+    },
+    async readDocument(objectPath) {
+      return documents.get(objectPath) ?? null;
+    },
+    async createDocumentUpload(objectPath) {
+      const token = "upload-token";
+      return {
+        path: objectPath,
+        token,
+        signedUrl: `https://example.supabase.co/storage/v1/object/upload/sign/post-documents/${objectPath}?token=${token}`,
+      };
     },
     async saveConnection(row) {
       connection = { ...row, updated_at: new Date().toISOString() };

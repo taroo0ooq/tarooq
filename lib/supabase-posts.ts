@@ -1,3 +1,4 @@
+import { absoluteStorageUrl, assertDocumentPath, assertSignedUploadUrl, DOCUMENT_BUCKET } from "./post-document";
 import type { ClaimResult, LinkedInConnectionRow, PostInsert, PostRow, PostsDb } from "./post-types";
 
 export class SupabaseRequestError extends Error {
@@ -31,6 +32,10 @@ const COLUMNS = [
   "linkedin_urn",
   "linkedin_url",
   "linkedin_error",
+  "link_placement",
+  "first_comment",
+  "doc_path",
+  "doc_title",
   "created_at",
   "updated_at",
 ] as const;
@@ -42,6 +47,9 @@ function asRow(value: unknown): PostRow {
     const field = record[key];
     (row as Record<string, unknown>)[key] = field ?? (key.endsWith("_at") || key === "scheduled_for" ? null : "");
   }
+  const placement = record.link_placement;
+  if (placement === "text" || placement === "comment") row.link_placement = placement;
+  else row.link_placement = row.linkedin_status === "posted" || row.linkedin_urn.startsWith("urn:") ? "text" : "comment";
   return row;
 }
 
@@ -95,6 +103,20 @@ export function createSupabasePostsDb(options: { url: string; key: string; fetch
   async function rows(path: string, init?: RequestInit) {
     const payload = await request(path, init);
     return Array.isArray(payload) ? payload.map(asRow) : [];
+  }
+
+  async function readStoredObject(bucket: string, objectPath: string, failure: string) {
+    const headers = new Headers({
+      apikey: key,
+      authorization: `Bearer ${key}`,
+    });
+    const response = await fetchImpl(`${base}/storage/v1/object/${bucket}/${safeObjectPath(objectPath)}`, { headers });
+    if (response.status === 404) return null;
+    if (!response.ok) throw new SupabaseRequestError(failure, response.status);
+    return {
+      bytes: Buffer.from(await response.arrayBuffer()),
+      contentType: response.headers.get("content-type") || "application/octet-stream",
+    };
   }
 
   return {
@@ -184,17 +206,43 @@ export function createSupabasePostsDb(options: { url: string; key: string; fetch
       }
     },
     async readImage(objectPath) {
-      const headers = new Headers({
-        apikey: key,
-        authorization: `Bearer ${key}`,
+      return readStoredObject("post-images", objectPath, "The cover image could not be read.");
+    },
+    async uploadDocument(objectPath, bytes) {
+      assertDocumentPath(objectPath);
+      await request(`/storage/v1/object/${DOCUMENT_BUCKET}/${safeObjectPath(objectPath)}`, {
+        method: "POST",
+        headers: { "content-type": "application/pdf", "x-upsert": "true" },
+        body: new Uint8Array(bytes),
       });
-      const response = await fetchImpl(`${base}/storage/v1/object/post-images/${safeObjectPath(objectPath)}`, { headers });
-      if (response.status === 404) return null;
-      if (!response.ok) throw new SupabaseRequestError("The cover image could not be read.", response.status);
-      return {
-        bytes: Buffer.from(await response.arrayBuffer()),
-        contentType: response.headers.get("content-type") || "application/octet-stream",
-      };
+    },
+    async deleteDocument(objectPath) {
+      assertDocumentPath(objectPath);
+      try {
+        await request(`/storage/v1/object/${DOCUMENT_BUCKET}/${safeObjectPath(objectPath)}`, { method: "DELETE" });
+      } catch (error) {
+        if (error instanceof SupabaseRequestError && error.status === 404) return;
+        throw error;
+      }
+    },
+    async readDocument(objectPath) {
+      assertDocumentPath(objectPath);
+      return readStoredObject(DOCUMENT_BUCKET, objectPath, "The PDF could not be read.");
+    },
+    async createDocumentUpload(objectPath) {
+      assertDocumentPath(objectPath);
+      const payload = await request(`/storage/v1/object/upload/sign/${DOCUMENT_BUCKET}/${safeObjectPath(objectPath)}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const record = payload && typeof payload === "object" ? (payload as { url?: unknown; token?: unknown }) : {};
+      const relative = typeof record.url === "string" ? record.url : "";
+      const token = typeof record.token === "string" ? record.token : "";
+      if (!relative || !token) throw new SupabaseRequestError("Supabase did not return an upload URL.", 502);
+      const signedUrl = absoluteStorageUrl(base, relative);
+      assertSignedUploadUrl(signedUrl, base);
+      return { path: objectPath, token, signedUrl };
     },
     async saveConnection(row) {
       await request("/rest/v1/rpc/save_linkedin_connection", {

@@ -3,9 +3,10 @@ import { openToken, personUrn } from "./linkedin";
 import { isOwner } from "./owner-session";
 import { isDefiniteLinkedInRejection, LinkedInPublishError, linkedInUrl, parseLinkedInUrn, publishToLinkedIn } from "./linkedin-publish";
 import { imageContentType } from "./post-image";
-import { alignPostUrl, pickSlug, PostInputError, riyadhDate, statusNote } from "./post-draft";
+import { assertDocumentPath, assertPdf, newDocumentPath } from "./post-document";
+import { alignPostUrl, pickSlug, postUrl, PostInputError, riyadhDate, statusNote } from "./post-draft";
 import type { PostDraft } from "./post-publish";
-import type { PostInsert, PostRow, PostsDb } from "./post-types";
+import type { LinkPlacement, PostInsert, PostRow, PostsDb } from "./post-types";
 import { postCanonicalPath } from "./post-locale";
 import { splitPostSlug, toOwnerPost, type OwnerPost } from "./post-view";
 import { readPublicImage } from "./public-image";
@@ -18,6 +19,7 @@ export type ActionContext = {
   fetchImpl?: typeof fetch;
   linkedinVersion?: string;
   onChange?: (slugs: string[]) => void;
+  sleep?: (ms: number) => Promise<void>;
 };
 
 export type ActionResult = {
@@ -52,10 +54,16 @@ function view(row: PostRow, ctx: ActionContext): ActionResult {
 }
 
 function alignDraft(draft: PostDraft, origin: string, slug: string) {
-  if (!draft.linkedin && !draft.linkedinText.trim()) return draft;
+  const placement: LinkPlacement = draft.linkPlacement === "text" ? "text" : "comment";
   const parts = splitPostSlug(slug);
-  if (!parts) return draft;
-  return { ...draft, linkedinText: alignPostUrl(draft.linkedinText, origin, parts.date, parts.short, draft.lang) };
+  const url = parts ? postUrl(origin, parts.date, parts.short, draft.lang) : "";
+  let linkedinText = draft.linkedinText;
+  if (placement === "text" && parts && (draft.linkedin || linkedinText.trim())) {
+    linkedinText = alignPostUrl(linkedinText, origin, parts.date, parts.short, draft.lang);
+  }
+  let firstComment = (draft.firstComment ?? "").trim();
+  if (placement === "comment" && !firstComment && url) firstComment = url;
+  return { ...draft, linkPlacement: placement, linkedinText, firstComment };
 }
 
 function contentPatch(draft: PostDraft): Partial<PostInsert> {
@@ -68,6 +76,8 @@ function contentPatch(draft: PostDraft): Partial<PostInsert> {
     seo_description: draft.seoDescription,
     linkedin_text: draft.linkedinText,
     linkedin_mode: draft.linkedin ? "both" : "site",
+    link_placement: draft.linkPlacement === "text" ? "text" : "comment",
+    first_comment: draft.firstComment ?? "",
   };
 }
 
@@ -95,6 +105,44 @@ async function storeCover(db: PostsDb, slug: string, image: NonNullable<PostDraf
   return objectPath;
 }
 
+async function storeDocument(db: PostsDb, bytes: Buffer) {
+  assertPdf(bytes);
+  const objectPath = newDocumentPath();
+  await db.uploadDocument(objectPath, bytes);
+  return objectPath;
+}
+
+function assertExclusiveMedia(draft: PostDraft) {
+  if (draft.image && (draft.document || draft.documentPath)) {
+    throw new PostInputError("Choose an image or a PDF, not both.");
+  }
+  if (draft.siteCover && draft.image) throw new PostInputError("Send one image.");
+}
+
+async function resolveDocument(db: PostsDb, draft: PostDraft, existing: PostRow | null) {
+  assertExclusiveMedia(draft);
+  if (draft.document) {
+    if (!draft.documentTitle.trim()) throw new PostInputError("Document title is required.");
+    return { path: await storeDocument(db, draft.document.bytes), title: draft.documentTitle.trim(), previous: existing?.doc_path ?? "" };
+  }
+  if (draft.documentPath) {
+    if (!draft.documentTitle.trim()) throw new PostInputError("Document title is required.");
+    assertDocumentPath(draft.documentPath);
+    const stored = await db.readDocument(draft.documentPath);
+    if (!stored) throw new PostInputError("The uploaded PDF could not be read.");
+    assertPdf(stored.bytes);
+    const previous = existing?.doc_path && existing.doc_path !== draft.documentPath ? existing.doc_path : "";
+    return { path: draft.documentPath, title: draft.documentTitle.trim(), previous };
+  }
+  if (draft.removeDocument) return { path: "", title: "", previous: existing?.doc_path ?? "" };
+  if (existing?.doc_path) {
+    const title = (draft.documentTitle || existing.doc_title).trim();
+    if (!title) throw new PostInputError("Document title is required.");
+    return { path: existing.doc_path, title, previous: "" };
+  }
+  return { path: "", title: "", previous: "" };
+}
+
 async function coverForLinkedIn(db: PostsDb, row: PostRow) {
   if (!row.cover_path) return null;
   if (row.cover_path.startsWith("/")) {
@@ -107,6 +155,16 @@ async function coverForLinkedIn(db: PostsDb, row: PostRow) {
   const stored = await db.readImage(row.cover_path);
   if (!stored) throw new PostInputError("The cover image could not be read.");
   return { bytes: stored.bytes, contentType: stored.contentType, alt: row.cover_alt };
+}
+
+async function documentForLinkedIn(db: PostsDb, row: PostRow) {
+  if (!row.doc_path) return null;
+  assertDocumentPath(row.doc_path);
+  const stored = await db.readDocument(row.doc_path);
+  if (!stored) throw new PostInputError("The PDF could not be read.");
+  assertPdf(stored.bytes);
+  if (!row.doc_title.trim()) throw new PostInputError("Document title is required.");
+  return { bytes: stored.bytes, title: row.doc_title.trim() };
 }
 
 async function loadConnection(db: PostsDb, now: Date) {
@@ -134,7 +192,8 @@ export async function publishLinkedInForRow(db: PostsDb, row: PostRow, ctx: Acti
     throw outcome;
   }
   const source = `${ctx.origin.replace(/\/$/, "")}${postCanonicalPath(row.slug, row.lang)}`;
-  const image = await coverForLinkedIn(db, row);
+  const document = await documentForLinkedIn(db, row);
+  const image = document ? null : await coverForLinkedIn(db, row);
   const claim = await db.claimLinkedIn(row.id);
   if (!claim.claimed) {
     if (claim.state === "posted" && claim.urn.startsWith("urn:")) {
@@ -157,6 +216,9 @@ export async function publishLinkedInForRow(db: PostsDb, row: PostRow, ctx: Acti
       description: row.seo_description || row.description,
       source,
       image,
+      document,
+      linkPlacement: row.link_placement === "text" ? "text" : "comment",
+      sleep: ctx.sleep,
       fetchImpl: ctx.fetchImpl,
     });
     await db.finishLinkedIn(row.id, urn, linkedInUrl(urn));
@@ -211,13 +273,18 @@ async function finishSave(db: PostsDb, row: PostRow, draft: PostDraft, ctx: Acti
 }
 
 function assertAlt(draft: PostDraft, existing: PostRow | null) {
-  const hasImage = Boolean(draft.image) || (!draft.removeCover && Boolean(existing?.cover_path));
+  const hasImage = Boolean(draft.image || draft.siteCover) || (!draft.removeCover && Boolean(existing?.cover_path));
   if (hasImage && !draft.imageAlt) throw new PostInputError("Add alt text for the image.");
+}
+
+function coverFile(draft: PostDraft) {
+  return draft.siteCover ?? draft.image;
 }
 
 export async function createOwnerPost(db: PostsDb, draft: PostDraft, ctx: ActionContext) {
   assertAlt(draft, null);
   const date = riyadhDate(ctx.now);
+  const document = await resolveDocument(db, draft, null);
   let saved: PostRow | null = null;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     const existing = await db.list();
@@ -244,9 +311,14 @@ export async function createOwnerPost(db: PostsDb, draft: PostDraft, ctx: Action
       linkedin_urn: "",
       linkedin_url: "",
       linkedin_error: "",
+      link_placement: aligned.linkPlacement,
+      first_comment: aligned.firstComment,
+      doc_path: document.path,
+      doc_title: document.title,
       ...statusPatch(aligned, ctx.now, null),
     };
-    if (aligned.image) insert.cover_path = await storeCover(db, slug, aligned.image);
+    const cover = coverFile(aligned);
+    if (cover) insert.cover_path = await storeCover(db, slug, cover);
     try {
       saved = await db.insert(insert);
       draft = aligned;
@@ -267,13 +339,17 @@ export async function updateOwnerPost(db: PostsDb, slug: string, draft: PostDraf
   if (!existing) throw new PostInputError("Post not found.", 404);
   assertAlt(draft, existing);
   const aligned = alignDraft(draft, ctx.origin, existing.slug);
+  const document = await resolveDocument(db, aligned, existing);
   const patch: Partial<PostInsert> = {
     ...contentPatch(aligned),
     ...statusPatch(aligned, ctx.now, existing),
+    doc_path: document.path,
+    doc_title: document.title,
   };
   let previousCover = "";
-  if (aligned.image) {
-    patch.cover_path = await storeCover(db, existing.slug, aligned.image);
+  const cover = coverFile(aligned);
+  if (cover) {
+    patch.cover_path = await storeCover(db, existing.slug, cover);
     patch.cover_alt = aligned.imageAlt;
     previousCover = existing.cover_path;
   } else if (aligned.removeCover) {
@@ -288,6 +364,9 @@ export async function updateOwnerPost(db: PostsDb, slug: string, draft: PostDraf
   if (previousCover && previousCover !== saved.cover_path && !previousCover.startsWith("/") && !/^https?:\/\//i.test(previousCover)) {
     await db.deleteImage(previousCover).catch(() => undefined);
   }
+  if (document.previous && document.previous !== saved.doc_path) {
+    await db.deleteDocument(document.previous).catch(() => undefined);
+  }
   return finishSave(db, saved, aligned, ctx);
 }
 
@@ -298,6 +377,7 @@ export async function deleteOwnerPost(db: PostsDb, slug: string, ctx: ActionCont
   if (existing.cover_path && !existing.cover_path.startsWith("/") && !/^https?:\/\//i.test(existing.cover_path)) {
     await db.deleteImage(existing.cover_path).catch(() => undefined);
   }
+  if (existing.doc_path) await db.deleteDocument(existing.doc_path).catch(() => undefined);
   await db.remove(existing.slug);
   touch(ctx, [existing.slug]);
   return { ok: true as const, slug: existing.slug };

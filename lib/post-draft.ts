@@ -5,6 +5,10 @@ export const BODY_LIMIT = 20_000;
 export const ALT_LIMIT = 1000;
 export const SEO_TITLE_LIMIT = 70;
 export const SEO_DESCRIPTION_LIMIT = 160;
+export const DOCUMENT_TITLE_LIMIT = 140;
+export const FIRST_COMMENT_LIMIT = 3000;
+export const PDF_LIMIT = 100 * 1024 * 1024;
+export const PDF_INLINE_LIMIT = 3 * 1024 * 1024;
 
 export class PostInputError extends Error {
   status: number;

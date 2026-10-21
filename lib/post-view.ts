@@ -1,6 +1,6 @@
 import { renderMarkdown } from "./markdown";
 import type { PostMeta } from "./posts";
-import type { LinkedInConnectionRow, PostRow } from "./post-types";
+import type { LinkPlacement, LinkedInConnectionRow, PostRow } from "./post-types";
 
 export type OwnerPost = {
   id: string;
@@ -24,6 +24,10 @@ export type OwnerPost = {
   linkedinUrn: string;
   linkedinUrl: string;
   linkedinError: string;
+  linkPlacement: LinkPlacement;
+  firstComment: string;
+  docPath: string;
+  docTitle: string;
   updatedAt: string;
 };
 
@@ -93,6 +97,10 @@ export function toOwnerPost(row: PostRow, supabaseUrl: string): OwnerPost {
     linkedinUrn: row.linkedin_urn,
     linkedinUrl: row.linkedin_url,
     linkedinError: row.linkedin_error,
+    linkPlacement: row.link_placement === "text" ? "text" : "comment",
+    firstComment: row.first_comment ?? "",
+    docPath: row.doc_path ?? "",
+    docTitle: row.doc_title ?? "",
     updatedAt: row.updated_at,
   };
 }

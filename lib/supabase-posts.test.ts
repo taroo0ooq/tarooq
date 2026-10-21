@@ -36,6 +36,26 @@ describe("supabase posts client", () => {
     assert.equal(calls.some((call) => call.url.includes("/rest/v1/rpc/")), true);
   });
 
+  it("issues a signed upload URL on the project host for a private PDF", async () => {
+    const fetchImpl: typeof fetch = async (input, init) => {
+      const url = String(input);
+      assert.equal(init?.method, "POST");
+      assert.match(url, /\/storage\/v1\/object\/upload\/sign\/post-documents\/documents\/[a-f0-9]{32}\.pdf$/);
+      assert.equal(new Headers(init?.headers).get("authorization"), "Bearer sb_secret_test");
+      return Response.json({
+        url: "/object/upload/sign/post-documents/documents/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.pdf?token=signed",
+        token: "signed",
+      });
+    };
+    const db = createSupabasePostsDb({ url: "https://example.supabase.co", key: "sb_secret_test", fetchImpl });
+    const ticket = await db.createDocumentUpload(`documents/${"a".repeat(32)}.pdf`);
+    assert.equal(ticket.token, "signed");
+    assert.equal(ticket.signedUrl, "https://example.supabase.co/storage/v1/object/upload/sign/post-documents/documents/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.pdf?token=signed");
+    const foreign: typeof fetch = async () => Response.json({ url: "https://evil.example/object/upload/sign/post-documents/x.pdf?token=signed", token: "signed" });
+    const unsafe = createSupabasePostsDb({ url: "https://example.supabase.co", key: "sb_secret_test", fetchImpl: foreign });
+    await assert.rejects(() => unsafe.createDocumentUpload(`documents/${"b".repeat(32)}.pdf`), /unexpected upload URL/);
+  });
+
   it("rejects a publishable key", () => {
     assert.throws(() => createSupabasePostsDb({ url: "https://example.supabase.co", key: "sb_publishable_test", fetchImpl: fetch }), /server secret key/);
   });
