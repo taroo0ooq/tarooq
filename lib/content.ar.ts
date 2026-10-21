@@ -160,9 +160,9 @@ export const roles: Role[] = [
     id: "albilad",
     org: "بنك البلاد",
     title: "المعماري الرئيسي للسحابة",
-    start: "يونيو 2022",
-    end: "فبراير 2026",
-    span: "يونيو 2022 — فبراير 2026",
+    start: "ديسمبر 2022",
+    end: "نوفمبر 2025",
+    span: "ديسمبر 2022 — نوفمبر 2025",
     place: "الرياض، المملكة العربية السعودية",
     era: "Leadership",
     summary:
@@ -750,6 +750,7 @@ export const ui = {
     all: "كل المقالات",
     linkedin: "عرض على LinkedIn",
     englishMark: "English",
+    arabicMark: "العربية",
     linkedinFrame: "منشور LinkedIn",
   },
   contact: {

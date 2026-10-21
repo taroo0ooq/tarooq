@@ -1,0 +1,31 @@
+# Tareq Al-Ghazzi
+
+> Tareq Al-Ghazzi (Arabic: طارق الغزي) is Head of Cloud Services, MENA at Mobiz IT, based in Riyadh, Saudi Arabia. He leads Azure strategy, landing zones, migrations, security, FinOps and AI platform readiness for enterprise and regulated organizations across the GCC and MENA. He has worked in technology since 2001 and in Saudi Arabia since 2012. He works in English and Arabic.
+
+Name spellings: Tareq Al-Ghazzi (canonical). Also written Tareq Alghazzi, Al-Gazzi, and طارق الغزي. Handle: tarooq.
+Canonical site: https://alghazzi.org (Arabic: https://alghazzi.org/ar)
+Canonical LinkedIn: https://www.linkedin.com/in/tareq-alghazzi
+
+## What he works on
+- Platforms that survive reality: Azure landing zones built as operating models, aligned to the Cloud Adoption Framework and Well-Architected Framework, that hold up in production and in audit, with tested disaster recovery and high availability.
+- Cloud as a regional capability: governance, FinOps and identity run as one standard across several markets and jurisdictions. He judges maturity by operational discipline, cost transparency and resilience, not migration volume.
+- Governed AI on the platform: AI platform readiness for enterprise LLM work, with the data, permissions and layered controls that keep AI safe for company data.
+- Building teams and talent: cross-functional cloud and platform teams that keep the standard after handover, plus community work on talent readiness for Syrian professionals in Saudi Arabia.
+
+## Career summary
+- Head of Cloud Services, MENA, Mobiz IT, Riyadh (November 2025 to present).
+- Earlier: Azure work for a regulated Saudi bank (Bank Albilad); led the cloud solution offering at Abilitii (Ajlan & Bros); cloud pre-sales architecture for enterprise and financial services at Crayon and Dimensions Cloud; Microsoft cloud roles in Jeddah; network and systems engineering in the UAE from 2001.
+- Education: Ajman University of Science and Technology.
+- Certifications listed on the site: Microsoft Certified Azure Security Engineer Associate, AZ-300, AWS Certified Solutions Architect Associate.
+
+## Key pages
+- [Home and story](https://alghazzi.org): who he is, his approach, and his full career record.
+- [Business](https://alghazzi.org/business): the kind of cloud work he leads, for banks, government and multi-market enterprises.
+- [Posts](https://alghazzi.org/posts): his writing on cloud platforms, governance and AI.
+- [Syria's digital systems](https://alghazzi.org/posts/2026-10-21-syrias-digital-systems) (English).
+- [Kubernetes isn't cloud](https://alghazzi.org/posts/2026-10-20-kubernetes-isnt-cloud) (Arabic).
+- [For you](https://alghazzi.org/for-you): learning links across major cloud and AI platforms.
+- [Contact](https://alghazzi.org/contact)
+
+## Arabic note
+The full site is available in Arabic at https://alghazzi.org/ar. His Arabic tagline is "أبني منصات سحابية تصمد في الواقع" (I build cloud platforms that survive reality). Technical terms such as Azure, landing zone and FinOps are kept in Latin script.

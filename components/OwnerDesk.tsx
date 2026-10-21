@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatDraftDate, LINKEDIN_LIMIT, riyadhDate } from "@/lib/post-draft";
+import { postCanonicalPath } from "@/lib/post-locale";
 import type { ConnectionView, OwnerPost } from "@/lib/post-view";
 
 type DeskProps = {
@@ -295,7 +296,7 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
           <form onSubmit={(event) => send("draft", event)}>
             <div className="composer-tools">
               <p className="eyebrow">{selected ? selected.slug : "New"}</p>
-              {selected?.status === "published" ? <a href={`/posts/${selected.slug}`}>View on the site</a> : null}
+              {selected?.status === "published" ? <a href={postCanonicalPath(selected.slug, selected.lang)}>View on the site</a> : null}
             </div>
             <div className={arabic ? "desk-copy article-ar" : "desk-copy"} dir={arabic ? "rtl" : "ltr"} lang={fields.lang}>
               <div className="field">

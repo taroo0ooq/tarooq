@@ -226,10 +226,10 @@ try {
   const html = await page.text();
   if (page.status !== 200) throw new Error(`new slug returned ${page.status}`);
   assertIncludes(html, title, "new English post");
-  const arabic = await fetch(`${origin}/ar/posts/${slug}`);
-  const arabicHtml = await arabic.text();
-  if (arabic.status !== 200) throw new Error(`Arabic slug returned ${arabic.status}`);
-  assertIncludes(arabicHtml, title, "new Arabic URL");
+  const arabic = await fetch(`${origin}/ar/posts/${slug}`, { redirect: "manual" });
+  if (arabic.status !== 308) throw new Error(`Arabic slug returned ${arabic.status}`);
+  const location = arabic.headers.get("location") || "";
+  if (!location.endsWith(`/posts/${slug}`)) throw new Error(`Arabic slug location ${location}`);
   const index = await fetch(`${origin}/posts`);
   const indexHtml = await index.text();
   assertIncludes(indexHtml, title, "posts index");
@@ -237,6 +237,7 @@ try {
   const sitemap = await fetch(`${origin}/sitemap.xml`);
   const xml = await sitemap.text();
   assertIncludes(xml, `/posts/${slug}`, "sitemap");
+  if (xml.includes(`/ar/posts/${slug}`)) throw new Error("sitemap listed a false Arabic alternate");
   console.log(`smoke ok ${slug}`);
   if (process.env.SMOKE_KEEP === "1") {
     console.log(`SMOKE_ORIGIN=${origin}`);

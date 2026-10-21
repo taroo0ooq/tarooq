@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Readex_Pro } from "next/font/google";
+import { PostCover } from "@/components/PostCover";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
+import { personId } from "@/lib/person-schema";
+import { postCanonicalPath, postLanguage } from "@/lib/post-locale";
 import { formatPostDate, type PostMeta } from "@/lib/posts";
 import { absoluteUrl } from "@/lib/site";
 
@@ -14,10 +17,10 @@ const arabic = Readex_Pro({
 });
 
 export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }) {
-  const { profile, ui } = getCopy(locale);
+  const { ui } = getCopy(locale);
   const linkedinHref = post.linkedinUrl || (post.linkedinUrn ? `https://www.linkedin.com/feed/update/${post.linkedinUrn}` : "");
-  const postUrl = absoluteUrl(localizePath(`/posts/${post.slug}`, locale));
-  const postLocale = post.lang === "ar" ? "ar" : "en";
+  const postLocale = postLanguage(post.lang);
+  const postUrl = absoluteUrl(postCanonicalPath(post.slug, post.lang));
   const arabicPost = postLocale === "ar";
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -30,8 +33,7 @@ export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }
     mainEntityOfPage: postUrl,
     author: {
       "@type": "Person",
-      name: profile.name,
-      url: absoluteUrl(localizePath("/", locale)),
+      "@id": personId,
     },
   };
   if (post.image) jsonLd.image = absoluteUrl(post.image);
@@ -49,7 +51,12 @@ export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }
         </header>
         {post.image ? (
           <figure className="post-figure">
-            <img src={post.image} alt={post.imageAlt || post.title} />
+            <PostCover
+              src={post.image}
+              alt={post.imageAlt || post.title}
+              sizes="(max-width: 900px) 88vw, 820px"
+              priority
+            />
           </figure>
         ) : null}
         <div className="prose" dangerouslySetInnerHTML={{ __html: post.html }} />

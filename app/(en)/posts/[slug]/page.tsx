@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { PostArticle } from "@/components/pages/PostArticle";
 import { postMetadata } from "@/lib/post-meta";
+import { postLanguage, postRedirectPath } from "@/lib/post-locale";
 import { getPublishedPosts, loadPublicPosts } from "@/lib/published-posts";
 
 export const revalidate = 10;
@@ -23,5 +24,7 @@ export default async function Page({ params }: PageProps) {
   const { slug } = await params;
   const post = (await loadPublicPosts()).find((item) => item.slug === slug);
   if (!post) notFound();
-  return <PostArticle post={post} locale="en" />;
+  const redirectTo = postRedirectPath(post.slug, post.lang, "en");
+  if (redirectTo) permanentRedirect(redirectTo);
+  return <PostArticle post={post} locale={postLanguage(post.lang)} />;
 }

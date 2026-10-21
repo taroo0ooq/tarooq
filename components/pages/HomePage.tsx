@@ -3,6 +3,7 @@ import { RiyadhClock } from "@/components/RiyadhClock";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
+import { profilePageFor } from "@/lib/person-schema";
 
 const tones = ["tone-soft", "tone-paper", "tone-navy"] as const;
 
@@ -13,6 +14,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageFor(locale)) }} />
       <section className="hero">
         <span className="star star-a" aria-hidden="true" />
         <span className="star star-b" aria-hidden="true" />

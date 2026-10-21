@@ -14,34 +14,39 @@ function socialTitle(title: Metadata["title"], siteName: string) {
   return title.includes(siteName) ? title : `${title} — ${siteName}`;
 }
 
-const shareImage = {
+export const defaultShareImage = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
+} as const;
+
+type PageMetadataOptions = {
+  languages?: Record<string, string>;
 };
 
-export function pageMetadata(path: string, metadata: Metadata = {}): Metadata {
+export function pageMetadata(path: string, metadata: Metadata = {}, options: PageMetadataOptions = {}): Metadata {
   const canonical = absoluteUrl(path);
   const brand = isArabicPath(path) ? branding.ar : branding.en;
   const paths = alternatePaths(path);
   const { openGraph, twitter, alternates, title, description, ...rest } = metadata;
   const branded = socialTitle(title, brand.siteName);
+  const paired = {
+    en: absoluteUrl(paths.en),
+    ar: absoluteUrl(paths.ar),
+    "x-default": absoluteUrl(paths["x-default"]),
+  };
   return {
     ...rest,
     title,
     description,
     alternates: {
       ...alternates,
-      languages: {
-        en: absoluteUrl(paths.en),
-        ar: absoluteUrl(paths.ar),
-        "x-default": absoluteUrl(paths["x-default"]),
-      },
+      languages: options.languages ?? paired,
       canonical,
     },
     openGraph: {
       type: "website",
-      images: [{ ...shareImage, alt: brand.siteName }],
+      images: [{ ...defaultShareImage, alt: brand.siteName }],
       ...(branded ? { title: branded } : {}),
       ...(description ? { description } : {}),
       ...openGraph,
@@ -52,6 +57,7 @@ export function pageMetadata(path: string, metadata: Metadata = {}): Metadata {
     },
     twitter: {
       card: "summary_large_image",
+      images: [defaultShareImage.url],
       ...(branded ? { title: branded } : {}),
       ...(description ? { description } : {}),
       ...twitter,

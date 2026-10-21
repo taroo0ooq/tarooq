@@ -6,7 +6,8 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { getCopy } from "@/lib/copy";
-import { absoluteUrl, siteUrl } from "@/lib/site";
+import { personReference } from "@/lib/person-schema";
+import { absoluteUrl, defaultShareImage, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 const themeScript = `(function(){try{var stored=localStorage.getItem("tarooq-theme");var theme=stored==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",theme);document.documentElement.style.colorScheme=theme;var color=theme==="dark"?"#070910":"#f8f7fc";document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}catch(e){}})();`;
@@ -27,7 +28,7 @@ const arabic = Readex_Pro({
 });
 
 const copy = getCopy("ar");
-const { profile, education, ui } = copy;
+const { profile, ui } = copy;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -53,11 +54,13 @@ export const metadata: Metadata = {
     siteName: profile.name,
     locale: "ar_SA",
     alternateLocale: ["en_US"],
+    images: [{ ...defaultShareImage, alt: profile.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: ui.meta.shareTitle,
     description: profile.deck,
+    images: [defaultShareImage.url],
   },
 };
 
@@ -70,22 +73,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: profile.name,
-    alternateName: "Tareq Al-Ghazzi",
-    url: absoluteUrl("/ar"),
-    jobTitle: profile.role,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: ui.meta.locality,
-      addressCountry: "SA",
-    },
-    sameAs: [profile.linkedin],
-    knowsLanguage: ["Arabic", "English"],
-    alumniOf: education.school,
-  };
+  const jsonLd = personReference();
 
   return (
     <html lang="ar" dir="rtl" className={`${latin.variable} ${arabic.variable}`} suppressHydrationWarning>

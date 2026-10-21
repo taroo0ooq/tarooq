@@ -3,6 +3,17 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "edbgctmcyinzrectewel.supabase.co",
+        pathname: "/storage/v1/object/public/post-images/**",
+      },
+    ],
+  },
   async redirects() {
     return [
       { source: "/experience", destination: "/", permanent: false },
@@ -23,6 +34,10 @@ const nextConfig: NextConfig = {
     ];
   },
   outputFileTracingIncludes: {
+    "/": ["./content/person-jsonld.json"],
+    "/ar": ["./content/person-jsonld.json"],
+    "/llms.txt": ["./content/llms.txt"],
+    "/opengraph-image": ["./public/personal-image.jpg"],
     "/posts": ["./content/posts/**/*"],
     "/posts/[slug]": ["./content/posts/**/*"],
     "/ar/posts": ["./content/posts/**/*"],
