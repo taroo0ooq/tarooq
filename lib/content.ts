@@ -370,8 +370,6 @@ export const certifications = [
     href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
     image: "/badges/aws-solutions-architect-associate.png",
   },
-  { name: "Microsoft Private Cloud Professional 2012 SP1" },
-  { name: "MCPS: Microsoft Certified Professional" },
 ];
 
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
@@ -747,11 +745,11 @@ export const ui = {
     after: " that survive Dev, SIT, UAT, and Production do.",
   },
   home: {
-    taglineLead: "I build cloud platforms that actually survive reality.",
-    taglineRest: "Not slideware. Not best-effort. Not “it works in the lab.”",
-    lede: "Since 2001, from Abu Dhabi, UAE as network engineer and domain admin to Head of Cloud Services at Mobiz IT in Riyadh.",
-    approachCta: "View My Approach",
-    contactCta: "Get in Touch",
+    positioning: "Head of Cloud Services, MENA. Cloud platforms that survive reality.",
+    regulated: "I work with regulated organizations across the GCC and MENA.",
+    sectors: "Banking and financial services; government and public sector; telecom; energy and oil & gas; tourism and hospitality; large and giga enterprises.",
+    postsCta: "Read the posts",
+    contactCta: "Start a conversation",
     aboutTitle: "About",
     experience: "Experience",
     record: "The record, newest first.",

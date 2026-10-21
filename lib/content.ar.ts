@@ -348,8 +348,6 @@ export const certifications = [
     href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
     image: "/badges/aws-solutions-architect-associate.png",
   },
-  { name: "Microsoft Private Cloud Professional 2012 SP1" },
-  { name: "MCPS: Microsoft Certified Professional" },
 ];
 
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
@@ -718,11 +716,11 @@ export const ui = {
     after: " التي تصمد في Dev وSIT وUAT والإنتاج هي التي تصنعه.",
   },
   home: {
-    taglineLead: "أبني منصات سحابية تصمد في الواقع.",
-    taglineRest: "لا شرائح تُعرض ثم تُنسى. ولا جهدًا تقريبيًا. ولا «يعمل في المختبر».",
-    lede: "منذ عام 2001، من أبوظبي في الإمارات العربية المتحدة كمهندس شبكات ومسؤول إدارة النطاق، إلى رئيس خدمات السحابة في Mobiz IT في الرياض.",
-    approachCta: "اطّلع على أسلوبي",
-    contactCta: "تواصل معي",
+    positioning: "رئيس خدمات السحابة، الشرق الأوسط وشمال أفريقيا. منصات سحابية تصمد في الواقع.",
+    regulated: "أعمل مع مؤسسات خاضعة للتنظيم في الخليج والشرق الأوسط وشمال أفريقيا.",
+    sectors: "المصارف والخدمات المالية؛ الحكومة والقطاع العام؛ الاتصالات؛ الطاقة والنفط والغاز؛ السياحة والضيافة؛ المؤسسات الكبرى ومشاريع الجيجا.",
+    postsCta: "اقرأ المقالات",
+    contactCta: "ابدأ المحادثة",
     aboutTitle: "نبذة",
     experience: "الخبرة",
     record: "السجل، الأحدث أولًا.",

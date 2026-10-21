@@ -43,7 +43,34 @@ describe("certifications", () => {
     }
     assert.equal(en.certifications.find((item) => item.name.startsWith("Microsoft Certified: Azure Security"))?.alt?.endsWith("badge"), true);
     assert.equal(ar.certifications.find((item) => item.name.startsWith("Microsoft Certified: Azure Security"))?.alt?.startsWith("شارة "), true);
-    const plain = en.certifications.filter((item) => !item.image).map((item) => item.name);
-    assert.deepEqual(plain, ["Microsoft Private Cloud Professional 2012 SP1", "MCPS: Microsoft Certified Professional"]);
+    assert.equal(en.certifications.every((item) => item.image && item.href && item.alt), true);
+    const bundled = JSON.stringify({ en: en.certifications, ar: ar.certifications, enHome: en.ui.home, arHome: ar.ui.home });
+    assert.equal(bundled.includes("Private Cloud"), false);
+    assert.equal(bundled.includes("MCPS"), false);
+  });
+});
+
+describe("hero", () => {
+  it("uses the approved positioning, the regulated line, and the six sectors", () => {
+    assert.equal(en.ui.home.positioning, "Head of Cloud Services, MENA. Cloud platforms that survive reality.");
+    assert.equal(en.ui.home.regulated, "I work with regulated organizations across the GCC and MENA.");
+    assert.equal(
+      en.ui.home.sectors,
+      "Banking and financial services; government and public sector; telecom; energy and oil & gas; tourism and hospitality; large and giga enterprises.",
+    );
+    assert.equal(en.ui.home.postsCta, "Read the posts");
+    assert.equal(en.ui.home.contactCta, "Start a conversation");
+    assert.equal(ar.ui.home.positioning, "رئيس خدمات السحابة، الشرق الأوسط وشمال أفريقيا. منصات سحابية تصمد في الواقع.");
+    assert.equal(ar.ui.home.regulated, "أعمل مع مؤسسات خاضعة للتنظيم في الخليج والشرق الأوسط وشمال أفريقيا.");
+    assert.equal(
+      ar.ui.home.sectors,
+      "المصارف والخدمات المالية؛ الحكومة والقطاع العام؛ الاتصالات؛ الطاقة والنفط والغاز؛ السياحة والضيافة؛ المؤسسات الكبرى ومشاريع الجيجا.",
+    );
+    assert.equal(ar.ui.home.postsCta, "اقرأ المقالات");
+    assert.equal(ar.ui.home.contactCta, "ابدأ المحادثة");
+    for (const line of [en.ui.home.positioning, en.ui.home.regulated, en.ui.home.sectors, ar.ui.home.positioning, ar.ui.home.regulated, ar.ui.home.sectors]) {
+      assert.equal(line.includes("—"), false);
+      assert.equal(line.includes("–"), false);
+    }
   });
 });

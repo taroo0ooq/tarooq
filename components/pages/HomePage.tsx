@@ -21,17 +21,13 @@ export function HomePage({ locale }: { locale: Locale }) {
         <span className="star star-b" aria-hidden="true" />
         <div className="hero-copy">
           <h1 className="serif">{text(profile.name)}</h1>
-          <p className="hero-role">{text(profile.role)}</p>
-          <p className="tagline">
-            {text(ui.home.taglineLead)}
-            <br />
-            {text(ui.home.taglineRest)}
-          </p>
-          <p className="lede">{text(ui.home.lede)}</p>
+          <p className="tagline">{text(ui.home.positioning)}</p>
+          <p className="lede">{text(ui.home.regulated)}</p>
+          <p className="hero-sectors">{text(ui.home.sectors)}</p>
           <div className="hero-actions">
-            <a className="btn btn-purple" href="#approach">
-              {ui.home.approachCta}
-            </a>
+            <Link className="btn btn-purple" href={localizePath("/posts", locale)}>
+              {ui.home.postsCta}
+            </Link>
             <Link className="btn btn-ghost" href={localizePath("/contact", locale)}>
               {ui.home.contactCta}
             </Link>
