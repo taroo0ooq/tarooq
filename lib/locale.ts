@@ -30,6 +30,11 @@ export function localizePath(pathname: string, locale: Locale) {
 
 const englishOnlyPrefixes = ["/posts/new", "/api", "/linkedin"];
 
+export function isPostArticlePath(pathname: string) {
+  const path = stripLocale(cleanPath(pathname));
+  return /^\/posts\/[^/]+$/.test(path) && path !== "/posts/new";
+}
+
 export function isEnglishOnlyPath(pathname: string) {
   const path = cleanPath(pathname);
   return englishOnlyPrefixes.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
@@ -54,6 +59,14 @@ export function languageSwitch(pathname: string, hash = ""): LanguageSwitch {
       label: "العربية",
       ariaLabel: "عرض الموقع بالعربية",
     };
+  }
+  if (isPostArticlePath(path)) {
+    const toArabic = !isArabicPath(path);
+    const href = localizePath("/posts", toArabic ? "ar" : "en");
+    if (toArabic) {
+      return { href, hrefLang: "ar", label: "العربية", ariaLabel: "عرض الموقع بالعربية" };
+    }
+    return { href, hrefLang: "en", label: "English", ariaLabel: "التبديل إلى الإنجليزية" };
   }
   const toArabic = !isArabicPath(path);
   const href = `${localizePath(path, toArabic ? "ar" : "en")}${normalizedHash}`;

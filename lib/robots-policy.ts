@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, siteUrl } from "@/lib/site";
+import { absoluteUrl, siteUrl } from "./site";
 
-export default function robots(): MetadataRoute.Robots {
+export function robotsPolicy(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",

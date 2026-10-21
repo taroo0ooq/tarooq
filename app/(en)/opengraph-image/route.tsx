@@ -2,14 +2,15 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const dynamic = "force-static";
+export const runtime = "nodejs";
 
-export default async function OpenGraphImage() {
+const size = { width: 1200, height: 630 };
+
+export async function GET() {
   const photo = await readFile(join(process.cwd(), "public", "personal-image.jpg"));
   const src = `data:image/jpeg;base64,${photo.toString("base64")}`;
-
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -29,15 +30,11 @@ export default async function OpenGraphImage() {
             I build cloud platforms that actually survive reality.
           </div>
         </div>
-        <img
-          src={src}
-          alt=""
-          width={340}
-          height={342}
-          style={{ borderRadius: 40, objectFit: "cover" }}
-        />
+        <img src={src} alt="" width={340} height={342} style={{ borderRadius: 40, objectFit: "cover" }} />
       </div>
     ),
     size,
   );
+  image.headers.set("Cache-Control", "public, max-age=86400");
+  return image;
 }

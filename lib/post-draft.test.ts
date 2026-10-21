@@ -135,6 +135,17 @@ describe("post urls", () => {
     assert.match(appended, /2026-09-01-earlier-note/);
     assert.match(appended, /https:\/\/alghazzi\.org\/posts\/2026-10-20-hello$/);
   });
+
+  it("uses the Arabic URL when the post language is Arabic", () => {
+    const shifted = alignPostUrl(
+      "مرحبا\n\nhttps://alghazzi.org/posts/2026-10-20-hello",
+      origin,
+      "2026-10-20",
+      "hello",
+      "ar",
+    );
+    assert.equal(shifted, "مرحبا\n\nhttps://alghazzi.org/ar/posts/2026-10-20-hello");
+  });
 });
 
 describe("commit copy", () => {

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import * as ar from "./content.ar.ts";
 import * as en from "./content.ts";
-import { alternatePaths, languageSwitch, localizePath } from "./locale.ts";
+import { alternatePaths, isPostArticlePath, languageSwitch, localizePath } from "./locale.ts";
 import { absoluteUrl, pageMetadata } from "./site.ts";
 import { postsForLocale } from "./posts.ts";
 
@@ -11,7 +11,6 @@ const publicPaths = [
   "/for-you",
   "/business",
   "/posts",
-  "/posts/2026-10-20-kubernetes-isnt-cloud",
   "/contact",
   "/privacy",
 ];
@@ -48,6 +47,20 @@ describe("language switcher", () => {
     const switched = languageSwitch("/posts/new");
     assert.equal(switched.href, "/ar");
     assert.equal(switched.hrefLang, "ar");
+  });
+
+  it("switches a single-language post to the posts index, not a false translation", () => {
+    assert.equal(isPostArticlePath("/posts/2026-10-20-kubernetes-isnt-cloud"), true);
+    assert.equal(isPostArticlePath("/ar/posts/2026-10-21-syrias-digital-systems"), true);
+    assert.equal(isPostArticlePath("/posts/new"), false);
+    const toArabic = languageSwitch("/posts/2026-10-21-syrias-digital-systems");
+    assert.equal(toArabic.href, "/ar/posts");
+    assert.equal(toArabic.hrefLang, "ar");
+    const toEnglish = languageSwitch("/ar/posts/2026-10-20-kubernetes-isnt-cloud");
+    assert.equal(toEnglish.href, "/posts");
+    assert.equal(toEnglish.hrefLang, "en");
+    assert.equal(languageSwitch(toArabic.href).href, "/posts");
+    assert.equal(languageSwitch(toEnglish.href).href, "/ar/posts");
   });
 });
 

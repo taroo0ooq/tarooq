@@ -1,0 +1,69 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://alghazzi.org/#profilepage",
+  "url": "https://alghazzi.org",
+  "name": "Tareq Al-Ghazzi | Head of Cloud Services, MENA",
+  "inLanguage": "en",
+  "mainEntity": {
+    "@type": "Person",
+    "@id": "https://alghazzi.org/#person",
+    "name": "Tareq Al-Ghazzi",
+    "alternateName": ["طارق الغزي", "Tareq Alghazzi", "Tareq Al-Gazzi", "tarooq"],
+    "url": "https://alghazzi.org",
+    "jobTitle": "Head of Cloud Services, MENA",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Mobiz IT"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Riyadh",
+      "addressCountry": "SA"
+    },
+    "description": "Head of Cloud Services, MENA at Mobiz IT in Riyadh. Builds Azure cloud platforms for enterprise and regulated organizations in the GCC and MENA: landing zones, migrations, security, FinOps and AI platform readiness that hold up in production and in audit.",
+    "knowsAbout": [
+      "Microsoft Azure",
+      "Azure landing zones",
+      "Cloud Adoption Framework",
+      "Azure Well-Architected Framework",
+      "Cloud governance",
+      "Cloud migration",
+      "FinOps",
+      "Cloud security and identity and access management",
+      "Disaster recovery and high availability",
+      "AI platform readiness",
+      "AI governance",
+      "Platform engineering teams",
+      "Regulated industries in Saudi Arabia and MENA"
+    ],
+    "knowsLanguage": ["English", "Arabic"],
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Ajman University of Science and Technology"
+    },
+    "hasCredential": [
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "Microsoft Certified: Azure Security Engineer Associate",
+        "credentialCategory": "certification",
+        "recognizedBy": { "@type": "Organization", "name": "Microsoft" }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "Microsoft AZ-300: Azure Architect Technologies",
+        "credentialCategory": "certification",
+        "recognizedBy": { "@type": "Organization", "name": "Microsoft" }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "AWS Certified Solutions Architect – Associate",
+        "credentialCategory": "certification",
+        "recognizedBy": { "@type": "Organization", "name": "Amazon Web Services" }
+      }
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/in/tareq-alghazzi"
+    ]
+  }
+}

@@ -6,6 +6,7 @@ import { imageContentType } from "./post-image";
 import { alignPostUrl, pickSlug, PostInputError, riyadhDate, statusNote } from "./post-draft";
 import type { PostDraft } from "./post-publish";
 import type { PostInsert, PostRow, PostsDb } from "./post-types";
+import { postCanonicalPath } from "./post-locale";
 import { splitPostSlug, toOwnerPost, type OwnerPost } from "./post-view";
 import { readPublicImage } from "./public-image";
 import { SupabaseRequestError } from "./supabase-posts";
@@ -46,7 +47,7 @@ function view(row: PostRow, ctx: ActionContext): ActionResult {
     post: toOwnerPost(row, ctx.supabaseUrl || process.env.SUPABASE_URL || ""),
     note: statusNote(row.linkedin_mode === "both", row.linkedin_status),
     warning: row.linkedin_status === "failed" ? row.linkedin_error : "",
-    url: `${origin}/posts/${row.slug}`,
+    url: `${origin}${postCanonicalPath(row.slug, row.lang)}`,
   };
 }
 
@@ -54,7 +55,7 @@ function alignDraft(draft: PostDraft, origin: string, slug: string) {
   if (!draft.linkedin && !draft.linkedinText.trim()) return draft;
   const parts = splitPostSlug(slug);
   if (!parts) return draft;
-  return { ...draft, linkedinText: alignPostUrl(draft.linkedinText, origin, parts.date, parts.short) };
+  return { ...draft, linkedinText: alignPostUrl(draft.linkedinText, origin, parts.date, parts.short, draft.lang) };
 }
 
 function contentPatch(draft: PostDraft): Partial<PostInsert> {
@@ -132,7 +133,7 @@ export async function publishLinkedInForRow(db: PostsDb, row: PostRow, ctx: Acti
     outcome.saved = failed;
     throw outcome;
   }
-  const source = `${ctx.origin.replace(/\/$/, "")}/posts/${row.slug}`;
+  const source = `${ctx.origin.replace(/\/$/, "")}${postCanonicalPath(row.slug, row.lang)}`;
   const image = await coverForLinkedIn(db, row);
   const claim = await db.claimLinkedIn(row.id);
   if (!claim.claimed) {

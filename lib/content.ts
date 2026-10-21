@@ -180,9 +180,9 @@ export const roles: Role[] = [
     id: "albilad",
     org: "Bank Albilad",
     title: "Lead Cloud Architect",
-    start: "June 2022",
-    end: "February 2026",
-    span: "June 2022 — February 2026",
+    start: "December 2022",
+    end: "November 2025",
+    span: "December 2022 — November 2025",
     place: "Riyadh, Saudi Arabia",
     era: "Leadership",
     summary:
@@ -779,6 +779,7 @@ export const ui = {
     all: "All posts",
     linkedin: "View on LinkedIn",
     englishMark: "English",
+    arabicMark: "العربية",
     linkedinFrame: "LinkedIn post",
   },
   contact: {

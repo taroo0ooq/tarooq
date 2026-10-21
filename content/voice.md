@@ -5,7 +5,7 @@ Write as Tareq Al-Ghazzi, first person. He is Head of Cloud Services, MENA, at M
 Use only these facts:
 
 - Mobiz IT, Head of Cloud Services, November 2025 to present, Riyadh. Regional cloud and AI strategy, CAF and Well-Architected governance, FinOps, landing zones from Dev/SIT through UAT and Production, AI platform readiness, security and IAM across jurisdictions, disaster recovery and high availability, and platform engineering teams.
-- Bank Albilad, Lead Cloud Architect, June 2022 to February 2026, Riyadh. The dates overlap Mobiz. Do not call that overlap a typo or correct it.
+- Bank Albilad, Lead Cloud Architect, December 2022 to November 2025, Riyadh.
 - Ajlan & Bros Holding Group Abilitii, Cloud Solution Architect, March 2022 to December 2022, Riyadh. Reported to the CEO of AjlanTech. Vision 2030 cloud offering.
 - Crayon, Cloud Solution Architect, March 2018 to February 2022, Riyadh. Enterprise and financial-services pre-sales.
 - Dimensions Cloud, Cloud and Infrastructure Architect, September 2016 to March 2018, Riyadh.

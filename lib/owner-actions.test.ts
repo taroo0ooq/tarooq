@@ -54,6 +54,18 @@ describe("owner posts", { concurrency: 1 }, () => {
     assert.equal(stored?.bytes.equals(png()), true);
   });
 
+  it("publishes an Arabic post at the Arabic URL", async () => {
+    const db = createMemoryPostsDb();
+    const result = await createOwnerPost(db, draft({
+      lang: "ar",
+      title: "مرحبا",
+      linkedinText: "ملاحظة.\n\nhttps://alghazzi.org/posts/2026-10-21-post",
+    }), context());
+    assert.equal(result.url, `https://alghazzi.org/ar/posts/${result.post.slug}`);
+    assert.equal(result.post.lang, "ar");
+    assert.match(result.post.linkedinText, new RegExp(`/ar/posts/${result.post.slug}$`));
+  });
+
   it("hides a scheduled post until it is due, then publishes it once", async () => {
     const db = createMemoryPostsDb();
     const created = await createOwnerPost(db, draft({

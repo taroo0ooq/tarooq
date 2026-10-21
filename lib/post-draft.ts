@@ -63,13 +63,15 @@ export function pickSlug(title: string, date: string, mdxNames: Iterable<string>
   throw new PostInputError("Could not find an unused slug.");
 }
 
-export function postUrl(origin: string, date: string, slug: string) {
-  return `${origin.replace(/\/$/, "")}/posts/${date}-${slug}`;
+export function postUrl(origin: string, date: string, slug: string, lang: "en" | "ar" = "en") {
+  const base = origin.replace(/\/$/, "");
+  const path = lang === "ar" ? `/ar/posts/${date}-${slug}` : `/posts/${date}-${slug}`;
+  return `${base}${path}`;
 }
 
-export function alignPostUrl(text: string, origin: string, date: string, slug: string) {
-  const url = postUrl(origin, date, slug);
-  const pattern = new RegExp(`${escapeRegExp(origin.replace(/\/$/, ""))}/posts/${date}-[a-z0-9-]+`, "g");
+export function alignPostUrl(text: string, origin: string, date: string, slug: string, lang: "en" | "ar" = "en") {
+  const url = postUrl(origin, date, slug, lang);
+  const pattern = new RegExp(`${escapeRegExp(origin.replace(/\/$/, ""))}(?:/ar)?/posts/${date}-[a-z0-9-]+`, "g");
   const replaced = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim().replace(pattern, url);
   if (replaced.includes(url)) {
     if (replaced.length > LINKEDIN_LIMIT) {
