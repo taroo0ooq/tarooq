@@ -3,6 +3,7 @@ import type { ChatChunk } from "./chat-corpus";
 import { CHAT_BODY_CHARS, CHAT_RATE_LIMIT, CHAT_RATE_WINDOW_MS } from "./chat-limits";
 import { createAnswerGuard, prepareChatTurn, type ModelTurn } from "./chat-policy";
 import { hashVisitorIp, type ChatRateStore } from "./chat-rate";
+import { logChatModelFailure } from "./chat-model";
 import type { Locale } from "./locale";
 
 export type ChatComplete = (turn: ModelTurn, signal: AbortSignal) => AsyncIterable<string>;
@@ -50,13 +51,32 @@ function chunked(text: string) {
   });
 }
 
+/** Stable client address. Drops a per-connection port so the rate-limit hash does not change between requests. */
+export function normalizeVisitorIp(value: string | null | undefined) {
+  if (!value) return "";
+  let text = value.trim().replace(/^"+|"+$/g, "").trim();
+  if (!text || /^unknown$/i.test(text)) return "";
+  if (text.startsWith("[")) {
+    const end = text.indexOf("]");
+    if (end > 1) text = text.slice(1, end);
+  } else {
+    const port = text.match(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/);
+    if (port?.[1]) text = port[1];
+  }
+  const mapped = text.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (mapped?.[1]) text = mapped[1];
+  return text.toLowerCase();
+}
+
 export function visitorIp(request: Request) {
+  const real = normalizeVisitorIp(request.headers.get("x-real-ip"));
+  if (real) return real;
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
+    const first = normalizeVisitorIp(forwarded.split(",")[0] ?? "");
     if (first) return first;
   }
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
+  return "unknown";
 }
 
 export function sameOrigin(request: Request) {
@@ -90,8 +110,10 @@ function guardedStream(source: AsyncIterable<string>, context: string, locale: L
         }
         const tail = guard.finish();
         if (tail) controller.enqueue(encoder.encode(tail));
-      } catch {
-        if (!guard.sent) controller.enqueue(encoder.encode(copy.error));
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return;
+        logChatModelFailure(error);
+        if (!guard.sent) controller.enqueue(encoder.encode(copy.unavailable));
       } finally {
         controller.close();
       }
@@ -143,9 +165,12 @@ export async function handleChatRequest(request: Request, deps: ChatDeps) {
   const turn = prepareChatTurn({ locale, messages: record.messages, corpus });
   if (turn.kind === "invalid") return json(locale, 400, turn.message);
   if (turn.kind === "text") return plain(turn.text);
+  let source: AsyncIterable<string>;
   try {
-    return plain(guardedStream(deps.complete(turn, request.signal), turn.context, locale));
-  } catch {
-    return json(locale, 502, copyFor(locale).error);
+    source = deps.complete(turn, request.signal);
+  } catch (error) {
+    logChatModelFailure(error);
+    return plain(copyFor(locale).unavailable);
   }
+  return plain(guardedStream(source, turn.context, locale));
 }

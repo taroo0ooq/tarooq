@@ -18,10 +18,12 @@ export type TextTurn = { kind: "text"; text: string };
 export type InvalidTurn = { kind: "invalid"; message: string };
 export type ChatTurn = ModelTurn | TextTurn | InvalidTurn;
 
+const ruleWord = "(?:instructions|instruction|rules|rule|prompts|prompt|directions|guidelines)";
 const injectionPatterns = [
-  /ignore (all |any |the )?(previous|prior|above|earlier) (instructions|rules|prompts|directions)/i,
-  /disregard (all |any |the )?(previous|prior|above|your )?(instructions|rules|prompts)/i,
-  /\byou are now\b/i,
+  new RegExp(`\\bignore\\s+(?:all\\s+|any\\s+|the\\s+|your\\s+|my\\s+)?(?:previous\\s+|prior\\s+|above\\s+|earlier\\s+)?${ruleWord}\\b`, "i"),
+  new RegExp(`\\bdisregard\\s+(?:all\\s+|any\\s+|the\\s+|your\\s+|my\\s+)?(?:previous\\s+|prior\\s+|above\\s+|earlier\\s+)?${ruleWord}\\b`, "i"),
+  new RegExp(`\\bforget\\s+(?:all\\s+|any\\s+|the\\s+|your\\s+|my\\s+)?(?:previous\\s+|prior\\s+|above\\s+|earlier\\s+)?${ruleWord}\\b`, "i"),
+  /\b(?:you are now|you're now|act as|pretend to be|pretend you are|pretend you're)\b/i,
   /\b(system|developer) prompt\b/i,
   /reveal (your |the )?(system |hidden )?(prompt|instructions|rules)/i,
   /\bjailbreak\b/i,
@@ -31,8 +33,10 @@ const injectionPatterns = [
   /<\|im_start\|>/i,
   /\[INST\]/i,
   /###\s*(system|instructions)/i,
-  /تجاهل (كل |جميع )?(التعليمات|القواعد|الأوامر)/,
-  /أنت الآن|انت الآن/,
+  /تجاهل\s+(?:كل\s+|جميع\s+)?(?:ال)?(?:تعليمات|قواعد|أوامر|اوامر|موجه|توجيهات)/,
+  /لا تتبع\s+(?:ال)?(?:تعليمات|قواعد|أوامر|اوامر)/,
+  /أنت الآن|انت الآن|أصبح الآن|اصبح الآن/,
+  /تصرف\s+(?:كأنك|وكانك|كما لو)|تظاهر\s+(?:بأنك|بانك|أنك|انك)/,
   /اكشف (التعليمات|الموجه)/,
   /انسَ التعليمات|انسى التعليمات/,
 ];
@@ -51,16 +55,24 @@ const inventionPatterns = [
   /\blooking for (a job|work|opportunities|a role)\b/i,
   /\bopentowork\b/i,
   /\bnext chapter\b/i,
+  /\bavailable for hire\b/i,
+  /\bfor hire\b/i,
+  /\bhire (him|her|tareq)\b/i,
+  /\bfreelance(?:r|ing)?\b/i,
+  /\bconsulting rate\b/i,
   /\b(are you|you) available (next|this|tomorrow|on)\b/i,
   /\bfree (next|this|tomorrow|on) (monday|tuesday|wednesday|thursday|friday|saturday|sunday|week)\b/i,
   /سعر|تكلفة|أتعاب|اتعاب|بكم/,
   /عملائك|اسم عميل|من عملائ/,
   /نسبة مئوية|كم نسبة|كم وفرت/,
-  /أبحث عن عمل|ابحث عن عمل|فرصة عمل|متاح للعمل/,
+  /أبحث عن عمل|ابحث عن عمل|أبحث عن وظيفة|ابحث عن وظيفة|فرصة عمل|يبحث عن (?:عمل|وظيفة)/,
+  /متاح للعمل|متاح للتوظيف|مستعد للعمل|عمل حر|للتوظيف/,
+  /توظيف(?:ه| طارق)|أريد توظيف|اريد توظيف/,
+  /أجر الاستشارة|اجرة الاستشارة|معدل الاستشارة/,
   /هل أنت متاح (غد|الاسبوع|الأسبوع|يوم)|هل انت متاح/,
 ];
 
-const jobSeeking = /open to (work|opportunities)|looking for (a job|work|opportunities)|#?\bopentowork\b|next chapter|أبحث عن عمل|ابحث عن عمل|فرصة عمل|متاح للعمل/i;
+const jobSeeking = /open to (work|opportunities)|looking for (a job|work|opportunities)|#?\bopentowork\b|next chapter|available for hire|\bfor hire\b|hire (him|her|tareq)|freelance|consulting rate|أبحث عن عمل|ابحث عن عمل|أبحث عن وظيفة|ابحث عن وظيفة|فرصة عمل|متاح للعمل|متاح للتوظيف|عمل حر|يبحث عن عمل|يبحث عن وظيفة|توظيفه|توظيف طارق/i;
 const clientClaim = /\b(client|customer)s?\s+(is|was|named)\b|\b(client|customer)\b[\s\S]{0,40}\b(bank albilad|albilad)\b|\b(bank albilad|albilad)\b[\s\S]{0,40}\b(client|customer)\b|عميل\s*(هو|هي|اسمه|يدعى)/i;
 
 export function normalizeChatText(value: string) {
