@@ -6,10 +6,10 @@ import { llmsBody, llmsResponse } from "./llms-text.ts";
 describe("llms.txt", () => {
   it("serves the approved text as utf-8 plain text", async () => {
     const body = llmsBody();
-    assert.equal(createHash("sha256").update(body).digest("hex"), "a643e7b1850fa5d34f8fe56bde4e49758d375245a14c078bf38f646a37fa8307");
+    assert.equal(createHash("sha256").update(body).digest("hex"), "239edb16fec4a84601985b49b70fcbbd3a514c27c52c9574b762358d16db00c4");
     const text = body.toString("utf8");
     assert.match(text, /^# Tareq Al-Ghazzi\n/);
-    assert.match(text, /^- Lead Cloud Architect, Bank Albilad, Riyadh \(December 2022 to November 2025\): as an employee of the bank, led its Azure cloud work in a regulated Saudi banking environment\.\n/m);
+    assert.match(text, /^- Previously Lead Cloud Architect at Bank Albilad, Riyadh \(December 2022 to November 2025\), leading the bank's Azure cloud work in a regulated Saudi banking environment\.\n/m);
     assert.match(text, /\[Kubernetes isn't cloud\]\(https:\/\/alghazzi\.org\/ar\/posts\/2026-10-20-kubernetes-isnt-cloud\) \(Arabic\)\.\n/);
     assert.equal(text.includes("github.com"), false);
     const response = llmsResponse();
