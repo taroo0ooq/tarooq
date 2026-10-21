@@ -60,4 +60,4 @@ The Vercel project is Git-linked to `main` and deploys only commits GitHub marks
 
 The contact form is unchanged. `RESEND_API_KEY` still has to be set for Production. Changing environment variables requires a new deployment.
 
-`.github/workflows/draft-post.yml` can still open a pull request with a Markdown draft. Those files are not the live source once Supabase has posts.
+`.github/workflows/draft-post.yml` runs at 07:00 Asia/Riyadh. It inserts one draft into Supabase, so the post shows up in the desk at `/posts/new`. The job does not publish, does not call LinkedIn, and does not commit. On a second run the same Riyadh day it leaves the existing row alone. Projects that already applied the earlier SQL need `supabase/migrations/20261021140000_posts_draft_key.sql` as well. GitHub Actions needs secrets `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, and one of `XAI_API_KEY` or `AI_GATEWAY_API_KEY`. `XAI_MODEL` is an optional repository variable.
