@@ -14,7 +14,7 @@ Canonical LinkedIn: https://www.linkedin.com/in/tareq-alghazzi
 
 ## Career summary
 - Head of Cloud Services, MENA, Mobiz IT, Riyadh (November 2025 to present).
-- Bank Albilad, Riyadh (December 2022 to November 2025): as an employee of the bank, led its Azure cloud work in a regulated Saudi banking environment.
+- Lead Cloud Architect, Bank Albilad, Riyadh (December 2022 to November 2025): as an employee of the bank, led its Azure cloud work in a regulated Saudi banking environment.
 - Earlier: led the cloud solution offering at Abilitii (Ajlan & Bros); cloud pre-sales architecture for enterprise and financial services at Crayon and Dimensions Cloud; Microsoft cloud roles in Jeddah; network and systems engineering in the UAE from 2001.
 - Education: Ajman University of Science and Technology.
 - Certifications listed on the site: Microsoft Certified Azure Security Engineer Associate, AZ-300, AWS Certified Solutions Architect Associate.
