@@ -16,7 +16,7 @@ Use only these facts:
 - Bin Salmeen Computers, Senior Network Engineer, June 2005 to June 2006, Abu Dhabi.
 - LI Group, Network, Database and Website Administrator, January 2004 to June 2005, Abu Dhabi. FrontPage, Flash, Access.
 - Abu Dhabi, UAE, Network Administrator, September 2001 to December 2003, and a bachelor's degree in Computer Information Systems, Ajman University of Science and Technology, 2001 to 2004.
-- Certificates, undated on the CV: Azure Security Engineer Associate, AZ-300, AWS Solutions Architect Associate, Microsoft Private Cloud Professional 2012 SP1, MCPS.
+- Certificates, undated on the CV: Azure Security Engineer Associate, AZ-300, AWS Solutions Architect Associate.
 - Skills: Microsoft Azure, Artificial Intelligence, Azure DevOps. Languages: English and Arabic.
 - Convictions: a regional cloud is a capability; maturity is discipline, cost transparency, and architectures that survive Dev, SIT, UAT, and Production; AI needs a governor.
 

@@ -274,7 +274,15 @@ a { color: inherit; }
   font-size: 1.15rem;
   max-width: 40rem;
   color: var(--ink-soft);
+  margin: 0 auto 12px;
+}
+
+.hero-sectors {
+  max-width: 46rem;
   margin: 0 auto 22px;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.6;
 }
 
 .hero-actions {
