@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         source: "/posts/new",
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
+      {
+        source: "/posts/new/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
     ];
   },
   outputFileTracingIncludes: {
@@ -23,6 +27,7 @@ const nextConfig: NextConfig = {
     "/posts/[slug]": ["./content/posts/**/*"],
     "/ar/posts": ["./content/posts/**/*"],
     "/ar/posts/[slug]": ["./content/posts/**/*"],
+    "/sitemap.xml": ["./content/posts/**/*"],
   },
 };
 

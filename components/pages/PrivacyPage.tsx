@@ -49,7 +49,7 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
           {text(profile.location)}
         </p>
         <p className="owner-link">
-          <a href="/api/linkedin/start">{ui.privacy.owner}</a>
+          <a href="/api/linkedin/start?next=/posts/new">{ui.privacy.owner}</a>
         </p>
       </div>
     </main>

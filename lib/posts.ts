@@ -17,6 +17,8 @@ export type PostMeta = {
   linkedinUrn: string;
   linkedinUrl: string;
   html: string;
+  seoTitle: string;
+  seoDescription: string;
 };
 
 const postsDir = path.join(process.cwd(), "content", "posts");
@@ -98,6 +100,8 @@ function readPost(fileName: string): PostMeta | null {
     linkedinUrn: data.linkedinUrn ?? "",
     linkedinUrl: data.linkedinUrl ?? "",
     html: renderMarkdown(body, data.lang ?? ""),
+    seoTitle: data.seoTitle ?? "",
+    seoDescription: data.seoDescription ?? "",
   };
 }
 

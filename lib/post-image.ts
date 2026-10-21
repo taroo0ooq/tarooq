@@ -50,6 +50,12 @@ export function readImage(input: { bytes: Buffer; filename?: string; contentType
   return { bytes: input.bytes, ext: sniffed };
 }
 
+export function imageContentType(ext: ImageExt) {
+  if (ext === "png") return "image/png";
+  if (ext === "jpg") return "image/jpeg";
+  return "image/webp";
+}
+
 export function cleanAlt(value: string, hasImage: boolean) {
   const alt = value.replace(/\r\n/g, "\n").replace(/\s+/g, " ").trim();
   if (hasImage && !alt) throw new PostInputError("Add alt text for the image.");

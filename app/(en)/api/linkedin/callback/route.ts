@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
+import { storeOwnerLinkedInToken } from "@/lib/linkedin-connection";
 import {
   NEXT_COOKIE,
-  SETUP_COOKIE,
   STATE_COOKIE,
-  authorReturnPath,
   exchangeCode,
   fetchMember,
   isRegisteredOrigin,
-  personUrn,
-  sealSetup,
   siteOrigin,
   statesMatch,
   unregisteredOriginMessage,
@@ -85,71 +82,39 @@ export async function GET(request: Request) {
     const exchanged = await exchangeCode(origin, code);
     const member = await fetchMember(exchanged.accessToken);
     const secure = origin.startsWith("https://");
-    const nextPath = authorReturnPath(readCookie(request, NEXT_COOKIE));
-    if (nextPath) {
-      if (!process.env.LINKEDIN_PERSON_ID) {
-        return finish(page(500, "LINKEDIN_PERSON_ID is not set."), secure);
-      }
-      if (!isOwner(member.personId)) {
-        return finish(page(403, "This LinkedIn account cannot author posts."), secure);
-      }
-      const response = NextResponse.redirect(new URL(nextPath, origin), 303);
-      response.cookies.set({
-        name: OWNER_COOKIE,
-        value: sealOwnerSession(member.personId),
-        httpOnly: true,
-        sameSite: "lax",
-        secure,
-        path: "/",
-        maxAge: SESSION_SECONDS,
+    if (!process.env.LINKEDIN_PERSON_ID) {
+      return finish(page(500, "LINKEDIN_PERSON_ID is not set."), secure);
+    }
+    if (!isOwner(member.personId)) {
+      return finish(page(403, "This LinkedIn account cannot author posts."), secure);
+    }
+
+    const expiresAt = new Date(Date.now() + Math.max(0, exchanged.expiresIn) * 1000).toISOString();
+    let stored = false;
+    try {
+      await storeOwnerLinkedInToken({
+        accessToken: exchanged.accessToken,
+        expiresAt,
+        personId: member.personId,
+        name: member.name,
+        email: member.email,
       });
-      return finish(response, secure);
+      stored = true;
+    } catch {
+      stored = false;
     }
 
-    const expiresAt = new Date(Date.now() + Math.max(0, exchanged.expiresIn) * 1000).toISOString().slice(0, 10);
-    const sealed = sealSetup({
-      accessToken: exchanged.accessToken,
-      expiresAt,
-      personId: member.personId,
-      personUrn: personUrn(member.personId),
-      name: member.name,
-      email: member.email,
-    });
-    if (sealed.length > 3800) {
-      return page(500, "The LinkedIn token could not be stored in a cookie. Nothing was saved.");
-    }
-
-    const response = NextResponse.redirect(new URL("/linkedin/connected", origin), 303);
+    const response = NextResponse.redirect(new URL(stored ? "/posts/new?linkedin=connected" : "/posts/new?linkedin=unsaved", origin), 303);
     response.cookies.set({
-      name: STATE_COOKIE,
-      value: "",
+      name: OWNER_COOKIE,
+      value: sealOwnerSession(member.personId),
       httpOnly: true,
       sameSite: "lax",
       secure,
       path: "/",
-      maxAge: 0,
+      maxAge: SESSION_SECONDS,
     });
-    response.cookies.set({
-      name: NEXT_COOKIE,
-      value: "",
-      httpOnly: true,
-      sameSite: "lax",
-      secure,
-      path: "/",
-      maxAge: 0,
-    });
-    response.cookies.set({
-      name: SETUP_COOKIE,
-      value: sealed,
-      httpOnly: true,
-      sameSite: "lax",
-      secure,
-      path: "/linkedin",
-      maxAge: 300,
-    });
-    response.headers.set("Cache-Control", "no-store");
-    response.headers.set("X-Robots-Tag", "noindex");
-    return response;
+    return finish(response, secure);
   } catch (error) {
     const message = error instanceof Error ? error.message : "LinkedIn sign-in failed.";
     return page(400, message);
