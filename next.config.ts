@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/posts": ["./content/posts/**/*"],
     "/posts/[slug]": ["./content/posts/**/*"],
+    "/ar/posts": ["./content/posts/**/*"],
+    "/ar/posts/[slug]": ["./content/posts/**/*"],
   },
 };
 

@@ -74,7 +74,7 @@ a, button { cursor: pointer; }
 
 .skip {
   position: absolute;
-  left: 12px;
+  inset-inline-start: 12px;
   top: -48px;
   background: var(--navy);
   color: #fff;
@@ -194,9 +194,27 @@ a { color: inherit; }
 
 .nav-links a.active::after {
   content: "/";
-  margin-left: 6px;
+  margin-inline-start: 6px;
   color: var(--amber);
 }
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
+.lang-switch:hover { border-color: var(--purple); color: var(--purple-ink); }
 
 .hero {
   position: relative;
@@ -279,7 +297,7 @@ a { color: inherit; }
   max-width: 760px;
   margin: 0 auto;
   padding: 72px 6vw 24px;
-  text-align: left;
+  text-align: start;
 }
 
 .band h2 {
@@ -387,7 +405,7 @@ a { color: inherit; }
   top: 104px;
   font-weight: 800;
   color: var(--purple-ink);
-  text-align: right;
+  text-align: end;
   padding-top: 4px;
 }
 
@@ -471,7 +489,7 @@ a { color: inherit; }
 .org { margin: 0; font-weight: 800; font-size: 1.05rem; }
 .meta { margin: 4px 0 10px; color: var(--muted); font-size: 0.95rem; }
 .role p { margin: 0 0 10px; color: var(--ink-soft); }
-.role ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); }
+.role ul { margin: 0; padding-inline-start: 1.1rem; color: var(--ink-soft); }
 .role li + li { margin-top: 6px; }
 
 .tiles {
@@ -791,7 +809,7 @@ a { color: inherit; }
 }
 .legal a { color: var(--purple-ink); font-weight: 700; }
 .legal h3 { color: var(--ink); font-size: 1.05rem; font-weight: 800; margin: 1.4rem 0 0.35rem; }
-.legal ul { margin: 0.4rem 0 1rem; padding-left: 1.2rem; }
+.legal ul { margin: 0.4rem 0 1rem; padding-inline-start: 1.2rem; }
 .legal li { margin: 0.35rem 0; }
 .owner-link { margin-top: 40px; font-size: 0.85rem; color: var(--muted); }
 .owner-link a { color: var(--muted); font-weight: 600; }
@@ -805,7 +823,7 @@ a { color: inherit; }
 .biz-text:hover { color: var(--amber); }
 .offer .body { padding: 22px 24px 28px; color: var(--navy); display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .offer p, .offer li { color: #475069; }
-.offer ul { margin: 0; padding-left: 1.1rem; }
+.offer ul { margin: 0; padding-inline-start: 1.1rem; }
 .offer a { margin-top: auto; font-weight: 800; color: var(--purple); text-decoration: none; }
 .offer .gets-label {
   margin: 8px 0 0;
@@ -837,11 +855,11 @@ a { color: inherit; }
   color: #fff;
 }
 .biz-quote em { color: var(--amber); font-style: normal; }
-.biz-list { margin: 16px 0 0; padding-left: 1.1rem; }
+.biz-list { margin: 16px 0 0; padding-inline-start: 1.1rem; }
 .biz-list li { margin: 8px 0; }
 .biz-lead { margin: 0 0 14px; font-size: 1.2rem; color: #fff; max-width: 36rem; }
 .biz-close { text-align: center; }
-.biz-close h2, .biz-close p { margin-left: auto; margin-right: auto; }
+.biz-close h2, .biz-close p { margin-inline: auto; }
 .biz-close p { max-width: 40rem; }
 .biz-close .biz-actions { justify-content: center; }
 
@@ -929,7 +947,7 @@ textarea { min-height: 140px; resize: vertical; }
 [data-theme="dark"] textarea::placeholder { color: #b7c0d4; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--purple); }
 .error { color: var(--error); font-size: 0.85rem; margin-top: 6px; }
-.hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
+.hp { position: absolute; inset-inline-start: -9999px; height: 0; overflow: hidden; }
 
 .site-footer {
   background: transparent;
@@ -970,8 +988,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
   clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
   animation: twinkle 7s ease-in-out infinite;
 }
-.star-a { top: 16%; left: 10%; }
-.star-b { top: 24%; right: 14%; width: 18px; height: 18px; background: var(--purple); animation-delay: -2.4s; }
+.star-a { top: 16%; inset-inline-start: 10%; }
+.star-b { top: 24%; inset-inline-end: 14%; width: 18px; height: 18px; background: var(--purple); animation-delay: -2.4s; }
 
 .clock { display: grid; justify-items: center; gap: 8px; margin-top: 8px; }
 .clock-label { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
@@ -1077,4 +1095,86 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 [data-scene="y"] [data-reveal] {
   opacity: 0;
   translate: 0 50%;
+}
+
+[dir="rtl"] [data-scene="x"] [data-reveal] {
+  translate: 100% 0;
+}
+
+[dir="rtl"] [data-scene="x"][data-dir="1"] [data-reveal] {
+  translate: -100% 0;
+}
+
+[dir="rtl"] body {
+  line-height: 1.8;
+}
+
+[dir="rtl"] .serif,
+[dir="rtl"] .hero h1,
+[dir="rtl"] .tagline,
+[dir="rtl"] .page-head h1,
+[dir="rtl"] .quote,
+[dir="rtl"] .biz-quote,
+[dir="rtl"] .card h2,
+[dir="rtl"] .post-card h2,
+[dir="rtl"] .fy .top h3,
+[dir="rtl"] .offer .top h2,
+[dir="rtl"] .prose h2,
+[dir="rtl"] .prose h3,
+[dir="rtl"] .prose h4,
+[dir="rtl"] .legal h2,
+[dir="rtl"] .creds h2,
+[dir="rtl"] .preview-card h2,
+[dir="rtl"] .result-card h2 {
+  font-family: var(--font-arabic), "Readex Pro", "Noto Naskh Arabic", Georgia, serif;
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .hero h1 { line-height: 1.25; }
+[dir="rtl"] .serif,
+[dir="rtl"] .page-head h1,
+[dir="rtl"] .card h2 { line-height: 1.35; }
+[dir="rtl"] .quote,
+[dir="rtl"] .biz-quote { line-height: 1.7; }
+
+[dir="rtl"] .eyebrow,
+[dir="rtl"] .card small,
+[dir="rtl"] .offer .gets-label {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+[dir="rtl"] .biz h1 { max-width: 20em; }
+
+[dir="rtl"] [dir="ltr"] .serif,
+[dir="rtl"] [dir="ltr"].serif {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+[dir="rtl"] article[dir="ltr"],
+[dir="rtl"] article[dir="ltr"] .prose,
+[dir="rtl"] article[dir="ltr"] .prose h2,
+[dir="rtl"] article[dir="ltr"] .prose h3,
+[dir="rtl"] article[dir="ltr"] .prose h4,
+[dir="rtl"] .post-card[dir="ltr"] {
+  font-family: var(--font-body), Inter, "Segoe UI", sans-serif;
+  letter-spacing: normal;
+  line-height: 1.5;
+}
+
+.lang-mark {
+  display: inline-block;
+  margin-inline-start: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--purple-ink);
+  font-family: var(--font-body), Inter, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
 }

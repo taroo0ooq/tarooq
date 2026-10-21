@@ -101,6 +101,16 @@ function readPost(fileName: string): PostMeta | null {
   };
 }
 
+export function postsForLocale<T extends { lang: string; date: string; slug: string }>(posts: T[], locale: "en" | "ar") {
+  if (locale !== "ar") return posts;
+  return [...posts].sort((a, b) => {
+    const rank = (post: T) => (post.lang === "ar" ? 0 : 1);
+    const byLang = rank(a) - rank(b);
+    if (byLang !== 0) return byLang;
+    return b.date.localeCompare(a.date) || b.slug.localeCompare(a.slug);
+  });
+}
+
 export function getPosts() {
   let names: string[] = [];
   try {
@@ -118,11 +128,11 @@ export function getPost(slug: string) {
   return getPosts().find((post) => post.slug === slug) ?? null;
 }
 
-export function formatPostDate(value: string) {
+export function formatPostDate(value: string, locale: "en" | "ar" = "en") {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) return value;
   const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-SA-u-ca-gregory-nu-latn" : "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
