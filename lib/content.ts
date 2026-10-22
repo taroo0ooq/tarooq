@@ -613,122 +613,80 @@ export const courses = [
 ] as const;
 
 export const businessPage = {
-  audience:
-    "For banks, government, and regulated enterprises across MENA that need Azure platforms which stay compliant, operable, and cost-transparent in production.",
-  model: "Same operating model from Dev/SIT through UAT and Production.",
-  regulatedTitle: "Built for regulated MENA realities",
-  regulated:
-    "Designs and delivery for regulated environments. The work assumes auditors will arrive, production will have incidents, and cost must remain transparent as the platform scales.",
+  audience: "This page is my own practice. It's separate from my job as Head of Cloud Services, MENA at Mobiz IT.",
+  model: "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work, and Mobiz doesn't endorse this practice.",
+  regulatedTitle: "Who this is for",
+  regulated: "Enterprise and regulated organizations in MENA. The platform has to hold in Production and in an audit.",
   contexts: [
-    "Regulated banking and financial services",
-    "Government and government-linked entities",
-    "Large enterprises with multi-market or multi-jurisdiction needs",
+    "Banking and financial services",
+    "Government and the public sector",
+    "Telecom",
+    "Energy and oil & gas",
+    "Tourism and hospitality",
+    "Large and giga enterprises",
   ],
-  processTitle: "How the work progresses",
-  differenceTitle: "How this is different",
+  processTitle: "How I work",
+  differenceTitle: "What the work covers",
   differences: [
-    "Hands-on architecture and delivery. Strategy does not stop at the subscription.",
-    "One operating model across Dev/SIT, UAT, and Production. No separate “production is different” design.",
-    "Built for regulated MENA conditions: jurisdiction-specific controls, audit readiness, and cost transparency from the start.",
+    "Strategy that continues into the Azure landing zone. It doesn't stop at the subscription.",
+    "One operating model from Dev and SIT through UAT and Production.",
+    "Security and resilience, then a handover that leaves owners.",
   ],
-  engagement:
-    "Typical work includes regional strategy and a landing zone foundation, migration program support, security and compliance remediation, and an operating model with team enablement.",
-  credibility: "Led by Tareq Al-Ghazzi, Head of Cloud Services, MENA.",
-  closeTitle: "Let's talk about the constraint.",
-  close:
-    "Share the region, the regulatory context, and what “done” needs to look like. We'll map the practical path from there.",
+  engagement: "The usual shape is a regional operating model and a landing zone the team can run. Security and resilience belong in that design.",
+  credibility: "I'm Tareq Al-Ghazzi. I've worked in Saudi Arabia since 2012. I lead Cloud Services for MENA at Mobiz IT, and I keep this practice separate from that role.",
+  closeTitle: "If the constraint is real, write to me in Riyadh.",
+  close: "Tell me the region, the regulatory context, and what done needs to look like. I'll say whether it's work I take on.",
 } as const;
 
 export const offers = [
   {
-    kicker: "Advisory",
-    title: "Cloud and AI strategy",
+    id: "strategy",
+    kicker: "Strategy",
+    title: "Regional strategy",
     tone: "t-az",
-    summary: "Own the regional strategy and the execution, not a slide that stops at the subscription.",
+    summary: "I help you name the operating model: one standard across markets, with a clear owner for the exception.",
     points: [
-      "Align enterprise architecture with financial governance and regulatory requirements",
-      "Standardize how markets adopt the platform",
-      "FinOps operating model and a cost view leadership can act on",
+      "Architecture tied to financial governance and the regulation that applies",
+      "How markets adopt the same platform",
+      "A FinOps view leadership can use",
     ],
-    gets: [
-      "Regional target architecture aligned to regulatory and financial governance needs",
-      "FinOps operating model with a cost view leadership can act on",
-      "Prioritized roadmap that connects strategy to funded execution",
-      "Clear view of constraints (regulatory, organizational, technical) before design begins",
-    ],
-    cta: "Plan the regional strategy",
+    cta: "Write about strategy",
   },
   {
-    kicker: "Execution",
-    title: "Landing zones and delivery",
+    id: "landing",
+    kicker: "Platform",
+    title: "Landing zones",
     tone: "t-do",
-    summary: "CAF and Well-Architected landing zones, with guardrails teams can build inside.",
+    summary: "I design the Azure landing zone as the way Dev, SIT, UAT, and Production are run, not as a document.",
     points: [
-      "The same architecture across Dev/SIT, UAT, and Production",
-      "AI platform readiness for advanced workloads and enterprise LLM initiatives",
-      "Automation that removes manual operations and shortens delivery",
+      "The same guardrails in every environment",
+      "Migration in waves, with a rollback path",
+      "Room for governed AI, once the data is owned",
     ],
-    gets: [
-      "Production-ready CAF/WAF landing zone with consistent guardrails in every environment",
-      "Migration patterns and automation that internal teams can run and maintain",
-      "AI-ready platform foundations for advanced and LLM workloads",
-      "Reduced manual operations through automation built into the design",
-    ],
-    cta: "Start the landing zone",
+    cta: "Write about the landing zone",
   },
   {
-    kicker: "Enablement",
-    title: "Security, resilience, teams",
+    id: "resilience",
+    kicker: "Running it",
+    title: "Security and resilience, then handover",
     tone: "t-ai",
-    summary: "Identity, compliance, and resilience designed per jurisdiction, with a team that can run it.",
+    summary: "I put identity, recovery, and ownership into the design, then leave a team that can keep the standard.",
     points: [
-      "Regional security and IAM standardization",
-      "Disaster recovery and high availability by design",
-      "Cross-functional cloud and platform engineering teams",
+      "Security and IAM that match the jurisdiction",
+      "Recovery someone has practiced",
+      "Owners and runbooks that stay",
     ],
-    gets: [
-      "Jurisdiction-specific security and IAM baseline, ready for audit",
-      "Disaster recovery and high availability designed in, not added later",
-      "Operating model and team structure that can sustain the standard after handover",
-      "Clear ownership so the platform remains healthy in production",
-    ],
-    cta: "Review the operating model",
-  },
-] as const;
-
-export const steps = [
-  {
-    n: "01",
-    title: "Discover",
-    body: "The region, the constraint, and what done looks like.",
-    outcome: "Constraint map, regulatory scope, and a shared definition of “done.”",
-  },
-  {
-    n: "02",
-    title: "Design",
-    body: "Landing zones, FinOps, and the operating model.",
-    outcome: "Target architecture, FinOps model, and guardrails that apply consistently across environments.",
-  },
-  {
-    n: "03",
-    title: "Deliver",
-    body: "Governance, automation, and AI readiness in the same design.",
-    outcome: "Implemented landing zone, automation, and platform patterns the team can build on.",
-  },
-  {
-    n: "04",
-    title: "Sustain",
-    body: "Security, resilience, and a team that keeps the standard.",
-    outcome: "Handover, runbooks, and an operating model that preserves the standard in production.",
+    cta: "Write about handover",
   },
 ] as const;
 
 export const topics = [
-  "Business transformation",
-  "Cloud and AI strategy",
-  "FinOps and landing zones",
-  "AI platform readiness",
-  "Something else",
+  { id: "conversation", label: "The work in general" },
+  { id: "strategy", label: "Regional strategy" },
+  { id: "landing", label: "Landing zones and the operating model" },
+  { id: "resilience", label: "Security and resilience, with handover" },
+  { id: "ai", label: "Governed AI" },
+  { id: "other", label: "Something else" },
 ] as const;
 
 export const ticker = [
@@ -812,14 +770,12 @@ export const ui = {
     portraitAlt: "Tareq Al-Ghazzi",
   },
   business: {
-    eyebrow: "For business",
-    title: "Practical architecture for organizations that cannot afford failure.",
-    cta: "Let's talk about the constraint",
+    eyebrow: "My practice",
+    title: "Work I take on directly.",
+    cta: "Write to me",
     seeHow: "See how I work",
-    gets: "What you get",
-    outcome: "Outcome.",
     record: "View the record",
-    start: "Start the conversation",
+    start: "Write to me",
     orHow: "Or see how I work",
   },
   forYou: {
@@ -846,6 +802,8 @@ export const ui = {
     linkedin: "LinkedIn",
     based: "Based in {{location}}.",
     handle: "tareq-alghazzi",
+    nextLabel: "What happens next",
+    next: "I read the note myself in Riyadh, Saudi Arabia. I'll tell you whether this is work I take on, and what that first conversation should cover. It isn't a proposal. There's no price. The 6 choices say which part of the work you mean.",
   },
   form: {
     name: "Name",

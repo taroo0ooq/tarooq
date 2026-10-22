@@ -10,6 +10,9 @@ export const metadata: Metadata = pageMetadata("/ar/contact", {
   description: copy.ui.meta.contactDescription,
 });
 
-export default function Page() {
-  return <ContactPage locale="ar" />;
+type PageProps = { searchParams: Promise<{ topic?: string }> };
+
+export default async function Page({ searchParams }: PageProps) {
+  const { topic } = await searchParams;
+  return <ContactPage locale="ar" initialTopic={topic} />;
 }
