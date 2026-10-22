@@ -30,27 +30,42 @@ export function ScrollReveal() {
 
   useLayoutEffect(() => {
     let frame = 0;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const update = () => {
       frame = 0;
       const viewHeight = window.innerHeight;
+      const reduce = motion.matches;
 
       document.querySelectorAll<HTMLElement>("[data-scene]").forEach((scene) => {
-        const reveal = scene.querySelector<HTMLElement>("[data-reveal]");
-        if (!reveal) return;
-        const rect = scene.getBoundingClientRect();
-        const cover = (viewHeight - rect.top) / (Math.max(rect.height, 1) + viewHeight);
-        if (scene.dataset.scene === "x") {
-          const turned = easeIn(clamp((cover - 0.02) / 0.2));
-          const rtl = document.documentElement.dir === "rtl" ? -1 : 1;
-          const dir = (scene.dataset.dir === "1" ? 1 : -1) * rtl;
-          reveal.style.opacity = turned.toFixed(3);
-          reveal.style.translate = `${((1 - turned) * dir * 100).toFixed(2)}% 0`;
+        const reveals = [...scene.querySelectorAll<HTMLElement>("[data-reveal]")];
+        if (reveals.length === 0) return;
+        const staggerStep = scene.hasAttribute("data-stagger") ? 0.008 : 0;
+        if (reduce && staggerStep > 0) {
+          for (const reveal of reveals) {
+            reveal.style.opacity = "1";
+            reveal.style.translate = "none";
+          }
           return;
         }
-        const turned = easeOut(clamp((cover - 0.35) / 0.15));
-        reveal.style.opacity = turned.toFixed(3);
-        reveal.style.translate = `0 ${((1 - turned) * 50).toFixed(2)}%`;
+        const rect = scene.getBoundingClientRect();
+        const cover = (viewHeight - rect.top) / (Math.max(rect.height, 1) + viewHeight);
+        reveals.forEach((reveal, index) => {
+          const stagger = index * staggerStep;
+          if (scene.dataset.scene === "x") {
+            const turned = easeIn(clamp((cover - 0.02 - stagger) / 0.2));
+            const rtl = document.documentElement.dir === "rtl" ? -1 : 1;
+            const dir = (scene.dataset.dir === "1" ? 1 : -1) * rtl;
+            reveal.style.opacity = turned.toFixed(3);
+            reveal.style.translate = `${((1 - turned) * dir * 100).toFixed(2)}% 0`;
+            return;
+          }
+          const start = staggerStep > 0 ? 0.18 : 0.35;
+          const span = staggerStep > 0 ? 0.14 : 0.15;
+          const turned = easeOut(clamp((cover - start - stagger) / span));
+          reveal.style.opacity = turned.toFixed(3);
+          reveal.style.translate = `0 ${((1 - turned) * (staggerStep > 0 ? 28 : 50)).toFixed(2)}%`;
+        });
       });
     };
 
@@ -65,6 +80,7 @@ export function ScrollReveal() {
     window.addEventListener("resize", request);
     window.addEventListener("hashchange", request);
     window.addEventListener("load", request);
+    motion.addEventListener("change", request);
     return () => {
       window.cancelAnimationFrame(frame);
       window.cancelAnimationFrame(kick);
@@ -73,6 +89,7 @@ export function ScrollReveal() {
       window.removeEventListener("resize", request);
       window.removeEventListener("hashchange", request);
       window.removeEventListener("load", request);
+      motion.removeEventListener("change", request);
     };
   }, [pathname]);
 

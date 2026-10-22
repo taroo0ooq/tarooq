@@ -37,12 +37,34 @@ const validFrom = [
   "2013-02",
 ];
 
+const shorts = [
+  "AI Train the Trainer",
+  "AWS SA Professional",
+  "Azure Security Engineer",
+  "AWS SA Associate",
+  "Veeam VMTSP",
+  "Azure Architect Expert",
+  "AZ-301",
+  "AZ-300",
+  "MCTS SAM",
+  "Backup Exec 2012",
+  "MCP",
+  "Private Cloud 2012",
+  "VTCP 5.0",
+];
+
 const statusWords = /\b(active|current|expired|expires|expiry|legacy)\b/i;
 
 describe("credential list", () => {
   it("lists all 13 certificates newest first, with an issue date only where one is shown", () => {
     assert.deepEqual(en.credentialList.map((item) => item.name), names);
     assert.deepEqual(ar.credentialList.map((item) => item.name), names);
+    assert.deepEqual(en.credentialList.map((item) => item.short), shorts);
+    assert.deepEqual(ar.credentialList.map((item) => item.short), shorts);
+    assert.equal(en.ui.home.certsListTitle, "Certificates.");
+    assert.equal(ar.ui.home.certsListTitle, "الشهادات.");
+    assert.equal(en.ui.home.certsListTitle.toLowerCase().includes("newest"), false);
+    assert.equal(ar.ui.home.certsListTitle.includes("الأحدث"), false);
     assert.deepEqual(
       en.credentialList.map((item) => item.issuer),
       ar.credentialList.map((item) => item.issuer),

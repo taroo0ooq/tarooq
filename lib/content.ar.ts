@@ -397,6 +397,7 @@ export const certifications = [
 export const credentialList = [
   {
     name: "Microsoft AI Discovery Cards – Train The Trainer",
+    short: "AI Train the Trainer",
     issuer: "Microsoft",
     image: "/badges/microsoft-ai-discovery-cards.webp",
     alt: "شارة Microsoft AI Discovery Cards – Train The Trainer",
@@ -405,6 +406,7 @@ export const credentialList = [
   },
   {
     name: "AWS Certified Solutions Architect – Professional",
+    short: "AWS SA Professional",
     issuer: "Amazon Web Services (AWS)",
     image: "/badges/aws-solutions-architect-professional.webp",
     alt: "شارة AWS Certified Solutions Architect – Professional",
@@ -413,6 +415,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Certified: Azure Security Engineer Associate",
+    short: "Azure Security Engineer",
     issuer: "Microsoft",
     image: "/badges/azure-security-engineer-associate.png",
     alt: "شارة Microsoft Certified: Azure Security Engineer Associate",
@@ -421,6 +424,7 @@ export const credentialList = [
   },
   {
     name: "AWS Certified Solutions Architect – Associate",
+    short: "AWS SA Associate",
     issuer: "Amazon Web Services (AWS)",
     image: "/badges/aws-solutions-architect-associate.png",
     alt: "شارة AWS Certified Solutions Architect – Associate",
@@ -429,6 +433,7 @@ export const credentialList = [
   },
   {
     name: "Veeam Technical Sales Professional (VMTSP) 2020",
+    short: "Veeam VMTSP",
     issuer: "Veeam",
     image: "/badges/issuer-veeam.webp",
     alt: "شارة Veeam Technical Sales Professional (VMTSP) 2020",
@@ -437,6 +442,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Certified: Azure Solutions Architect Expert",
+    short: "Azure Architect Expert",
     issuer: "Microsoft",
     image: "/badges/microsoft-certified-expert.webp",
     alt: "شارة Microsoft Certified: Azure Solutions Architect Expert",
@@ -445,6 +451,7 @@ export const credentialList = [
   },
   {
     name: "AZ-301 Microsoft Azure Architect Design",
+    short: "AZ-301",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "شارة AZ-301 Microsoft Azure Architect Design",
@@ -453,6 +460,7 @@ export const credentialList = [
   },
   {
     name: "AZ-300 Microsoft Azure Architect Technologies",
+    short: "AZ-300",
     issuer: "Microsoft",
     image: "/badges/az-300-azure-architect-technologies.png",
     alt: "شارة AZ-300 Microsoft Azure Architect Technologies",
@@ -461,6 +469,7 @@ export const credentialList = [
   },
   {
     name: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
+    short: "MCTS SAM",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "شارة MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
@@ -469,6 +478,7 @@ export const credentialList = [
   },
   {
     name: "Symantec Backup Exec 2012",
+    short: "Backup Exec 2012",
     issuer: "Symantec",
     image: "/badges/issuer-symantec.webp",
     alt: "شارة Symantec Backup Exec 2012",
@@ -477,6 +487,7 @@ export const credentialList = [
   },
   {
     name: "MCPS: Microsoft Certified Professional",
+    short: "MCP",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "شارة MCPS: Microsoft Certified Professional",
@@ -485,6 +496,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Private Cloud Professional 2012 SP1",
+    short: "Private Cloud 2012",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "شارة Microsoft Private Cloud Professional 2012 SP1",
@@ -493,6 +505,7 @@ export const credentialList = [
   },
   {
     name: "VTCP 5.0",
+    short: "VTCP 5.0",
     issuer: "VMware",
     image: "/badges/issuer-vmware.webp",
     alt: "شارة VTCP 5.0",
@@ -848,7 +861,7 @@ export const ui = {
     expertiseIntro: "بنية سحابية وتنفيذ عمليان للمؤسسات التي لا تحتمل الفشل أو عدم الامتثال.",
     certsEyebrow: "الشهادات",
     certsTitle: "شهادات إلى جانب العمل.",
-    certsListTitle: "الشهادات، الأحدث أولًا.",
+    certsListTitle: "الشهادات.",
     certsIssued: "صدرت في",
     languagesLead: "اللغات:",
     languagesJoin: " و",

@@ -594,42 +594,204 @@ a { color: inherit; }
 .cred-line .cert-link { font-size: 0.92rem; }
 
 .cert-record {
+  --cert-gap: clamp(8px, 1.2vw, 22px);
+  --cert-size: min(124px, calc((100% - 6 * var(--cert-gap)) / 7));
   max-width: 1080px;
   margin: 0 auto;
-  padding: 28px 6vw 88px;
+  padding: 28px 4vw 88px;
 }
 
-.cert-record .cert-list {
-  max-width: 46rem;
-  margin: 8px auto 0;
+.cert-scroller {
+  margin-top: 8px;
 }
 
-.cert-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-  color: inherit;
-  text-decoration: none;
-}
-
-.cert-row .cert-badge {
-  width: 64px;
-  height: 64px;
-}
-
-.cert-copy {
+.cert-grid {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 22px;
+}
+
+.cert-line {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  gap: var(--cert-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cert-line li {
+  flex: 0 0 var(--cert-size);
+  width: var(--cert-size);
   min-width: 0;
 }
 
-.cert-row .cert-name { margin: 0; }
-.cert-row .meta { margin: 0; }
-a.cert-row:hover .cert-name { text-decoration: underline; }
+.cert-line li:hover,
+.cert-line li:focus-within {
+  z-index: 5;
+}
+
+.cert-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 118px;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 280ms ease;
+}
+
+.cert-tile:hover,
+.cert-tile:focus-visible {
+  transform: translateY(-6px);
+}
+
+.cert-glow {
+  position: absolute;
+  z-index: 0;
+  top: -8px;
+  left: 50%;
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.55), transparent 68%);
+  opacity: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.cert-tile:hover .cert-glow,
+.cert-tile:focus-visible .cert-glow {
+  opacity: 1;
+}
+
+.cert-medal {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.cert-medal::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid #C8A96A;
+  border-radius: 18px;
+  opacity: 0.4;
+  pointer-events: none;
+  animation: cert-gold-shimmer 5.6s ease-in-out infinite;
+}
+
+.cert-medal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 32%, rgba(243, 238, 228, 0.78) 48%, rgba(200, 169, 106, 0.55) 54%, transparent 70%);
+  opacity: 0;
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.cert-tile:hover .cert-medal::after,
+.cert-tile:focus-visible .cert-medal::after {
+  opacity: 1;
+  transform: translateX(130%);
+  transition: transform 720ms ease, opacity 220ms ease;
+}
+
+.cert-tile .cert-badge {
+  width: 72px;
+  height: 72px;
+}
+
+.cert-short {
+  position: relative;
+  z-index: 1;
+  display: block;
+  min-height: 2.5em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.cert-tip {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  width: max-content;
+  max-width: 15rem;
+  padding: 8px 10px;
+  border: 1px solid rgba(200, 169, 106, 0.75);
+  border-radius: 12px;
+  background: #122236;
+  color: #F3EEE4;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.cert-line:first-child .cert-tip {
+  top: calc(100% - 4px);
+}
+
+.cert-line:last-child .cert-tip {
+  bottom: calc(100% - 4px);
+}
+
+.cert-tip-name {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.cert-tile:hover .cert-tip,
+.cert-tile:focus-visible .cert-tip,
+.cert-tile:focus .cert-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+html[data-theme="light"] .cert-tip {
+  background: #F3EEE4;
+  color: #0B1626;
+}
+
+@keyframes cert-gold-shimmer {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.95; }
+}
+
+@media (max-width: 719px) {
+  .cert-record { --cert-size: 104px; }
+  .cert-scroller {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 18px;
+    overscroll-behavior-x: contain;
+    padding-bottom: 6px;
+    mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 18px), transparent);
+  }
+  .cert-grid { width: max-content; min-width: 100%; }
+  .cert-line { justify-content: flex-start; width: max-content; }
+  .cert-line li { scroll-snap-align: start; }
+}
 
 .problem-grid {
   display: grid;
@@ -1308,6 +1470,32 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
   html { scroll-behavior: auto; }
   body, .portrait, .star, .hero-copy { animation: none; }
   .card, .fy, .offer, .post-card, .hour { transition: none; }
+  .cert-tile,
+  .cert-glow,
+  .cert-tip,
+  .cert-medal::after { transition: none; }
+  .cert-medal::before { animation: none; opacity: 0.75; }
+  .cert-tile:hover,
+  .cert-tile:focus-visible { transform: none; }
+  .cert-medal::after,
+  .cert-tile:hover .cert-medal::after,
+  .cert-tile:focus-visible .cert-medal::after {
+    transform: none;
+    opacity: 0;
+    transition: none;
+  }
+  .cert-tile:hover .cert-tip,
+  .cert-tile:focus-visible .cert-tip,
+  .cert-tile:focus .cert-tip,
+  .cert-tile:hover .cert-glow,
+  .cert-tile:focus-visible .cert-glow { transition: none; }
+  .cert-tile:hover .cert-tip,
+  .cert-tile:focus-visible .cert-tip,
+  .cert-tile:focus .cert-tip { transform: translateX(-50%); }
+  [data-stagger] [data-reveal] {
+    opacity: 1 !important;
+    translate: none !important;
+  }
 }
 
 /* Folder scroll scenes. Ranges match animation/CSS page.txt item-reveal.

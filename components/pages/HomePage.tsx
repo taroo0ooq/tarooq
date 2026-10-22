@@ -13,6 +13,59 @@ function contactHref(locale: Locale, topic: string) {
   return `${localizePath("/contact", locale)}?topic=${encodeURIComponent(topic)}`;
 }
 
+function credentialLabel(item: { name: string; issuer: string; issued: string }, issuedLabel: string) {
+  return item.issued ? `${item.name}. ${item.issuer}. ${issuedLabel} ${item.issued}.` : `${item.name}. ${item.issuer}.`;
+}
+
+function CredentialTile({
+  item,
+  issuedLabel,
+}: {
+  item: {
+    name: string;
+    short: string;
+    issuer: string;
+    image: string;
+    href: string;
+    issued: string;
+  };
+  issuedLabel: string;
+}) {
+  const label = credentialLabel(item, issuedLabel);
+  const body = (
+    <>
+      <span className="cert-glow" aria-hidden="true" />
+      <span className="cert-medal">
+        <Image src={item.image} alt="" width={72} height={72} sizes="72px" loading="lazy" className="cert-badge" />
+      </span>
+      <span className="cert-short" dir="ltr">
+        {item.short}
+      </span>
+      <span className="cert-tip" aria-hidden="true">
+        <span className="cert-tip-name" dir="ltr">
+          {item.name}
+        </span>
+        <span>
+          {item.issuer}
+          {item.issued ? ` · ${issuedLabel} ${item.issued}` : ""}
+        </span>
+      </span>
+    </>
+  );
+  if (item.href) {
+    return (
+      <a className="cert-tile" href={item.href} aria-label={label}>
+        {body}
+      </a>
+    );
+  }
+  return (
+    <div className="cert-tile" tabIndex={0} aria-label={label}>
+      {body}
+    </div>
+  );
+}
+
 export function HomePage({ locale }: { locale: Locale }) {
   const copy = getCopy(locale);
   const { about, certifications, credentialList, education, expertise, languages, problems, profile, roles, skills, stages, storyChapters, ui } = copy;
@@ -205,49 +258,25 @@ export function HomePage({ locale }: { locale: Locale }) {
         </details>
       </section>
 
-      <section className="cert-record" id="certificates" aria-labelledby="certificates-title">
+      <section className="cert-record" id="certificates" aria-labelledby="certificates-title" data-scene="y" data-stagger="">
         <header className="story-head">
           <h2 id="certificates-title" className="serif">
             {ui.home.certsListTitle}
           </h2>
         </header>
-        <ul className="cert-list">
-          {credentialList.map((item) => {
-            const body = (
-              <>
-                <Image
-                  src={item.image}
-                  alt={item.alt}
-                  width={64}
-                  height={64}
-                  sizes="64px"
-                  loading="lazy"
-                  className="cert-badge"
-                />
-                <span className="cert-copy">
-                  <span className="cert-name" dir="ltr">
-                    {item.name}
-                  </span>
-                  <span className="meta">
-                    {item.issuer}
-                    {item.issued ? ` · ${ui.home.certsIssued} ${item.issued}` : ""}
-                  </span>
-                </span>
-              </>
-            );
-            return (
-              <li key={item.name}>
-                {item.href ? (
-                  <a className="cert-row" href={item.href}>
-                    {body}
-                  </a>
-                ) : (
-                  <div className="cert-row">{body}</div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="cert-scroller" tabIndex={0} role="region" aria-label={ui.home.certsListTitle}>
+          <div className="cert-grid">
+            {[credentialList.slice(0, 7), credentialList.slice(7)].map((row) => (
+              <ul className="cert-line" key={row[0].name}>
+                {row.map((item) => (
+                  <li key={item.name} data-reveal="">
+                    <CredentialTile item={item} issuedLabel={ui.home.certsIssued} />
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
