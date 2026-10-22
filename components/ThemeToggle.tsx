@@ -1,31 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const storageKey = "tarooq-theme";
-
-function themeColor(theme: "light" | "dark") {
-  return theme === "dark" ? "#070910" : "#f8f7fc";
-}
+import { themeColors, themeStorageKey } from "@/lib/theme";
 
 export function applyTheme(theme: "light" | "dark") {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.style.colorScheme = theme;
   document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
-    meta.setAttribute("content", themeColor(theme));
+    meta.setAttribute("content", themeColors[theme]);
   });
   try {
-    localStorage.setItem(storageKey, theme);
+    localStorage.setItem(themeStorageKey, theme);
   } catch {
     // Private browsing can block storage. The choice still applies for this view.
   }
 }
 
 export function ThemeToggle({ darkLabel, lightLabel }: { darkLabel: string; lightLabel: string }) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+    setTheme(document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark");
   }, []);
 
   const next = theme === "dark" ? "light" : "dark";
@@ -37,7 +32,7 @@ export function ThemeToggle({ darkLabel, lightLabel }: { darkLabel: string; ligh
       aria-label={next === "dark" ? darkLabel : lightLabel}
       aria-pressed={theme === "dark"}
       onClick={() => {
-        const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
         const chosen = current === "dark" ? "light" : "dark";
         applyTheme(chosen);
         setTheme(chosen);
