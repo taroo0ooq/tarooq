@@ -394,6 +394,113 @@ export const certifications = [
   },
 ];
 
+export const credentialList = [
+  {
+    name: "Microsoft AI Discovery Cards – Train The Trainer",
+    issuer: "Microsoft",
+    image: "/badges/microsoft-ai-discovery-cards.webp",
+    alt: "شارة Microsoft AI Discovery Cards – Train The Trainer",
+    href: "https://www.credly.com/org/microsoftgps/badge/microsoft-ai-discovery-cards-train-the-trainer",
+    issued: "أبريل 2026",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Professional",
+    issuer: "Amazon Web Services (AWS)",
+    image: "/badges/aws-solutions-architect-professional.webp",
+    alt: "شارة AWS Certified Solutions Architect – Professional",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+    issued: "فبراير 2021",
+  },
+  {
+    name: "Microsoft Certified: Azure Security Engineer Associate",
+    issuer: "Microsoft",
+    image: "/badges/azure-security-engineer-associate.png",
+    alt: "شارة Microsoft Certified: Azure Security Engineer Associate",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/",
+    issued: "نوفمبر 2020",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Associate",
+    issuer: "Amazon Web Services (AWS)",
+    image: "/badges/aws-solutions-architect-associate.png",
+    alt: "شارة AWS Certified Solutions Architect – Associate",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    issued: "سبتمبر 2020",
+  },
+  {
+    name: "Veeam Technical Sales Professional (VMTSP) 2020",
+    issuer: "Veeam",
+    image: "/badges/issuer-veeam.webp",
+    alt: "شارة Veeam Technical Sales Professional (VMTSP) 2020",
+    href: "",
+    issued: "أبريل 2020",
+  },
+  {
+    name: "Microsoft Certified: Azure Solutions Architect Expert",
+    issuer: "Microsoft",
+    image: "/badges/microsoft-certified-expert.webp",
+    alt: "شارة Microsoft Certified: Azure Solutions Architect Expert",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-solutions-architect/",
+    issued: "",
+  },
+  {
+    name: "AZ-301 Microsoft Azure Architect Design",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "شارة AZ-301 Microsoft Azure Architect Design",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-301/",
+    issued: "",
+  },
+  {
+    name: "AZ-300 Microsoft Azure Architect Technologies",
+    issuer: "Microsoft",
+    image: "/badges/az-300-azure-architect-technologies.png",
+    alt: "شارة AZ-300 Microsoft Azure Architect Technologies",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-300/",
+    issued: "",
+  },
+  {
+    name: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "شارة MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
+    href: "",
+    issued: "مارس 2015",
+  },
+  {
+    name: "Symantec Backup Exec 2012",
+    issuer: "Symantec",
+    image: "/badges/issuer-symantec.webp",
+    alt: "شارة Symantec Backup Exec 2012",
+    href: "",
+    issued: "مايو 2013",
+  },
+  {
+    name: "MCPS: Microsoft Certified Professional",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "شارة MCPS: Microsoft Certified Professional",
+    href: "",
+    issued: "مارس 2013",
+  },
+  {
+    name: "Microsoft Private Cloud Professional 2012 SP1",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "شارة Microsoft Private Cloud Professional 2012 SP1",
+    href: "",
+    issued: "مارس 2013",
+  },
+  {
+    name: "VTCP 5.0",
+    issuer: "VMware",
+    image: "/badges/issuer-vmware.webp",
+    alt: "شارة VTCP 5.0",
+    href: "",
+    issued: "فبراير 2013",
+  },
+];
+
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
 
 export const languages = [
@@ -741,6 +848,8 @@ export const ui = {
     expertiseIntro: "بنية سحابية وتنفيذ عمليان للمؤسسات التي لا تحتمل الفشل أو عدم الامتثال.",
     certsEyebrow: "الشهادات",
     certsTitle: "شهادات إلى جانب العمل.",
+    certsListTitle: "الشهادات، الأحدث أولًا.",
+    certsIssued: "صدرت في",
     languagesLead: "اللغات:",
     languagesJoin: " و",
     skillsLead: "أبرز المهارات:",
@@ -760,8 +869,8 @@ export const ui = {
   forYou: {
     eyebrow: "لك",
     title: "ابدأ من حيث بدأت. تعلّم مجانًا.",
-    intro: "هذه دورات عامة أرشد الناس إليها. هي توصيات، وليست شهاداتي. شهاداتي في الصفحة الرئيسية.",
-    held: "الشهادات المحصلة:",
+    intro: "هذه دورات عامة أرشد الناس إليها. هي توصيات، وليست شهاداتي.",
+    held: "الشهادات في الصفحة الرئيسية، الأحدث أولًا.",
   },
   posts: {
     eyebrow: "مقالات",
