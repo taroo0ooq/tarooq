@@ -1,6 +1,6 @@
 import * as ar from "./content.ar";
 import * as en from "./content";
-import { llmsBody } from "./llms-text";
+import { renderLlms } from "./llms-text";
 import type { PostMeta } from "./posts";
 
 export type ChatChunk = {
@@ -91,7 +91,8 @@ function plainHtml(html: string) {
 const pageSections = [
   "profile",
   "about",
-  "approach",
+  "stages",
+  "problems",
   "expertise",
   "convictions",
   "mandates",
@@ -105,8 +106,8 @@ const pageSections = [
   "courses",
   "businessPage",
   "offers",
-  "steps",
   "topics",
+  "pillars",
   "ticker",
 ] as const;
 
@@ -137,7 +138,9 @@ export function postChunks(posts: Pick<PostMeta, "slug" | "title" | "description
 export function buildSiteCorpus(posts: Pick<PostMeta, "slug" | "title" | "description" | "html" | "lang" | "date" | "imageAlt">[]) {
   const chunks = [...pageChunks("en", en), ...pageChunks("ar", ar), ...postChunks(posts)];
   try {
-    const llms = llmsBody().toString("utf8").trim();
+    const llms = renderLlms(
+      posts.map((post) => ({ title: post.title, slug: post.slug, lang: post.lang, date: post.date })),
+    ).trim();
     splitText(llms, 1800).forEach((part, index) => {
       chunks.push({ id: `llms:${index}`, locale: "both", source: "llms.txt", text: part });
     });
