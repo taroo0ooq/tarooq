@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { renderMarkdown } from "@/lib/markdown";
+import { TurnstileField } from "@/components/TurnstileField";
 import { DOCUMENT_TITLE_LIMIT, FIRST_COMMENT_LIMIT, formatDraftDate, LINKEDIN_LIMIT, PDF_LIMIT, riyadhDate } from "@/lib/post-draft";
+import { turnstileRejectedMessage } from "@/lib/turnstile-public";
 import { postCanonicalPath } from "@/lib/post-locale";
 import type { ConnectionView, OwnerPost } from "@/lib/post-view";
 
@@ -81,6 +83,8 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
   const [testPending, setTestPending] = useState(false);
   const [testError, setTestError] = useState("");
   const [testResult, setTestResult] = useState<{ documentUrn: string; status: string } | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   const selected = selectedSlug ? posts.find((post) => post.slug === selectedSlug) ?? null : null;
   const arabic = fields.lang === "ar";
@@ -181,11 +185,14 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
     const type = pdf.type || (namedPdf ? "application/pdf" : "");
     if (type !== "application/pdf") return { error: "The LinkedIn file must be a PDF." };
     if (pdf.size > PDF_LIMIT) return { error: "The PDF must be 100 MB or smaller." };
+    if (!turnstileToken) return { error: turnstileRejectedMessage };
     const response = await fetch("/api/owner/documents", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ size: pdf.size, contentType: "application/pdf" }),
+      body: JSON.stringify({ size: pdf.size, contentType: "application/pdf", turnstileToken }),
     });
+    setTurnstileToken("");
+    setTurnstileReset((current) => current + 1);
     const ticket = (await response.json().catch(() => null)) as { path?: string; signedUrl?: string; error?: string } | null;
     if (!response.ok || !ticket?.signedUrl || !ticket.path) {
       return { error: ticket?.error || "Could not start the PDF upload." };
@@ -450,6 +457,7 @@ export function OwnerDesk({ initialPosts, linkedin, loadError, notice }: DeskPro
                 Remove the current cover
               </label>
             ) : null}
+            <TurnstileField resetKey={turnstileReset} language="en" onToken={setTurnstileToken} />
             <div className="field">
               <label htmlFor="document">LinkedIn PDF</label>
               <input

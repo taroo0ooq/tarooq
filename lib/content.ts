@@ -841,6 +841,7 @@ export const ui = {
       delivery: "The note could not be delivered. Try again later.",
       unconfigured: "The mailbox is not ready to receive notes yet. Try again later.",
       json: "Send JSON.",
+      turnstile: "The check didn't go through. Try again.",
     },
   },
   notFound: {

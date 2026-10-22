@@ -18,6 +18,7 @@ import { postsJson } from "./posts-http";
 import { rateLimit } from "./rate-limit";
 import { redactSecrets } from "./secrets";
 import { postsDbFromEnv } from "./supabase-posts";
+import { turnstileRejectedMessage, turnstileVisitorIp, verifyTurnstile } from "./turnstile";
 
 function failure(error: unknown) {
   if (error instanceof PostInputError) return postsJson(error.status, { error: redactSecrets(error.message) });
@@ -86,6 +87,8 @@ export async function createOwnerDocumentUpload(request: Request) {
   }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return postsJson(400, { error: "Expected a JSON object." });
   const record = payload as Record<string, unknown>;
+  const allowed = await verifyTurnstile(record.turnstileToken, turnstileVisitorIp(request));
+  if (!allowed) return postsJson(400, { error: turnstileRejectedMessage });
   try {
     assertDocumentUploadRequest({
       size: typeof record.size === "number" ? record.size : Number(record.size),

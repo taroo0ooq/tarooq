@@ -9,6 +9,7 @@ export type ContactErrorCatalog = {
   delivery: string;
   unconfigured: string;
   json: string;
+  turnstile: string;
 };
 
 const apiErrors: Record<string, keyof ContactErrorCatalog> = {
@@ -20,6 +21,7 @@ const apiErrors: Record<string, keyof ContactErrorCatalog> = {
   "The note could not be delivered. Try again later.": "delivery",
   "The mailbox is not ready to receive notes yet. Try again later.": "unconfigured",
   "Send JSON.": "json",
+  "The check didn't go through. Try again.": "turnstile",
 };
 
 export function translateContactError(
