@@ -15,12 +15,14 @@ describe("preview palettes", () => {
 
   it("uses each theme background, and the current colors when no palette is set", () => {
     assert.equal(paletteThemeColor(null, "light"), "#f8f7fc");
-    assert.equal(paletteThemeColor("champagne", "dark"), "#0A121E");
-    assert.equal(paletteThemeColor("brass", "light"), "#F4F3F0");
+    assert.equal(paletteThemeColor("champagne", "light"), "#0B1626");
+    assert.equal(paletteThemeColor("champagne", "dark"), "#0B1626");
+    assert.equal(paletteThemeColor("brass", "light"), "#FFFFFF");
+    assert.equal(paletteThemeColor("brass", "dark"), "#111111");
     assert.equal(paletteThemeColor("emerald", "dark"), "#071C18");
-    assert.equal(paletteColors.champagne.accent, "#B8955A");
+    assert.equal(paletteColors.champagne.accent, "#C8A96A");
     assert.equal(paletteColors.brass.accent, "#A67C3D");
-    assert.equal(paletteColors.emerald.accent, "#C2A15B");
+    assert.equal(paletteColors.emerald.accent, "#C9A75E");
   });
 
   it("boots from the same ids and never uses pure black", async () => {

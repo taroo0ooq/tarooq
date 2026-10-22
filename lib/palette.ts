@@ -12,16 +12,16 @@ export const defaultThemeColors = {
 export const paletteColors = {
   champagne: {
     name: "Midnight and Champagne",
-    light: "#F8F5EF",
-    dark: "#0A121E",
-    ink: "#0E1B2C",
-    accent: "#B8955A",
+    light: "#0B1626",
+    dark: "#0B1626",
+    ink: "#F3EEE4",
+    accent: "#C8A96A",
   },
   brass: {
     name: "Graphite and Brass",
-    light: "#F4F3F0",
-    dark: "#121417",
-    ink: "#1C1F24",
+    light: "#FFFFFF",
+    dark: "#111111",
+    ink: "#111111",
     accent: "#A67C3D",
   },
   emerald: {
@@ -29,7 +29,7 @@ export const paletteColors = {
     light: "#F6F2EA",
     dark: "#071C18",
     ink: "#0F2E26",
-    accent: "#C2A15B",
+    accent: "#C9A75E",
   },
 } as const;
 
@@ -50,4 +50,4 @@ export function paletteThemeColor(palette: string | null | undefined, theme: "li
   return defaultThemeColors[theme];
 }
 
-export const paletteInitScript = `(function(){try{var allowed={champagne:1,brass:1,emerald:1};var colors={champagne:{light:"#F8F5EF",dark:"#0A121E"},brass:{light:"#F4F3F0",dark:"#121417"},emerald:{light:"#F6F2EA",dark:"#071C18"}};var params=new URLSearchParams(location.search);var fromQuery=params.get("palette");var stored="";try{stored=localStorage.getItem("${paletteStorageKey}")||"";}catch(e){}if(!stored){var match=document.cookie.match(/(?:^|; )${paletteStorageKey}=([^;]*)/);stored=match?decodeURIComponent(match[1]):"";}var palette="";if(fromQuery==="default"||fromQuery==="current"){palette="";}else if(fromQuery&&allowed[fromQuery]){palette=fromQuery;}else if(allowed[stored]){palette=stored;}var root=document.documentElement;if(palette){root.setAttribute("data-palette",palette);}else{root.removeAttribute("data-palette");}try{localStorage.setItem("${paletteStorageKey}",palette);}catch(e){}document.cookie="${paletteStorageKey}="+encodeURIComponent(palette)+"; Path=/; Max-Age="+(palette?2592000:0)+"; SameSite=Lax";if(palette&&colors[palette]){var theme=root.getAttribute("data-theme")==="dark"?"dark":"light";var color=colors[palette][theme];document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}}catch(e){}})();`;
+export const paletteInitScript = `(function(){try{var allowed={champagne:1,brass:1,emerald:1};var colors={champagne:{light:"#0B1626",dark:"#0B1626"},brass:{light:"#FFFFFF",dark:"#111111"},emerald:{light:"#F6F2EA",dark:"#071C18"}};var params=new URLSearchParams(location.search);var fromQuery=params.get("palette");var stored="";try{stored=localStorage.getItem("${paletteStorageKey}")||"";}catch(e){}if(!stored){var match=document.cookie.match(/(?:^|; )${paletteStorageKey}=([^;]*)/);stored=match?decodeURIComponent(match[1]):"";}var palette="";if(fromQuery==="default"||fromQuery==="current"){palette="";}else if(fromQuery&&allowed[fromQuery]){palette=fromQuery;}else if(allowed[stored]){palette=stored;}var root=document.documentElement;if(palette){root.setAttribute("data-palette",palette);}else{root.removeAttribute("data-palette");}var theme=root.getAttribute("data-theme")==="dark"?"dark":"light";if(palette==="champagne"){root.style.colorScheme="dark";}else if(palette){root.style.colorScheme=theme;}try{localStorage.setItem("${paletteStorageKey}",palette);}catch(e){}document.cookie="${paletteStorageKey}="+encodeURIComponent(palette)+"; Path=/; Max-Age="+(palette?2592000:0)+"; SameSite=Lax";if(palette&&colors[palette]){var color=colors[palette][theme];document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}}catch(e){}})();`;

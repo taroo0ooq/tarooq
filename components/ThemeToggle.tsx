@@ -12,7 +12,8 @@ function themeColor(theme: "light" | "dark") {
 
 export function applyTheme(theme: "light" | "dark") {
   document.documentElement.setAttribute("data-theme", theme);
-  document.documentElement.style.colorScheme = theme;
+  document.documentElement.style.colorScheme =
+    document.documentElement.getAttribute("data-palette") === "champagne" ? "dark" : theme;
   document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
     meta.setAttribute("content", themeColor(theme));
   });

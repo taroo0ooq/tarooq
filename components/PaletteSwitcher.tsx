@@ -34,6 +34,7 @@ function writePalette(palette: PaletteId | "") {
   const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
   if (next !== current) history.replaceState(null, "", next);
   const theme = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  root.style.colorScheme = palette === "champagne" ? "dark" : theme;
   const color = paletteThemeColor(palette, theme);
   document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
     meta.setAttribute("content", color);
