@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MailLink } from "@/components/MailLink";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
@@ -19,7 +20,9 @@ export function Footer({ locale }: { locale: Locale }) {
           <br />
           {text(ui.footer.based.replace("{{location}}", profile.location))}
         </p>
-        <p className="footer-note">{text(profile.availability)}</p>
+        <p className="footer-note">
+          <Link href={localizePath("/business", locale)}>{text(profile.availability)}</Link>
+        </p>
         <p className="footer-line">{text(profile.statement)}</p>
       </div>
       <div className="elsewhere">

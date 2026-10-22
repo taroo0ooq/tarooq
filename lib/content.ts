@@ -6,8 +6,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "I build cloud platforms that actually survive reality.",
   deck: "Tareq Al-Ghazzi, Head of Cloud Services, MENA. Azure platforms that survive reality: landing zones, migrations, FinOps, and governance for regulated organizations.",
-  availability:
-    "Available for cloud strategy, architecture reviews, migration programs, and regulated Azure delivery across MENA.",
+  availability: "Read the Business page. Mobiz doesn't endorse it. The page is my own practice, kept apart from that job, and it names no Mobiz client. I'll say if the work is mine.",
 } as const;
 
 export const about = [
@@ -17,12 +16,57 @@ export const about = [
   "My focus is simple: platforms that stay reliable when things break, stay compliant when auditors arrive, and stay cost-efficient when scale hits. If your cloud has to work in production — not just in a proposal — that is the work I do.",
 ] as const;
 
-export const approach = [
-  "I start from the reality of production, not the ideal architecture diagram.",
-  "Most cloud problems are not technical in isolation. They appear when landing zones are incomplete, identity is an afterthought, migrations ignore dependencies, security controls exist only on paper, or cost is never owned. The platforms I design assume failure, expect auditors, and treat cost as a continuous concern.",
-  "The work is opinionated where it needs to be, on security baselines, landing zone structure, and identity patterns, and flexible where the business requires it. The goal is always the same: a platform that the organization can actually operate, that survives incidents, and that passes scrutiny.",
-  "If a design only works in a workshop or a proposal, it is not finished.",
+export const stages = [
+  {
+    n: "01",
+    title: "Standard path",
+    body: "I name the standard and the exception before I draw a single line. Unowned, it drifts.",
+  },
+  {
+    n: "02",
+    title: "Landing zone",
+    body: "It's the operating model: Dev, SIT, UAT, and Production run the same guardrails, because Production isn't a design I invent on the last week of the program. Not a separate design.",
+  },
+  {
+    n: "03",
+    title: "Migration waves",
+    body: "I move the estate in waves, and the dependencies stay tied to a rollback path you can use when a wave fails. A workshop-only design isn't finished.",
+  },
+  {
+    n: "04",
+    title: "Handover",
+    body: "Your team can keep the standard. Owners and runbooks stay after it ends.",
+  },
 ] as const;
+
+export const problems = {
+  title: "What is really going wrong",
+  intro: "I keep seeing the same 5 patterns. Dashboards look fine.",
+  items: [
+    {
+      title: "A green score",
+      body: "The Azure score is green, and Production still isn't ready to run.",
+    },
+    {
+      title: "A green backup",
+      body: "That dashboard is green. Nobody's restored from it.",
+    },
+    {
+      title: "Volume as maturity",
+      body: "I've watched a migration count get treated as proof the cloud is mature.",
+    },
+    {
+      title: "An agent before the plumbing",
+      body: "An AI agent gets built before anyone owns the data or the permissions.",
+    },
+    {
+      title: "A standard with no owner",
+      body: "There's a standard, plus exceptions nobody can explain on a bad week.",
+    },
+  ],
+  reframe:
+    "Ownership, in Dev and in Production. I work the standard path and the handover so the platform still holds in an audit.",
+} as const;
 
 export const expertise = [
   {
@@ -746,6 +790,7 @@ export const ui = {
   },
   home: {
     positioning: "Head of Cloud Services, MENA. Cloud platforms that survive reality.",
+    earlier: "Show earlier roles",
     regulated: "I work with regulated organizations across the GCC and MENA.",
     sectors: "Banking and financial services; government and public sector; telecom; energy and oil & gas; tourism and hospitality; large and giga enterprises.",
     postsCta: "Read the posts",
@@ -780,7 +825,7 @@ export const ui = {
   forYou: {
     eyebrow: "For you",
     title: "Start where I started. Learn for free.",
-    intro: "These are public courses I point people to. They are recommendations, not my certifications. My certificates are on the story page.",
+    intro: "These are public courses I point people to. They're recommendations, not my certifications. My 3 certificates sit on the home page.",
     held: "Held certificates:",
   },
   posts: {
