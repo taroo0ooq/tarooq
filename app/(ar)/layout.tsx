@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
+import { PreviewPalette } from "@/components/PreviewPalette";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { getCopy } from "@/lib/copy";
 import { absoluteUrl, defaultShareImage, siteUrl } from "@/lib/site";
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Script id="theme-init" strategy="beforeInteractive">
           {themeScript}
         </Script>
+        <PreviewPalette />
         <a className="skip" href="#content">
           {ui.skip}
         </a>

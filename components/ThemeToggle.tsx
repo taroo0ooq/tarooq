@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { paletteThemeColor } from "@/lib/palette";
 
 const storageKey = "tarooq-theme";
 
 function themeColor(theme: "light" | "dark") {
-  return theme === "dark" ? "#070910" : "#f8f7fc";
+  const palette = document.documentElement.getAttribute("data-palette");
+  return paletteThemeColor(palette, theme);
 }
 
 export function applyTheme(theme: "light" | "dark") {
