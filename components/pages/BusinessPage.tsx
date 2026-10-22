@@ -5,11 +5,14 @@ import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
 import { pageBreadcrumbs } from "@/lib/structured-data";
 
+function contactHref(locale: Locale, topic: string) {
+  return `${localizePath("/contact", locale)}?topic=${encodeURIComponent(topic)}`;
+}
+
 export function BusinessPage({ locale }: { locale: Locale }) {
-  const { businessPage, offers, steps, ui } = getCopy(locale);
+  const { businessPage, offers, stages, ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
   const home = localizePath("/", locale);
-  const contact = localizePath("/contact", locale);
 
   return (
     <section className="biz">
@@ -19,7 +22,7 @@ export function BusinessPage({ locale }: { locale: Locale }) {
       <p className="lead">{text(businessPage.audience)}</p>
       <p className="lead biz-model">{text(businessPage.model)}</p>
       <div className="biz-actions">
-        <Link className="btn" href={contact}>
+        <Link className="btn" href={contactHref(locale, "conversation")}>
           {ui.business.cta}
         </Link>
         <Link className="biz-text" href={`${home}#approach`}>
@@ -28,7 +31,7 @@ export function BusinessPage({ locale }: { locale: Locale }) {
       </div>
       <div className="offers">
         {offers.map((offer) => (
-          <article className="offer" key={offer.title}>
+          <article className="offer" key={offer.id}>
             <div className={`top ${offer.tone}`}>
               <span>{text(offer.kicker)}</span>
               <h2>{text(offer.title)}</h2>
@@ -40,13 +43,7 @@ export function BusinessPage({ locale }: { locale: Locale }) {
                   <li key={point}>{text(point)}</li>
                 ))}
               </ul>
-              <p className="gets-label">{ui.business.gets}</p>
-              <ul>
-                {offer.gets.map((item) => (
-                  <li key={item}>{text(item)}</li>
-                ))}
-              </ul>
-              <Link href={contact}>{text(offer.cta)}</Link>
+              <Link href={contactHref(locale, offer.id)}>{text(offer.cta)}</Link>
             </div>
           </article>
         ))}
@@ -54,11 +51,6 @@ export function BusinessPage({ locale }: { locale: Locale }) {
       <div className="biz-band">
         <h2 className="serif">{text(businessPage.regulatedTitle)}</h2>
         <p>{text(businessPage.regulated)}</p>
-        <p className="biz-quote">
-          &ldquo;{text(ui.quote.before)}
-          <em>{text(ui.quote.em)}</em>
-          {text(ui.quote.after)}&rdquo;
-        </p>
         <ul className="biz-list">
           {businessPage.contexts.map((item) => (
             <li key={item}>{text(item)}</li>
@@ -68,14 +60,11 @@ export function BusinessPage({ locale }: { locale: Locale }) {
       <div className="biz-band">
         <h2 className="serif">{text(businessPage.processTitle)}</h2>
         <div className="how how-plain">
-          {steps.map((step) => (
-            <div key={step.n}>
-              <b>{step.n}</b>
-              <strong>{text(step.title)}</strong>
-              <p>{text(step.body)}</p>
-              <p className="outcome">
-                {ui.business.outcome} {text(step.outcome)}
-              </p>
+          {stages.map((stage) => (
+            <div key={stage.n}>
+              <b>{stage.n}</b>
+              <strong>{text(stage.title)}</strong>
+              <p>{text(stage.body)}</p>
             </div>
           ))}
         </div>
@@ -99,7 +88,7 @@ export function BusinessPage({ locale }: { locale: Locale }) {
         <h2 className="serif">{text(businessPage.closeTitle)}</h2>
         <p>{text(businessPage.close)}</p>
         <div className="biz-actions">
-          <Link className="btn" href={contact}>
+          <Link className="btn" href={contactHref(locale, "conversation")}>
             {ui.business.start}
           </Link>
           <Link className="biz-text" href={`${home}#approach`}>

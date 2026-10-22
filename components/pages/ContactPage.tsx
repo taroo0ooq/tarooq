@@ -5,7 +5,7 @@ import { getCopy } from "@/lib/copy";
 import type { Locale } from "@/lib/locale";
 import { pageBreadcrumbs } from "@/lib/structured-data";
 
-export function ContactPage({ locale }: { locale: Locale }) {
+export function ContactPage({ locale, initialTopic }: { locale: Locale; initialTopic?: string }) {
   const { profile, topics, ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
   return (
@@ -25,7 +25,13 @@ export function ContactPage({ locale }: { locale: Locale }) {
             {text(ui.contact.based.replace("{{location}}", profile.location))}
           </p>
         </div>
-        <ContactForm locale={locale} topics={topics} copy={ui.form} />
+        <div>
+          <ContactForm key={initialTopic ?? "conversation"} locale={locale} topics={topics} initialTopic={initialTopic} copy={ui.form} />
+          <p className="next-note">
+            <strong>{ui.contact.nextLabel}</strong>
+            {text(ui.contact.next)}
+          </p>
+        </div>
       </div>
     </section>
   );
