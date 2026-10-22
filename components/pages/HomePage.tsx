@@ -158,12 +158,12 @@ export function HomePage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section className="band" id="approach">
+      <section className="band expertise" id="approach">
         <h2 className="serif">{ui.home.howTitle}</h2>
-        <div className="stage-grid">
+        <div className="expertise-grid">
           {stages.map((stage) => (
-            <article key={stage.n}>
-              <b>{stage.n}</b>
+            <article className="expertise-card" key={stage.n}>
+              <b className="stage-num">{stage.n}</b>
               <h3>{text(stage.title)}</h3>
               <p>{text(stage.body)}</p>
             </article>
