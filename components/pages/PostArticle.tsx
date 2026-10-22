@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Readex_Pro } from "next/font/google";
+import { JsonLd } from "@/components/JsonLd";
 import { PostCover } from "@/components/PostCover";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
-import { personId } from "@/lib/person-schema";
 import { postCanonicalPath, postLanguage } from "@/lib/post-locale";
 import { formatPostDate, type PostMeta } from "@/lib/posts";
-import { absoluteUrl } from "@/lib/site";
+import { blogPostingLd, pageBreadcrumbs } from "@/lib/structured-data";
 
 const arabic = Readex_Pro({
   subsets: ["arabic", "latin"],
@@ -20,27 +20,17 @@ export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }
   const { ui } = getCopy(locale);
   const linkedinHref = post.linkedinUrl || (post.linkedinUrn ? `https://www.linkedin.com/feed/update/${post.linkedinUrn}` : "");
   const postLocale = postLanguage(post.lang);
-  const postUrl = absoluteUrl(postCanonicalPath(post.slug, post.lang));
   const arabicPost = postLocale === "ar";
-  const jsonLd: Record<string, unknown> = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    inLanguage: postLocale,
-    url: postUrl,
-    mainEntityOfPage: postUrl,
-    author: {
-      "@type": "Person",
-      "@id": personId,
-    },
-  };
-  if (post.image) jsonLd.image = absoluteUrl(post.image);
 
   return (
     <main className="page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={blogPostingLd(post)} />
+      <JsonLd
+        data={pageBreadcrumbs(locale, "posts", { home: ui.nav.home, current: ui.nav.posts }, {
+          name: post.title,
+          path: postCanonicalPath(post.slug, post.lang),
+        })}
+      />
       <article className={arabicPost ? `${arabic.variable} article-ar` : undefined} lang={postLocale} dir={arabicPost ? "rtl" : "ltr"}>
         <header className="page-head">
           <p className="eyebrow">

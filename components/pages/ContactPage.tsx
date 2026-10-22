@@ -1,13 +1,16 @@
 import { ContactForm } from "@/components/ContactForm";
+import { JsonLd } from "@/components/JsonLd";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import type { Locale } from "@/lib/locale";
+import { pageBreadcrumbs } from "@/lib/structured-data";
 
 export function ContactPage({ locale }: { locale: Locale }) {
   const { profile, topics, ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
   return (
     <section className="contact">
+      <JsonLd data={pageBreadcrumbs(locale, "contact", { home: ui.nav.home, current: ui.nav.contact })} />
       <div className="contact-wrap">
         <div>
           <p className="eyebrow">{ui.contact.eyebrow}</p>

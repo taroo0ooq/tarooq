@@ -29,11 +29,13 @@ describe("language switcher", () => {
       assert.equal(toArabic.href, localizePath(path, "ar"));
       assert.equal(toArabic.hrefLang, "ar");
       assert.equal(toArabic.label, "العربية");
+      assert.equal(toArabic.ariaLabel.includes(toArabic.label), true);
 
       const toEnglish = languageSwitch(toArabic.href);
       assert.equal(toEnglish.href, path);
       assert.equal(toEnglish.hrefLang, "en");
       assert.equal(toEnglish.label, "English");
+      assert.equal(toEnglish.ariaLabel.includes(toEnglish.label), true);
     });
   }
 
