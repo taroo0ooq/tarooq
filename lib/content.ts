@@ -419,6 +419,7 @@ export const certifications = [
 export const credentialList = [
   {
     name: "Microsoft AI Discovery Cards – Train The Trainer",
+    short: "AI Train the Trainer",
     issuer: "Microsoft",
     image: "/badges/microsoft-ai-discovery-cards.webp",
     alt: "Microsoft AI Discovery Cards – Train The Trainer badge",
@@ -427,6 +428,7 @@ export const credentialList = [
   },
   {
     name: "AWS Certified Solutions Architect – Professional",
+    short: "AWS SA Professional",
     issuer: "Amazon Web Services (AWS)",
     image: "/badges/aws-solutions-architect-professional.webp",
     alt: "AWS Certified Solutions Architect – Professional badge",
@@ -435,6 +437,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Certified: Azure Security Engineer Associate",
+    short: "Azure Security Engineer",
     issuer: "Microsoft",
     image: "/badges/azure-security-engineer-associate.png",
     alt: "Microsoft Certified: Azure Security Engineer Associate badge",
@@ -443,6 +446,7 @@ export const credentialList = [
   },
   {
     name: "AWS Certified Solutions Architect – Associate",
+    short: "AWS SA Associate",
     issuer: "Amazon Web Services (AWS)",
     image: "/badges/aws-solutions-architect-associate.png",
     alt: "AWS Certified Solutions Architect – Associate badge",
@@ -451,6 +455,7 @@ export const credentialList = [
   },
   {
     name: "Veeam Technical Sales Professional (VMTSP) 2020",
+    short: "Veeam VMTSP",
     issuer: "Veeam",
     image: "/badges/issuer-veeam.webp",
     alt: "Veeam Technical Sales Professional (VMTSP) 2020 badge",
@@ -459,6 +464,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Certified: Azure Solutions Architect Expert",
+    short: "Azure Architect Expert",
     issuer: "Microsoft",
     image: "/badges/microsoft-certified-expert.webp",
     alt: "Microsoft Certified: Azure Solutions Architect Expert badge",
@@ -467,6 +473,7 @@ export const credentialList = [
   },
   {
     name: "AZ-301 Microsoft Azure Architect Design",
+    short: "AZ-301",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "AZ-301 Microsoft Azure Architect Design badge",
@@ -475,6 +482,7 @@ export const credentialList = [
   },
   {
     name: "AZ-300 Microsoft Azure Architect Technologies",
+    short: "AZ-300",
     issuer: "Microsoft",
     image: "/badges/az-300-azure-architect-technologies.png",
     alt: "AZ-300 Microsoft Azure Architect Technologies badge",
@@ -483,6 +491,7 @@ export const credentialList = [
   },
   {
     name: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
+    short: "MCTS SAM",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM) badge",
@@ -491,6 +500,7 @@ export const credentialList = [
   },
   {
     name: "Symantec Backup Exec 2012",
+    short: "Backup Exec 2012",
     issuer: "Symantec",
     image: "/badges/issuer-symantec.webp",
     alt: "Symantec Backup Exec 2012 badge",
@@ -499,6 +509,7 @@ export const credentialList = [
   },
   {
     name: "MCPS: Microsoft Certified Professional",
+    short: "MCP",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "MCPS: Microsoft Certified Professional badge",
@@ -507,6 +518,7 @@ export const credentialList = [
   },
   {
     name: "Microsoft Private Cloud Professional 2012 SP1",
+    short: "Private Cloud 2012",
     issuer: "Microsoft",
     image: "/badges/issuer-microsoft.webp",
     alt: "Microsoft Private Cloud Professional 2012 SP1 badge",
@@ -515,6 +527,7 @@ export const credentialList = [
   },
   {
     name: "VTCP 5.0",
+    short: "VTCP 5.0",
     issuer: "VMware",
     image: "/badges/issuer-vmware.webp",
     alt: "VTCP 5.0 badge",
@@ -876,7 +889,7 @@ export const ui = {
     expertiseIntro: "Practical cloud architecture and delivery for organizations that cannot afford failure or non-compliance.",
     certsEyebrow: "Certifications",
     certsTitle: "Certificates beside the work.",
-    certsListTitle: "Certificates, newest first.",
+    certsListTitle: "Certificates.",
     certsIssued: "Issued",
     languagesLead: "Languages:",
     languagesJoin: " and ",
