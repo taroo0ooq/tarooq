@@ -2,8 +2,10 @@ import Link from "next/link";
 import { Readex_Pro } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
 import { PostCover } from "@/components/PostCover";
+import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
+import { pillarForSlug } from "@/lib/pillars";
 import { postCanonicalPath, postLanguage } from "@/lib/post-locale";
 import { formatPostDate, type PostMeta } from "@/lib/posts";
 import { blogPostingLd, pageBreadcrumbs } from "@/lib/structured-data";
@@ -17,10 +19,12 @@ const arabic = Readex_Pro({
 });
 
 export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }) {
-  const { ui } = getCopy(locale);
+  const { pillars, ui } = getCopy(locale);
+  const text = (value: string) => tx(locale, value);
   const linkedinHref = post.linkedinUrl || (post.linkedinUrn ? `https://www.linkedin.com/feed/update/${post.linkedinUrn}` : "");
   const postLocale = postLanguage(post.lang);
   const arabicPost = postLocale === "ar";
+  const pillar = pillars.find((item) => item.id === pillarForSlug(post.slug));
 
   return (
     <main className="page">
@@ -35,6 +39,7 @@ export function PostArticle({ post, locale }: { post: PostMeta; locale: Locale }
         <header className="page-head">
           <p className="eyebrow">
             <time dateTime={post.date}>{formatPostDate(post.date, postLocale)}</time>
+            {pillar ? <span className="pillar-mark">{text(pillar.label)}</span> : null}
           </p>
           <h1 className="serif">{post.title}</h1>
           {post.description ? <p>{post.description}</p> : null}
