@@ -1,15 +1,21 @@
 import { validateContact, type ContactInput } from "@/lib/contact";
 import { deliverContact } from "@/lib/deliver";
+import { turnstileRejectedMessage, turnstileVisitorIp, verifyTurnstile } from "@/lib/turnstile";
 
 const deliveryError = "The note could not be delivered. Try again later.";
 const unconfiguredError = "The mailbox is not ready to receive notes yet. Try again later.";
 
 export async function POST(request: Request) {
-  let payload: Partial<ContactInput>;
+  let payload: Partial<ContactInput> & { turnstileToken?: unknown };
   try {
-    payload = (await request.json()) as Partial<ContactInput>;
+    payload = (await request.json()) as Partial<ContactInput> & { turnstileToken?: unknown };
   } catch {
     return Response.json({ ok: false, errors: { message: "Send JSON." } }, { status: 400 });
+  }
+
+  const allowed = await verifyTurnstile(payload.turnstileToken, turnstileVisitorIp(request));
+  if (!allowed) {
+    return Response.json({ ok: false, errors: { message: turnstileRejectedMessage } }, { status: 400 });
   }
 
   const input: ContactInput = {

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { TurnstileField } from "@/components/TurnstileField";
 import { translateContactError, type ContactErrorCatalog } from "@/lib/contact-i18n";
 import type { ContactErrors } from "@/lib/contact";
 import type { Locale } from "@/lib/locale";
@@ -43,6 +44,8 @@ export function ContactForm({
   const [pending, setPending] = useState(false);
   const [sent, setSent] = useState(false);
   const [formError, setFormError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   function update(key: keyof typeof empty, value: string) {
     setFields((current) => ({ ...current, [key]: value }));
@@ -61,7 +64,7 @@ export function ContactForm({
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
+        body: JSON.stringify({ ...fields, turnstileToken }),
       });
       const data = (await response.json()) as { ok: boolean; errors?: ContactErrors };
       if (!response.ok || !data.ok) {
@@ -86,6 +89,8 @@ export function ContactForm({
       setFormError(copy.network);
     } finally {
       setPending(false);
+      setTurnstileToken("");
+      setTurnstileReset((current) => current + 1);
     }
   }
 
@@ -181,7 +186,8 @@ export function ContactForm({
           onChange={(event) => update("website", event.target.value)}
         />
       </div>
-      <button className="btn btn-purple" type="submit" disabled={pending}>
+      <TurnstileField resetKey={turnstileReset} language={locale} onToken={setTurnstileToken} />
+      <button className="btn btn-purple" type="submit" disabled={pending || !turnstileToken}>
         {pending ? copy.sending : copy.send}
       </button>
       {formError ? <p className="error">{formError}</p> : null}

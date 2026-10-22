@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { contentSecurityPolicy } from "./lib/content-security";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -30,6 +31,10 @@ const nextConfig: NextConfig = {
       {
         source: "/posts/new/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+      {
+        source: "/(.*)",
+        headers: [{ key: "Content-Security-Policy", value: contentSecurityPolicy() }],
       },
     ];
   },

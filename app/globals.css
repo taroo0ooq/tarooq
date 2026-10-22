@@ -1150,6 +1150,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--purple); }
 .error { color: var(--error); font-size: 0.85rem; margin-top: 6px; }
 .hp { position: absolute; inset-inline-start: -9999px; height: 0; overflow: hidden; }
+.turnstile { margin: 0.75rem 0 1rem; min-height: 65px; }
 
 .site-footer {
   background: transparent;
