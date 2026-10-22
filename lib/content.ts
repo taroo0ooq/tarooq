@@ -687,6 +687,13 @@ export const topics = [
   "Something else",
 ] as const;
 
+export const pillars = [
+  { id: "platforms", label: "Platforms that survive reality" },
+  { id: "regional", label: "Cloud is a regional capability" },
+  { id: "ai", label: "Governed AI on the platform" },
+  { id: "talent", label: "Building teams and talent" },
+] as const;
+
 export const ticker = [
   "Microsoft Azure",
   "CAF",
@@ -788,6 +795,9 @@ export const ui = {
     title: "Notes from the work.",
     intro: "A few of my articles and posts on cloud, architecture, and the work behind them.",
     empty: "No posts yet.",
+    filter: "Pillars",
+    allPillars: "All",
+    emptyPillar: "Nothing's in this pillar yet. Come back once I've published the note.",
     all: "All posts",
     linkedin: "View on LinkedIn",
     englishMark: "English",
