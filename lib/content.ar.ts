@@ -667,6 +667,13 @@ export const topics = [
   { id: "other", label: "شيء آخر" },
 ] as const;
 
+export const pillars = [
+  { id: "platforms", label: "منصات تصمد في الواقع" },
+  { id: "regional", label: "السحابة قدرة إقليمية" },
+  { id: "ai", label: "ذكاء اصطناعي محكوم على المنصة" },
+  { id: "talent", label: "بناء الفرق والكفاءات" },
+] as const;
+
 export const ticker = [
   "Microsoft Azure",
   "CAF",
@@ -761,6 +768,9 @@ export const ui = {
     title: "ملاحظات من العمل.",
     intro: "بعض مقالاتي ومنشوراتي عن السحابة والهندسة المعمارية والعمل الذي وراءها.",
     empty: "لا مقالات بعد.",
+    filter: "المحاور",
+    allPillars: "الكل",
+    emptyPillar: "لا مقالات في هذا المحور بعد.",
     all: "كل المقالات",
     linkedin: "عرض على LinkedIn",
     englishMark: "English",
