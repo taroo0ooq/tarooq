@@ -7,9 +7,8 @@ import { Nav } from "@/components/Nav";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { getCopy } from "@/lib/copy";
 import { absoluteUrl, defaultShareImage, siteUrl } from "@/lib/site";
+import { themeColors, themeInitScript } from "@/lib/theme";
 import "../globals.css";
-
-const themeScript = `(function(){try{var stored=localStorage.getItem("tarooq-theme");var theme=stored==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",theme);document.documentElement.style.colorScheme=theme;var color=theme==="dark"?"#070910":"#f8f7fc";document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}catch(e){}})();`;
 
 const latin = Inter({
   subsets: ["latin"],
@@ -64,11 +63,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f7fc" },
-    { media: "(prefers-color-scheme: dark)", color: "#070910" },
-  ],
-  colorScheme: "light dark",
+  themeColor: themeColors.dark,
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -76,7 +72,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ar" dir="rtl" className={`${latin.variable} ${arabic.variable}`} suppressHydrationWarning>
       <body className={arabic.className}>
         <Script id="theme-init" strategy="beforeInteractive">
-          {themeScript}
+          {themeInitScript}
         </Script>
         <a className="skip" href="#content">
           {ui.skip}
