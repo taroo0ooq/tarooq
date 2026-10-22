@@ -25,7 +25,8 @@ function page(status: number, message: string) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LinkedIn</title>
-<body style="margin:0;background:#f8f7fc;color:#0b1f3a;font-family:Georgia,serif;padding:48px 6vw;">
+<style>body{margin:0;background:#0B1626;color:#F3EEE4;font-family:Georgia,serif;padding:48px 6vw}a{color:#C8A96A}</style>
+<body>
 <p>${escapeHtml(message)}</p>
 <p><a href="/api/linkedin/start">Connect again</a></p>`;
   return new NextResponse(body, {
