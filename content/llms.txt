@@ -21,10 +21,9 @@ Canonical LinkedIn: https://www.linkedin.com/in/tareq-alghazzi
 
 ## Key pages
 - [Home and story](https://alghazzi.org): who he is, his approach, and his full career record.
-- [Business](https://alghazzi.org/business): the kind of cloud work he leads, for banks, government and multi-market enterprises.
+- [Business](https://alghazzi.org/business): his own independent practice, separate from his employment at Mobiz IT. It doesn't describe Mobiz clients or Mobiz work.
 - [Posts](https://alghazzi.org/posts): his writing on cloud platforms, governance and AI.
-- [Syria's digital systems](https://alghazzi.org/posts/2026-10-21-syrias-digital-systems) (English).
-- [Kubernetes isn't cloud](https://alghazzi.org/ar/posts/2026-10-20-kubernetes-isnt-cloud) (Arabic).
+{{posts}}
 - [For you](https://alghazzi.org/for-you): learning links across major cloud and AI platforms.
 - [Contact](https://alghazzi.org/contact)
 

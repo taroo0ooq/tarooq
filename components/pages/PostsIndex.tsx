@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { PostCover } from "@/components/PostCover";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
 import { postCanonicalPath, postLanguage } from "@/lib/post-locale";
 import { formatPostDate, postsForLocale, type PostMeta } from "@/lib/posts";
+import { pageBreadcrumbs } from "@/lib/structured-data";
 
 export function PostsIndex({ locale, posts }: { locale: Locale; posts: PostMeta[] }) {
   const { ui } = getCopy(locale);
@@ -12,6 +14,7 @@ export function PostsIndex({ locale, posts }: { locale: Locale; posts: PostMeta[
   const visible = postsForLocale(posts, locale);
   return (
     <main className="page">
+      <JsonLd data={pageBreadcrumbs(locale, "posts", { home: ui.nav.home, current: ui.nav.posts })} />
       <header className="page-head">
         <p className="eyebrow">{ui.posts.eyebrow}</p>
         <h1 className="serif">{text(ui.posts.title)}</h1>

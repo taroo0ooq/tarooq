@@ -1,7 +1,9 @@
 import { llmsResponse } from "@/lib/llms-text";
+import { getPublishedPosts } from "@/lib/published-posts";
 
-export const dynamic = "force-static";
+export const revalidate = 60;
 
-export function GET() {
-  return llmsResponse();
+export async function GET() {
+  const posts = await getPublishedPosts();
+  return llmsResponse(posts);
 }

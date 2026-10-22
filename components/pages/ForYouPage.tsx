@@ -1,12 +1,15 @@
+import { JsonLd } from "@/components/JsonLd";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import type { Locale } from "@/lib/locale";
+import { pageBreadcrumbs } from "@/lib/structured-data";
 
 export function ForYouPage({ locale }: { locale: Locale }) {
   const { certifications, courseTopics, courses, ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
   return (
     <main className="page">
+      <JsonLd data={pageBreadcrumbs(locale, "for-you", { home: ui.nav.home, current: ui.nav.forYou })} />
       <header className="page-head">
         <p className="eyebrow">{ui.forYou.eyebrow}</p>
         <h1 className="serif">{text(ui.forYou.title)}</h1>
