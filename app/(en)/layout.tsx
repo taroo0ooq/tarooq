@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { CloudflareBeacon } from "@/components/CloudflareBeacon";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main id="content">{children}</main>
         <Footer locale="en" />
         <Analytics />
+        <CloudflareBeacon />
       </body>
     </html>
   );
