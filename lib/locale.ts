@@ -47,33 +47,33 @@ export type LanguageSwitch = {
   ariaLabel: string;
 };
 
+function namedSwitch(href: string, hrefLang: Locale, label: string, description: string): LanguageSwitch {
+  return {
+    href,
+    hrefLang,
+    label,
+    ariaLabel: description.includes(label) ? description : `${label}, ${description}`,
+  };
+}
+
 export function languageSwitch(pathname: string, hash = ""): LanguageSwitch {
   const embedded = pathname.includes("#") ? pathname.slice(pathname.indexOf("#")) : "";
   const path = cleanPath(pathname);
   const chosen = hash || embedded;
   const normalizedHash = chosen ? (chosen.startsWith("#") ? chosen : `#${chosen}`) : "";
   if (!isArabicPath(path) && isEnglishOnlyPath(path)) {
-    return {
-      href: "/ar",
-      hrefLang: "ar",
-      label: "العربية",
-      ariaLabel: "عرض الموقع بالعربية",
-    };
+    return namedSwitch("/ar", "ar", "العربية", "عرض الموقع بالعربية");
   }
   if (isPostArticlePath(path)) {
     const toArabic = !isArabicPath(path);
     const href = localizePath("/posts", toArabic ? "ar" : "en");
-    if (toArabic) {
-      return { href, hrefLang: "ar", label: "العربية", ariaLabel: "عرض الموقع بالعربية" };
-    }
-    return { href, hrefLang: "en", label: "English", ariaLabel: "التبديل إلى الإنجليزية" };
+    if (toArabic) return namedSwitch(href, "ar", "العربية", "عرض الموقع بالعربية");
+    return namedSwitch(href, "en", "English", "التبديل إلى الإنجليزية");
   }
   const toArabic = !isArabicPath(path);
   const href = `${localizePath(path, toArabic ? "ar" : "en")}${normalizedHash}`;
-  if (toArabic) {
-    return { href, hrefLang: "ar", label: "العربية", ariaLabel: "عرض الموقع بالعربية" };
-  }
-  return { href, hrefLang: "en", label: "English", ariaLabel: "التبديل إلى الإنجليزية" };
+  if (toArabic) return namedSwitch(href, "ar", "العربية", "عرض الموقع بالعربية");
+  return namedSwitch(href, "en", "English", "التبديل إلى الإنجليزية");
 }
 
 export function alternatePaths(pathname: string) {

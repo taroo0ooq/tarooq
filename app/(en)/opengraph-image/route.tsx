@@ -17,20 +17,21 @@ export async function GET() {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#F8F7FC",
-          color: "#0B1F3A",
+          background: "#0B1626",
+          color: "#F3EEE4",
           padding: "72px",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", maxWidth: 720 }}>
-          <div style={{ display: "flex", fontSize: 28, marginBottom: 24 }}>Tareq Al-Ghazzi</div>
-          <div style={{ display: "flex", fontSize: 52, fontWeight: 800, lineHeight: 1.05, letterSpacing: -1 }}>
+          <div style={{ display: "flex", fontSize: 22, letterSpacing: 4, color: "#C8A96A", marginBottom: 28 }}>TAREQ AL-GHAZZI</div>
+          <div style={{ display: "flex", width: 72, height: 1, background: "#C8A96A", marginBottom: 28 }} />
+          <div style={{ display: "flex", fontSize: 52, fontWeight: 400, lineHeight: 1.12, color: "#F3EEE4" }}>
             I build cloud platforms that actually survive reality.
           </div>
         </div>
-        <img src={src} alt="" width={340} height={342} style={{ borderRadius: 40, objectFit: "cover" }} />
+        <img src={src} alt="" width={340} height={342} style={{ borderRadius: 4, objectFit: "cover", border: "1px solid #C8A96A" }} />
       </div>
     ),
     size,
