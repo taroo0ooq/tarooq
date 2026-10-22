@@ -15,7 +15,7 @@ function contactHref(locale: Locale, topic: string) {
 
 export function HomePage({ locale }: { locale: Locale }) {
   const copy = getCopy(locale);
-  const { about, certifications, education, expertise, languages, problems, profile, roles, skills, stages, storyChapters, ui } = copy;
+  const { about, certifications, credentialList, education, expertise, languages, problems, profile, roles, skills, stages, storyChapters, ui } = copy;
   const text = (value: string) => tx(locale, value);
   const recent = storyChapters.filter((chapter) => !earlierChapterIds.has(chapter.id));
   const earlier = storyChapters.filter((chapter) => earlierChapterIds.has(chapter.id));
@@ -203,6 +203,51 @@ export function HomePage({ locale }: { locale: Locale }) {
             <Chapter chapter={chapter} compact index={index} key={chapter.id} />
           ))}
         </details>
+      </section>
+
+      <section className="cert-record" id="certificates" aria-labelledby="certificates-title">
+        <header className="story-head">
+          <h2 id="certificates-title" className="serif">
+            {ui.home.certsListTitle}
+          </h2>
+        </header>
+        <ul className="cert-list">
+          {credentialList.map((item) => {
+            const body = (
+              <>
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  width={64}
+                  height={64}
+                  sizes="64px"
+                  loading="lazy"
+                  className="cert-badge"
+                />
+                <span className="cert-copy">
+                  <span className="cert-name" dir="ltr">
+                    {item.name}
+                  </span>
+                  <span className="meta">
+                    {item.issuer}
+                    {item.issued ? ` · ${ui.home.certsIssued} ${item.issued}` : ""}
+                  </span>
+                </span>
+              </>
+            );
+            return (
+              <li key={item.name}>
+                {item.href ? (
+                  <a className="cert-row" href={item.href}>
+                    {body}
+                  </a>
+                ) : (
+                  <div className="cert-row">{body}</div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       </section>
     </>
   );

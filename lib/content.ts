@@ -416,6 +416,113 @@ export const certifications = [
   },
 ];
 
+export const credentialList = [
+  {
+    name: "Microsoft AI Discovery Cards – Train The Trainer",
+    issuer: "Microsoft",
+    image: "/badges/microsoft-ai-discovery-cards.webp",
+    alt: "Microsoft AI Discovery Cards – Train The Trainer badge",
+    href: "https://www.credly.com/org/microsoftgps/badge/microsoft-ai-discovery-cards-train-the-trainer",
+    issued: "Apr 2026",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Professional",
+    issuer: "Amazon Web Services (AWS)",
+    image: "/badges/aws-solutions-architect-professional.webp",
+    alt: "AWS Certified Solutions Architect – Professional badge",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+    issued: "Feb 2021",
+  },
+  {
+    name: "Microsoft Certified: Azure Security Engineer Associate",
+    issuer: "Microsoft",
+    image: "/badges/azure-security-engineer-associate.png",
+    alt: "Microsoft Certified: Azure Security Engineer Associate badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/",
+    issued: "Nov 2020",
+  },
+  {
+    name: "AWS Certified Solutions Architect – Associate",
+    issuer: "Amazon Web Services (AWS)",
+    image: "/badges/aws-solutions-architect-associate.png",
+    alt: "AWS Certified Solutions Architect – Associate badge",
+    href: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    issued: "Sep 2020",
+  },
+  {
+    name: "Veeam Technical Sales Professional (VMTSP) 2020",
+    issuer: "Veeam",
+    image: "/badges/issuer-veeam.webp",
+    alt: "Veeam Technical Sales Professional (VMTSP) 2020 badge",
+    href: "",
+    issued: "Apr 2020",
+  },
+  {
+    name: "Microsoft Certified: Azure Solutions Architect Expert",
+    issuer: "Microsoft",
+    image: "/badges/microsoft-certified-expert.webp",
+    alt: "Microsoft Certified: Azure Solutions Architect Expert badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/azure-solutions-architect/",
+    issued: "",
+  },
+  {
+    name: "AZ-301 Microsoft Azure Architect Design",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "AZ-301 Microsoft Azure Architect Design badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-301/",
+    issued: "",
+  },
+  {
+    name: "AZ-300 Microsoft Azure Architect Technologies",
+    issuer: "Microsoft",
+    image: "/badges/az-300-azure-architect-technologies.png",
+    alt: "AZ-300 Microsoft Azure Architect Technologies badge",
+    href: "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-300/",
+    issued: "",
+  },
+  {
+    name: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM)",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "MCTS: Designing, Assessing, and Optimizing Software Asset Management (SAM) badge",
+    href: "",
+    issued: "Mar 2015",
+  },
+  {
+    name: "Symantec Backup Exec 2012",
+    issuer: "Symantec",
+    image: "/badges/issuer-symantec.webp",
+    alt: "Symantec Backup Exec 2012 badge",
+    href: "",
+    issued: "May 2013",
+  },
+  {
+    name: "MCPS: Microsoft Certified Professional",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "MCPS: Microsoft Certified Professional badge",
+    href: "",
+    issued: "Mar 2013",
+  },
+  {
+    name: "Microsoft Private Cloud Professional 2012 SP1",
+    issuer: "Microsoft",
+    image: "/badges/issuer-microsoft.webp",
+    alt: "Microsoft Private Cloud Professional 2012 SP1 badge",
+    href: "",
+    issued: "Mar 2013",
+  },
+  {
+    name: "VTCP 5.0",
+    issuer: "VMware",
+    image: "/badges/issuer-vmware.webp",
+    alt: "VTCP 5.0 badge",
+    href: "",
+    issued: "Feb 2013",
+  },
+];
+
 export const skills = ["Microsoft Azure", "Artificial Intelligence", "Azure DevOps"];
 
 export const languages = [
@@ -769,6 +876,8 @@ export const ui = {
     expertiseIntro: "Practical cloud architecture and delivery for organizations that cannot afford failure or non-compliance.",
     certsEyebrow: "Certifications",
     certsTitle: "Certificates beside the work.",
+    certsListTitle: "Certificates, newest first.",
+    certsIssued: "Issued",
     languagesLead: "Languages:",
     languagesJoin: " and ",
     skillsLead: "Top skills:",
@@ -788,8 +897,8 @@ export const ui = {
   forYou: {
     eyebrow: "For you",
     title: "Start where I started. Learn for free.",
-    intro: "These are public courses I point people to. They're recommendations, not my certifications. My 3 certificates sit on the home page.",
-    held: "Held certificates:",
+    intro: "These are public courses I point people to. They're recommendations, not my certifications.",
+    held: "The certificates are on the home page, newest first.",
   },
   posts: {
     eyebrow: "Posts",

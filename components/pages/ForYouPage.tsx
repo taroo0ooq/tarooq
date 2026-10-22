@@ -5,7 +5,7 @@ import type { Locale } from "@/lib/locale";
 import { pageBreadcrumbs } from "@/lib/structured-data";
 
 export function ForYouPage({ locale }: { locale: Locale }) {
-  const { certifications, courseTopics, courses, ui } = getCopy(locale);
+  const { courseTopics, courses, ui } = getCopy(locale);
   const text = (value: string) => tx(locale, value);
   return (
     <main className="page">
@@ -45,9 +45,7 @@ export function ForYouPage({ locale }: { locale: Locale }) {
           </section>
         ))}
       </div>
-      <p className="note">
-        {ui.forYou.held} {certifications.map((item) => item.name).join(", ")}.
-      </p>
+      <p className="note">{ui.forYou.held}</p>
     </main>
   );
 }
