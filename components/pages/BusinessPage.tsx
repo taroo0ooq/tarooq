@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
 import { localizePath, type Locale } from "@/lib/locale";
+import { pageBreadcrumbs } from "@/lib/structured-data";
 
 export function BusinessPage({ locale }: { locale: Locale }) {
   const { businessPage, offers, steps, ui } = getCopy(locale);
@@ -11,6 +13,7 @@ export function BusinessPage({ locale }: { locale: Locale }) {
 
   return (
     <section className="biz">
+      <JsonLd data={pageBreadcrumbs(locale, "business", { home: ui.nav.home, current: ui.nav.business })} />
       <p className="eyebrow">{ui.business.eyebrow}</p>
       <h1 className="serif">{text(ui.business.title)}</h1>
       <p className="lead">{text(businessPage.audience)}</p>
