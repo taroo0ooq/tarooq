@@ -1,4 +1,4 @@
-import { createElement, type FormEvent, type Ref } from "react";
+import { createElement, type FormEvent, type ReactNode, type Ref } from "react";
 import { chatCopy } from "./chat-copy";
 import { CHAT_MAX_MESSAGE_CHARS } from "./chat-limits";
 import { chatContactHref } from "./chat-ui";
@@ -16,6 +16,8 @@ export type ChatFrameProps = {
   onToggle: () => void;
   onClose: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  sendBlocked?: boolean;
+  check?: ReactNode;
   launcherRef?: Ref<HTMLButtonElement>;
   panelRef?: Ref<HTMLDivElement>;
   inputRef?: Ref<HTMLInputElement>;
@@ -87,6 +89,7 @@ export function ChatFrame(props: ChatFrameProps) {
       },
       bubbles.length > 0 ? bubbles : createElement("p", { className: "chat-empty" }, copy.empty),
     ),
+    props.check ? createElement("div", { className: "chat-check" }, props.check) : null,
     createElement(
       "form",
       { className: "chat-form", onSubmit: props.onSubmit },
@@ -105,7 +108,11 @@ export function ChatFrame(props: ChatFrameProps) {
       }),
       createElement(
         "button",
-        { type: "submit", className: "chat-send", disabled: props.pending || props.draft.trim().length === 0 },
+        {
+          type: "submit",
+          className: "chat-send",
+          disabled: props.pending || props.sendBlocked || props.draft.trim().length === 0,
+        },
         props.pending ? copy.sending : copy.send,
       ),
     ),

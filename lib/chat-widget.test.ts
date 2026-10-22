@@ -53,6 +53,30 @@ describe("chat widget RTL", () => {
     assert.match(open, /role="dialog"/);
   });
 
+  it("holds the first question until the check is present", () => {
+    const html = renderToStaticMarkup(
+      createElement(ChatFrame, {
+        locale: "en",
+        open: true,
+        pending: false,
+        messages: [],
+        draft: "Who is Tareq?",
+        onDraft: noop,
+        onToggle: noop,
+        onClose: noop,
+        onSubmit: (event) => event.preventDefault(),
+        sendBlocked: true,
+        check: createElement("div", { className: "turnstile", "data-sitekey": "test" }, "check"),
+      }),
+    );
+    assert.match(html, /class="turnstile"/);
+    assert.match(html, /disabled=""/);
+    const widget = readFileSync(new URL("../components/ChatWidget.tsx", import.meta.url), "utf8");
+    assert.match(widget, /TurnstileField/);
+    assert.match(widget, /needsCheck/);
+    assert.equal(widget.includes("TURNSTILE_SECRET_KEY"), false);
+  });
+
   it("stays off the owner desk and is lazy loaded", () => {
     assert.equal(showChatWidget("/posts/new"), false);
     assert.equal(showChatWidget("/posts/new/"), false);

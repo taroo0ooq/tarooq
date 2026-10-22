@@ -4,6 +4,7 @@ import { CHAT_BODY_CHARS, CHAT_RATE_LIMIT, CHAT_RATE_WINDOW_MS } from "./chat-li
 import { createAnswerGuard, prepareChatTurn, type ModelTurn } from "./chat-policy";
 import { hashVisitorIp, type ChatRateStore } from "./chat-rate";
 import { logChatModelFailure } from "./chat-model";
+import { turnstileVisitorIp, verifyTurnstile } from "./turnstile";
 import type { Locale } from "./locale";
 
 export type ChatComplete = (turn: ModelTurn, signal: AbortSignal) => AsyncIterable<string>;
@@ -14,6 +15,7 @@ export type ChatDeps = {
   loadCorpus: () => Promise<ChatChunk[]>;
   complete: ChatComplete;
   now?: number;
+  verify?: (token: unknown, remoteip: string) => Promise<boolean>;
 };
 
 function json(locale: Locale, status: number, message: string, retryAfter = 0) {
@@ -96,6 +98,14 @@ function readLocale(value: unknown): Locale | null {
   return null;
 }
 
+function userTurns(messages: unknown) {
+  if (!Array.isArray(messages)) return 0;
+  return messages.filter((item) => {
+    if (!item || typeof item !== "object") return false;
+    return (item as { role?: unknown }).role === "user";
+  }).length;
+}
+
 function guardedStream(source: AsyncIterable<string>, context: string, locale: Locale) {
   const encoder = new TextEncoder();
   const guard = createAnswerGuard(context, locale);
@@ -155,6 +165,12 @@ export async function handleChatRequest(request: Request, deps: ChatDeps) {
   const record = payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
   const locale = readLocale(record.locale);
   if (!locale) return json(headerLocale, 400, copyFor(headerLocale).invalid);
+
+  if (userTurns(record.messages) === 1) {
+    const verify = deps.verify ?? verifyTurnstile;
+    const allowed = await verify(record.turnstileToken, turnstileVisitorIp(request));
+    if (!allowed) return json(locale, 400, copyFor(locale).turnstile);
+  }
 
   let corpus: ChatChunk[];
   try {

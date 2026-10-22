@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { TurnstileField } from "@/components/TurnstileField";
 import { chatCopy } from "@/lib/chat-copy";
 import { ChatFrame, type ChatBubble } from "@/lib/chat-frame";
 import { CHAT_MAX_MESSAGE_CHARS, CHAT_MAX_MESSAGES } from "@/lib/chat-limits";
@@ -12,6 +13,8 @@ export function ChatWidget({ locale }: { locale: Locale }) {
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
   const [messages, setMessages] = useState<ChatBubble[]>([]);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,7 +70,9 @@ export function ChatWidget({ locale }: { locale: Locale }) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const question = draft.trim();
+    const firstMessage = messages.every((message) => message.role !== "user");
     if (!question || pending || question.length > CHAT_MAX_MESSAGE_CHARS) return;
+    if (firstMessage && !turnstileToken) return;
     if (messages.length >= CHAT_MAX_MESSAGES) {
       setMessages((current) => [...current, { role: "assistant", content: copy.length }]);
       setDraft("");
@@ -84,18 +89,20 @@ export function ChatWidget({ locale }: { locale: Locale }) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Chat-Locale": locale },
-        body: JSON.stringify({ locale, messages: history }),
+        body: JSON.stringify({ locale, messages: history, ...(firstMessage ? { turnstileToken } : {}) }),
         signal: controller.signal,
       });
       const type = response.headers.get("content-type") || "";
       if (type.includes("application/json") || !response.ok) {
         const data = (await response.json().catch(() => null)) as { message?: string } | null;
-        replaceAssistant(data?.message || copy.error);
+        if (firstMessage) setMessages([{ role: "assistant", content: data?.message || copy.error }]);
+        else replaceAssistant(data?.message || copy.error);
         return;
       }
       const reader = response.body?.getReader();
       if (!reader) {
-        replaceAssistant(copy.error);
+        if (firstMessage) setMessages([{ role: "assistant", content: copy.error }]);
+        else replaceAssistant(copy.error);
         return;
       }
       const decoder = new TextDecoder();
@@ -113,12 +120,20 @@ export function ChatWidget({ locale }: { locale: Locale }) {
         });
       }
       answer += decoder.decode();
-      if (!answer.trim()) replaceAssistant(copy.error);
+      if (!answer.trim()) {
+        if (firstMessage) setMessages([{ role: "assistant", content: copy.error }]);
+        else replaceAssistant(copy.error);
+      }
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
-      replaceAssistant(copy.error);
+      if (firstMessage) setMessages([{ role: "assistant", content: copy.error }]);
+      else replaceAssistant(copy.error);
     } finally {
       setPending(false);
+      if (firstMessage) {
+        setTurnstileToken("");
+        setTurnstileReset((current) => current + 1);
+      }
     }
   }
 
@@ -132,6 +147,8 @@ export function ChatWidget({ locale }: { locale: Locale }) {
     });
   }
 
+  const needsCheck = open && messages.every((message) => message.role !== "user");
+
   return (
     <ChatFrame
       locale={locale}
@@ -143,6 +160,12 @@ export function ChatWidget({ locale }: { locale: Locale }) {
       onToggle={() => setOpen((current) => !current)}
       onClose={close}
       onSubmit={onSubmit}
+      sendBlocked={needsCheck && !turnstileToken}
+      check={
+        needsCheck ? (
+          <TurnstileField resetKey={turnstileReset} language={locale} onToken={setTurnstileToken} />
+        ) : null
+      }
       launcherRef={launcherRef}
       panelRef={panelRef}
       inputRef={inputRef}

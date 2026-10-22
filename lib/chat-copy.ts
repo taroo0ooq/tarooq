@@ -22,6 +22,7 @@ export type ChatCopy = {
   invalid: string;
   tooLarge: string;
   forbidden: string;
+  turnstile: string;
 };
 
 const english: ChatCopy = {
@@ -46,6 +47,7 @@ const english: ChatCopy = {
   invalid: "Send a short question about the site.",
   tooLarge: "That request is too large.",
   forbidden: "The guide only answers questions sent from this site.",
+  turnstile: "The check didn't go through. Try again.",
 };
 
 const arabic: ChatCopy = {
@@ -70,6 +72,7 @@ const arabic: ChatCopy = {
   invalid: "أرسل سؤالًا قصيرًا عن الموقع.",
   tooLarge: "هذا الطلب أكبر من اللازم.",
   forbidden: "يجيب الدليل فقط عن الأسئلة المرسَلة من هذا الموقع.",
+  turnstile: "لم ينجح التحقق. أعد المحاولة.",
 };
 
 export function chatCopy(locale: Locale): ChatCopy {
