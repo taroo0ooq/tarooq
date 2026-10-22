@@ -4,13 +4,11 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
-import { PreviewPalette } from "@/components/PreviewPalette";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { getCopy } from "@/lib/copy";
 import { absoluteUrl, defaultShareImage, siteUrl } from "@/lib/site";
+import { themeColors, themeInitScript } from "@/lib/theme";
 import "../globals.css";
-
-const themeScript = `(function(){try{var stored=localStorage.getItem("tarooq-theme");var theme=stored==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",theme);document.documentElement.style.colorScheme=theme;var color=theme==="dark"?"#070910":"#f8f7fc";document.querySelectorAll('meta[name="theme-color"]').forEach(function(meta){meta.setAttribute("content",color);});}catch(e){}})();`;
 
 const body = Inter({
   subsets: ["latin"],
@@ -56,11 +54,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f7fc" },
-    { media: "(prefers-color-scheme: dark)", color: "#070910" },
-  ],
-  colorScheme: "light dark",
+  themeColor: themeColors.dark,
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -68,9 +63,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" dir="ltr" className={body.variable} suppressHydrationWarning>
       <body className={body.className}>
         <Script id="theme-init" strategy="beforeInteractive">
-          {themeScript}
+          {themeInitScript}
         </Script>
-        <PreviewPalette />
         <a className="skip" href="#content">
           {ui.skip}
         </a>
