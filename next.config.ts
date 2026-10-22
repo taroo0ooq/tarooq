@@ -43,6 +43,7 @@ const nextConfig: NextConfig = {
     "/ar/posts": ["./content/posts/**/*"],
     "/ar/posts/[slug]": ["./content/posts/**/*"],
     "/sitemap.xml": ["./content/posts/**/*"],
+    "/api/chat": ["./content/llms.txt", "./content/posts/**/*"],
   },
 };
 

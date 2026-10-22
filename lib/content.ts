@@ -863,7 +863,7 @@ export const ui = {
     contactDescription: "Contact Tareq Al-Ghazzi about regional cloud strategy, FinOps, AI platforms, or governance.",
     privacyTitle: "Privacy",
     privacyDescription:
-      "How personal information is collected, used, and protected on {{site}}, including the contact form and the site owner's LinkedIn publishing.",
+      "How personal information is collected, used, and protected on {{site}}, including the contact form, the visitor chatbot, and the site owner's LinkedIn publishing.",
     businessTitle: "Business",
     postFallbackTitle: "Post",
     jsonJob: profile.role,
@@ -876,7 +876,7 @@ export const ui = {
     blocks: [
       {
         kind: "p",
-        text: "This privacy policy describes how personal information is collected, used, and protected on {{site}} (the “Site”) and in connection with the LinkedIn publishing feature used by the site owner.",
+        text: "This privacy policy describes how personal information is collected, used, and protected on {{site}} (the “Site”), including the visitor chatbot, and in connection with the LinkedIn publishing feature used by the site owner.",
       },
       {
         kind: "p",
@@ -891,6 +891,15 @@ export const ui = {
       {
         kind: "p",
         text: "This information is sent through Resend and is used only to respond to your inquiry. A hidden field is used solely to reduce automated submissions.",
+      },
+      { kind: "h3", text: "Visitor chatbot" },
+      {
+        kind: "p",
+        text: "The Site has a chatbot for questions about pages and posts published on the Site. The question and earlier messages from that browser session are sent to Vercel AI Gateway, which routes them to a language model (OpenAI GPT-4.1 mini, unless the site owner has selected another Gateway model) to write the reply. The Site does not store the conversation.",
+      },
+      {
+        kind: "p",
+        text: "To limit automated use, the Site hashes the IP address and stores that hash with a short-lived counter in Supabase. The counter is kept for ten minutes and then deleted. The hash is not the conversation, and the raw IP address is not stored for the chatbot. The IP address may still appear in ordinary Vercel server logs, as described above.",
       },
       { kind: "h3", text: "Information related to LinkedIn (site owner only)" },
       {
@@ -908,6 +917,8 @@ export const ui = {
         kind: "ul",
         items: [
           "Respond to contact form inquiries",
+          "Answer chatbot questions from published Site content",
+          "Limit automated chatbot use with a short-lived counter",
           "Operate and secure the Site",
           "Count visitors and page views with cookieless Vercel Web Analytics",
           "Publish approved articles to LinkedIn (site owner only)",
@@ -922,6 +933,8 @@ export const ui = {
         items: [
           "**Resend** — to deliver contact form submissions",
           "**Vercel** — for website hosting and cookieless Web Analytics",
+          "**Supabase** — to store the chatbot rate-limit counter (a hash of the IP address and a count, not the conversation)",
+          "**Vercel AI Gateway** — to send the chatbot question to the language model that writes the reply (OpenAI GPT-4.1 mini unless another Gateway model is configured). The Site does not store that exchange",
           "**LinkedIn** — when the site owner publishes or embeds content (as described above)",
         ],
       },
@@ -937,13 +950,14 @@ export const ui = {
         kind: "ul",
         items: [
           "Choose not to submit the contact form",
+          "Choose not to use the chatbot and use the contact form instead",
           "Request access to or deletion of information you submitted through the contact form. Send that request to {{mail}}",
           "Revoke LinkedIn access at any time (site owner)",
         ],
       },
       { kind: "p", text: "We will respond to requests within a reasonable time." },
       { kind: "h2", text: "6. Cookies" },
-      { kind: "p", text: "The Site does not use analytics or advertising cookies. Vercel Web Analytics is cookieless." },
+      { kind: "p", text: "The Site does not use analytics or advertising cookies. Vercel Web Analytics is cookieless. The chatbot does not use cookies. The conversation stays in the browser tab until you close it." },
       {
         kind: "p",
         text: "LinkedIn sign-in uses a short-lived cookie only to confirm the authentication return trip. That cookie is deleted afterward.",
@@ -951,7 +965,7 @@ export const ui = {
       { kind: "h2", text: "7. Data Retention" },
       {
         kind: "p",
-        text: "Contact form submissions are kept only as long as needed to respond to the inquiry and for reasonable record-keeping.",
+        text: "Contact form submissions are kept only as long as needed to respond to the inquiry and for reasonable record-keeping. Chatbot messages are not stored on the Site. The rate-limit counter is deleted when it expires, after ten minutes.",
       },
       { kind: "p", text: "You may request deletion of contact form data through {{mail}}" },
       { kind: "h2", text: "8. Updates to this Privacy Policy" },
