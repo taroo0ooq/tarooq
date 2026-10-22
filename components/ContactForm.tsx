@@ -28,13 +28,16 @@ export type ContactFormCopy = {
 export function ContactForm({
   locale,
   topics,
+  initialTopic,
   copy,
 }: {
   locale: Locale;
-  topics: readonly string[];
+  topics: readonly { id: string; label: string }[];
+  initialTopic?: string;
   copy: ContactFormCopy;
 }) {
-  const empty = { name: "", email: "", topic: topics[0] ?? "", message: "", company: "", website: "" };
+  const preset = topics.find((topic) => topic.id === initialTopic || topic.label === initialTopic);
+  const empty = { name: "", email: "", topic: preset?.label ?? topics[0]?.label ?? "", message: "", company: "", website: "" };
   const [fields, setFields] = useState(empty);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [pending, setPending] = useState(false);
@@ -140,14 +143,21 @@ export function ContactForm({
         />
         {errors.company ? <p className="error">{errors.company}</p> : null}
       </div>
-      <div className="field">
-        <label htmlFor="topic">{copy.topic}</label>
-        <select id="topic" name="topic" value={fields.topic} onChange={(event) => update("topic", event.target.value)}>
-          {topics.map((topic) => (
-            <option key={topic}>{topic}</option>
-          ))}
-        </select>
-      </div>
+      <fieldset className="topic-presets">
+        <legend>{copy.topic}</legend>
+        {topics.map((topic) => (
+          <label className={fields.topic === topic.label ? "preset on" : "preset"} key={topic.id}>
+            <input
+              type="radio"
+              name="topic"
+              value={topic.label}
+              checked={fields.topic === topic.label}
+              onChange={() => update("topic", topic.label)}
+            />
+            {topic.label}
+          </label>
+        ))}
+      </fieldset>
       <div className="field">
         <label htmlFor="message">{copy.message}</label>
         <textarea

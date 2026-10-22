@@ -60,7 +60,7 @@ describe("hero", () => {
     );
     assert.equal(en.ui.home.postsCta, "Read the posts");
     assert.equal(en.ui.home.contactCta, "Start a conversation");
-    assert.equal(ar.ui.home.positioning, "رئيس خدمات السحابة، الشرق الأوسط وشمال أفريقيا. منصات سحابية تصمد في الواقع.");
+    assert.equal(ar.ui.home.positioning, "أبني منصات سحابية تصمد في الواقع.");
     assert.equal(ar.ui.home.regulated, "أعمل مع مؤسسات خاضعة للتنظيم في الخليج والشرق الأوسط وشمال أفريقيا.");
     assert.equal(
       ar.ui.home.sectors,

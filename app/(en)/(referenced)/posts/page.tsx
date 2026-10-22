@@ -13,7 +13,10 @@ export const metadata: Metadata = pageMetadata("/posts", {
   description: copy.ui.meta.postsDescription,
 });
 
-export default async function Page() {
+type PageProps = { searchParams: Promise<{ pillar?: string }> };
+
+export default async function Page({ searchParams }: PageProps) {
+  const { pillar } = await searchParams;
   const posts = await loadPublicPosts();
-  return <PostsIndex locale="en" posts={posts} />;
+  return <PostsIndex locale="en" posts={posts} pillar={pillar} />;
 }

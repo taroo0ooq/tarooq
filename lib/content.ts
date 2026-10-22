@@ -6,8 +6,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "I build cloud platforms that actually survive reality.",
   deck: "Tareq Al-Ghazzi, Head of Cloud Services, MENA. Azure platforms that survive reality: landing zones, migrations, FinOps, and governance for regulated organizations.",
-  availability:
-    "Available for cloud strategy, architecture reviews, migration programs, and regulated Azure delivery across MENA.",
+  availability: "My own practice is described on the Business page.",
 } as const;
 
 export const about = [
@@ -17,12 +16,57 @@ export const about = [
   "My focus is simple: platforms that stay reliable when things break, stay compliant when auditors arrive, and stay cost-efficient when scale hits. If your cloud has to work in production — not just in a proposal — that is the work I do.",
 ] as const;
 
-export const approach = [
-  "I start from the reality of production, not the ideal architecture diagram.",
-  "Most cloud problems are not technical in isolation. They appear when landing zones are incomplete, identity is an afterthought, migrations ignore dependencies, security controls exist only on paper, or cost is never owned. The platforms I design assume failure, expect auditors, and treat cost as a continuous concern.",
-  "The work is opinionated where it needs to be, on security baselines, landing zone structure, and identity patterns, and flexible where the business requires it. The goal is always the same: a platform that the organization can actually operate, that survives incidents, and that passes scrutiny.",
-  "If a design only works in a workshop or a proposal, it is not finished.",
+export const stages = [
+  {
+    n: "01",
+    title: "Standard path",
+    body: "I name the standard and the exception before I draw anything. If nobody owns either one, the design will drift.",
+  },
+  {
+    n: "02",
+    title: "Landing zone",
+    body: "The landing zone is the operating model. Dev, SIT, UAT, and Production run the same guardrails. Production is not a separate design.",
+  },
+  {
+    n: "03",
+    title: "Migration waves",
+    body: "I move the estate in waves, with the dependencies and a rollback path. A design that only works in a workshop is not finished.",
+  },
+  {
+    n: "04",
+    title: "Handover",
+    body: "The work is done when the team can keep the standard. Owners and runbooks stay after the project ends.",
+  },
 ] as const;
+
+export const problems = {
+  title: "What is really going wrong",
+  intro: "I keep seeing the same patterns in regulated organizations. The dashboard is often fine. The platform is not.",
+  items: [
+    {
+      title: "A green score",
+      body: "The compliance score is green, and the platform is still not ready to run.",
+    },
+    {
+      title: "A green backup",
+      body: "The backup dashboard is green. Nobody has restored from it.",
+    },
+    {
+      title: "Volume as maturity",
+      body: "Migration volume gets treated as proof that the cloud is mature.",
+    },
+    {
+      title: "An agent before the plumbing",
+      body: "An AI agent gets built before anyone owns the data and the permissions.",
+    },
+    {
+      title: "A standard with no owner",
+      body: "There is a standard, and a set of exceptions nobody can explain on a bad week.",
+    },
+  ],
+  reframe:
+    "These are ownership problems. I work on the standard path, the landing zone as an operating model, and the handover, so the platform still holds in production and in an audit.",
+} as const;
 
 export const expertise = [
   {
@@ -569,122 +613,87 @@ export const courses = [
 ] as const;
 
 export const businessPage = {
-  audience:
-    "For banks, government, and regulated enterprises across MENA that need Azure platforms which stay compliant, operable, and cost-transparent in production.",
-  model: "Same operating model from Dev/SIT through UAT and Production.",
-  regulatedTitle: "Built for regulated MENA realities",
-  regulated:
-    "Designs and delivery for regulated environments. The work assumes auditors will arrive, production will have incidents, and cost must remain transparent as the platform scales.",
+  audience: "This page is my own practice. It is separate from my job as Head of Cloud Services, MENA at Mobiz IT.",
+  model: "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work, and Mobiz does not endorse this practice.",
+  regulatedTitle: "Who this is for",
+  regulated: "Enterprise and regulated organizations in MENA. The platform has to hold in production and in an audit.",
   contexts: [
-    "Regulated banking and financial services",
-    "Government and government-linked entities",
-    "Large enterprises with multi-market or multi-jurisdiction needs",
+    "Banking and financial services",
+    "Government and the public sector",
+    "Telecom",
+    "Energy and oil & gas",
+    "Tourism and hospitality",
+    "Large and giga enterprises",
   ],
-  processTitle: "How the work progresses",
-  differenceTitle: "How this is different",
+  processTitle: "How I work",
+  differenceTitle: "What the work covers",
   differences: [
-    "Hands-on architecture and delivery. Strategy does not stop at the subscription.",
-    "One operating model across Dev/SIT, UAT, and Production. No separate “production is different” design.",
-    "Built for regulated MENA conditions: jurisdiction-specific controls, audit readiness, and cost transparency from the start.",
+    "Strategy that continues into the landing zone. It does not stop at the subscription.",
+    "One operating model from Dev and SIT through UAT and Production.",
+    "Security, resilience, and a handover that leaves owners.",
   ],
-  engagement:
-    "Typical work includes regional strategy and a landing zone foundation, migration program support, security and compliance remediation, and an operating model with team enablement.",
-  credibility: "Led by Tareq Al-Ghazzi, Head of Cloud Services, MENA.",
-  closeTitle: "Let's talk about the constraint.",
-  close:
-    "Share the region, the regulatory context, and what “done” needs to look like. We'll map the practical path from there.",
+  engagement: "The usual shape is a regional operating model, a landing zone the team can run, and the security and resilience that belong in that design.",
+  credibility: "I am Tareq Al-Ghazzi. I lead Cloud Services for MENA at Mobiz IT, and I keep this practice separate from that role.",
+  closeTitle: "If the constraint is real, write to me.",
+  close: "Tell me the region, the regulatory context, and what done needs to look like. I will say whether it is work I take on.",
 } as const;
 
 export const offers = [
   {
-    kicker: "Advisory",
-    title: "Cloud and AI strategy",
+    id: "strategy",
+    kicker: "Strategy",
+    title: "Regional strategy",
     tone: "t-az",
-    summary: "Own the regional strategy and the execution, not a slide that stops at the subscription.",
+    summary: "I help name the operating model: one standard across markets, and a clear owner for the exception.",
     points: [
-      "Align enterprise architecture with financial governance and regulatory requirements",
-      "Standardize how markets adopt the platform",
-      "FinOps operating model and a cost view leadership can act on",
+      "Architecture tied to financial governance and the regulation that applies",
+      "How markets adopt the same platform",
+      "A cost view leadership can actually use",
     ],
-    gets: [
-      "Regional target architecture aligned to regulatory and financial governance needs",
-      "FinOps operating model with a cost view leadership can act on",
-      "Prioritized roadmap that connects strategy to funded execution",
-      "Clear view of constraints (regulatory, organizational, technical) before design begins",
-    ],
-    cta: "Plan the regional strategy",
+    cta: "Write about strategy",
   },
   {
-    kicker: "Execution",
-    title: "Landing zones and delivery",
+    id: "landing",
+    kicker: "Platform",
+    title: "Landing zones",
     tone: "t-do",
-    summary: "CAF and Well-Architected landing zones, with guardrails teams can build inside.",
+    summary: "I design the landing zone as the way Dev, SIT, UAT, and Production are run, not as a document.",
     points: [
-      "The same architecture across Dev/SIT, UAT, and Production",
-      "AI platform readiness for advanced workloads and enterprise LLM initiatives",
-      "Automation that removes manual operations and shortens delivery",
+      "The same guardrails in every environment",
+      "Migration in waves, with a rollback path",
+      "Room for governed AI, once the data and the permissions are owned",
     ],
-    gets: [
-      "Production-ready CAF/WAF landing zone with consistent guardrails in every environment",
-      "Migration patterns and automation that internal teams can run and maintain",
-      "AI-ready platform foundations for advanced and LLM workloads",
-      "Reduced manual operations through automation built into the design",
-    ],
-    cta: "Start the landing zone",
+    cta: "Write about the landing zone",
   },
   {
-    kicker: "Enablement",
-    title: "Security, resilience, teams",
+    id: "resilience",
+    kicker: "Running it",
+    title: "Security, resilience, handover",
     tone: "t-ai",
-    summary: "Identity, compliance, and resilience designed per jurisdiction, with a team that can run it.",
+    summary: "I put identity, recovery, and ownership into the design, then leave a team that can keep the standard.",
     points: [
-      "Regional security and IAM standardization",
-      "Disaster recovery and high availability by design",
-      "Cross-functional cloud and platform engineering teams",
+      "Security and IAM that match the jurisdiction",
+      "Recovery that someone has actually practiced",
+      "Owners and runbooks that stay after handover",
     ],
-    gets: [
-      "Jurisdiction-specific security and IAM baseline, ready for audit",
-      "Disaster recovery and high availability designed in, not added later",
-      "Operating model and team structure that can sustain the standard after handover",
-      "Clear ownership so the platform remains healthy in production",
-    ],
-    cta: "Review the operating model",
-  },
-] as const;
-
-export const steps = [
-  {
-    n: "01",
-    title: "Discover",
-    body: "The region, the constraint, and what done looks like.",
-    outcome: "Constraint map, regulatory scope, and a shared definition of “done.”",
-  },
-  {
-    n: "02",
-    title: "Design",
-    body: "Landing zones, FinOps, and the operating model.",
-    outcome: "Target architecture, FinOps model, and guardrails that apply consistently across environments.",
-  },
-  {
-    n: "03",
-    title: "Deliver",
-    body: "Governance, automation, and AI readiness in the same design.",
-    outcome: "Implemented landing zone, automation, and platform patterns the team can build on.",
-  },
-  {
-    n: "04",
-    title: "Sustain",
-    body: "Security, resilience, and a team that keeps the standard.",
-    outcome: "Handover, runbooks, and an operating model that preserves the standard in production.",
+    cta: "Write about handover",
   },
 ] as const;
 
 export const topics = [
-  "Business transformation",
-  "Cloud and AI strategy",
-  "FinOps and landing zones",
-  "AI platform readiness",
-  "Something else",
+  { id: "conversation", label: "The work in general" },
+  { id: "strategy", label: "Regional strategy" },
+  { id: "landing", label: "Landing zones and the operating model" },
+  { id: "resilience", label: "Security, resilience, and handover" },
+  { id: "ai", label: "Governed AI" },
+  { id: "other", label: "Something else" },
+] as const;
+
+export const pillars = [
+  { id: "platforms", label: "Platforms that survive reality" },
+  { id: "regional", label: "Cloud is a regional capability" },
+  { id: "ai", label: "Governed AI on the platform" },
+  { id: "talent", label: "Building teams and talent" },
 ] as const;
 
 export const ticker = [
@@ -746,6 +755,7 @@ export const ui = {
   },
   home: {
     positioning: "Head of Cloud Services, MENA. Cloud platforms that survive reality.",
+    earlier: "Show earlier roles",
     regulated: "I work with regulated organizations across the GCC and MENA.",
     sectors: "Banking and financial services; government and public sector; telecom; energy and oil & gas; tourism and hospitality; large and giga enterprises.",
     postsCta: "Read the posts",
@@ -767,20 +777,18 @@ export const ui = {
     portraitAlt: "Tareq Al-Ghazzi",
   },
   business: {
-    eyebrow: "For business",
-    title: "Practical architecture for organizations that cannot afford failure.",
-    cta: "Let's talk about the constraint",
+    eyebrow: "My practice",
+    title: "Work I take on directly.",
+    cta: "Write to me",
     seeHow: "See how I work",
-    gets: "What you get",
-    outcome: "Outcome.",
     record: "View the record",
-    start: "Start the conversation",
+    start: "Write to me",
     orHow: "Or see how I work",
   },
   forYou: {
     eyebrow: "For you",
     title: "Start where I started. Learn for free.",
-    intro: "These are public courses I point people to. They are recommendations, not my certifications. My certificates are on the story page.",
+    intro: "These are public courses I point people to. They are recommendations, not my certifications. My certificates are on the home page.",
     held: "Held certificates:",
   },
   posts: {
@@ -788,6 +796,9 @@ export const ui = {
     title: "Notes from the work.",
     intro: "A few of my articles and posts on cloud, architecture, and the work behind them.",
     empty: "No posts yet.",
+    filter: "Pillars",
+    allPillars: "All",
+    emptyPillar: "No posts in this pillar yet.",
     all: "All posts",
     linkedin: "View on LinkedIn",
     englishMark: "English",
@@ -801,6 +812,8 @@ export const ui = {
     linkedin: "LinkedIn",
     based: "Based in {{location}}.",
     handle: "tareq-alghazzi",
+    nextLabel: "What happens next",
+    next: "I read the note myself. I reply about whether this is work I take on, and what the first conversation should cover. The reply is not a proposal, and it has no price.",
   },
   form: {
     name: "Name",
