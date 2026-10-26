@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { contentSecurityPolicy } from "./lib/content-security";
+import { securityHeaders } from "./lib/content-security";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/(.*)",
-        headers: [{ key: "Content-Security-Policy", value: contentSecurityPolicy() }],
+        headers: securityHeaders(),
       },
     ];
   },
