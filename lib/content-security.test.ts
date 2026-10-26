@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { contentSecurityPolicy } from "./content-security.ts";
+import { contentSecurityPolicy, securityHeaders } from "./content-security.ts";
 
 describe("content security policy", () => {
   it("allows Turnstile, the analytics beacon, and the hosts the site already uses", () => {
@@ -16,7 +16,21 @@ describe("content security policy", () => {
     assert.match(policy, /connect-src[^;]*https:\/\/cloudflareinsights\.com/);
     assert.match(policy, /connect-src[^;]*https:\/\/vitals\.vercel-insights\.com/);
     assert.match(policy, /connect-src[^;]*https:\/\/edbgctmcyinzrectewel\.supabase\.co/);
+    assert.match(policy, /default-src 'self'/);
+    assert.match(policy, /object-src 'none'/);
+    assert.match(policy, /base-uri 'self'/);
+    assert.match(policy, /frame-ancestors 'none'/);
+    assert.match(policy, /style-src[^;]*'unsafe-inline'/);
+    assert.match(policy, /img-src[^;]*blob:/);
+    assert.match(policy, /img-src[^;]*https:\/\/edbgctmcyinzrectewel\.supabase\.co/);
     assert.doesNotMatch(policy, /1x00000000000000000000AA/);
     assert.doesNotMatch(policy, /beacon-token/);
+  });
+
+  it("sends nosniff and a strict referrer policy with the CSP", () => {
+    const headers = securityHeaders();
+    assert.equal(headers.find((header) => header.key === "Content-Security-Policy")?.value, contentSecurityPolicy());
+    assert.equal(headers.find((header) => header.key === "X-Content-Type-Options")?.value, "nosniff");
+    assert.equal(headers.find((header) => header.key === "Referrer-Policy")?.value, "strict-origin-when-cross-origin");
   });
 });

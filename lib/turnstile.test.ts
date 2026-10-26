@@ -7,6 +7,7 @@ import { turnstileSecret, turnstileTestSecret, turnstileVisitorIp, verifyTurnsti
 const originalFetch = globalThis.fetch;
 const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const secretKey = process.env.TURNSTILE_SECRET_KEY;
+const vercelEnv = process.env.VERCEL_ENV;
 
 afterEach(() => {
   globalThis.fetch = originalFetch;
@@ -14,23 +15,40 @@ afterEach(() => {
   else process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = siteKey;
   if (secretKey === undefined) delete process.env.TURNSTILE_SECRET_KEY;
   else process.env.TURNSTILE_SECRET_KEY = secretKey;
+  if (vercelEnv === undefined) delete process.env.VERCEL_ENV;
+  else process.env.VERCEL_ENV = vercelEnv;
 });
 
 describe("turnstile keys", () => {
   it("uses the always-pass test keys when the env vars are missing", () => {
     delete process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
     delete process.env.TURNSTILE_SECRET_KEY;
+    delete process.env.VERCEL_ENV;
     assert.equal(turnstileSiteKey(), turnstileTestSiteKey);
     assert.equal(turnstileSecret(), turnstileTestSecret);
     assert.equal(turnstileTestSiteKey, "1x00000000000000000000AA");
     assert.equal(turnstileTestSecret, "1x0000000000000000000000000000000AA");
   });
 
-  it("uses a configured key and ignores blank values", () => {
+  it("uses a configured key and ignores blank values outside production", () => {
     process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "  site-from-env  ";
     process.env.TURNSTILE_SECRET_KEY = "   ";
+    process.env.VERCEL_ENV = "preview";
     assert.equal(turnstileSiteKey(), "site-from-env");
     assert.equal(turnstileSecret(), turnstileTestSecret);
+  });
+
+  it("fails closed in production when the secret is missing", async () => {
+    delete process.env.TURNSTILE_SECRET_KEY;
+    process.env.VERCEL_ENV = "production";
+    assert.equal(turnstileSecret(), "");
+    let called = false;
+    globalThis.fetch = async () => {
+      called = true;
+      return Response.json({ success: true });
+    };
+    assert.equal(await verifyTurnstile("token-once", "203.0.113.8"), false);
+    assert.equal(called, false);
   });
 });
 

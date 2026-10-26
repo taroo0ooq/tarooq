@@ -220,6 +220,7 @@ async function uploadLinkedInMedia(input: {
       method: "POST",
       headers: input.headers({ "content-type": "application/json" }),
       body: JSON.stringify({ initializeUploadRequest: { owner: input.authorUrn } }),
+      redirect: "error",
     });
   } catch (error) {
     throw new LinkedInPublishError(redact(error instanceof Error ? error.message : "LinkedIn could not be reached.", input.token), 0);
@@ -246,6 +247,7 @@ async function uploadLinkedInMedia(input: {
       method: "PUT",
       headers: { authorization: `Bearer ${input.token}`, "content-type": "application/octet-stream" },
       body: new Uint8Array(input.bytes),
+      redirect: "error",
     });
   } catch (error) {
     throw new LinkedInPublishError(redact(error instanceof Error ? error.message : `LinkedIn ${input.kind} upload failed.`, input.token), 0);

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { RiyadhClock } from "@/components/RiyadhClock";
 import { tx } from "@/components/RichText";
 import { getCopy } from "@/lib/copy";
@@ -140,7 +141,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageFor(locale)) }} />
+      <JsonLd data={profilePageFor(locale)} />
       <section className="hero">
         <span className="star star-a" aria-hidden="true" />
         <span className="star star-b" aria-hidden="true" />
