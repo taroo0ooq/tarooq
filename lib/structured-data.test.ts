@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { personId } from "./person-schema.ts";
-import { blogPostingLd, pageBreadcrumbs } from "./structured-data.ts";
+import { blogPostingLd, jsonLdScript, pageBreadcrumbs } from "./structured-data.ts";
 
 describe("structured data", () => {
   it("points a post author at the site person and adds breadcrumbs", () => {
@@ -40,5 +40,19 @@ describe("structured data", () => {
     );
     assert.equal(arabic.itemListElement[1].item, "https://alghazzi.org/ar/business");
     assert.equal(JSON.stringify(arabic).includes("FAQPage"), false);
+  });
+
+  it("escapes script-breaking characters before JSON-LD is injected", () => {
+    const html = jsonLdScript({
+      headline: "</script><script>alert(1)</script>",
+      description: "a & b > c",
+      note: "line\u2028sep",
+    });
+    assert.equal(html.includes("<"), false);
+    assert.equal(html.includes(">"), false);
+    assert.equal(html.includes("&"), false);
+    assert.equal(html.includes("\u2028"), false);
+    assert.match(html, /\\u003c\/script\\u003e\\u003cscript\\u003ealert\(1\)\\u003c\/script\\u003e/);
+    assert.match(html, /a \\u0026 b \\u003e c/);
   });
 });
