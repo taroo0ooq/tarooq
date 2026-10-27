@@ -6,7 +6,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "I build cloud platforms that actually survive reality.",
   deck: "Tareq Al-Ghazzi, Head of Cloud Services, MENA. Azure platforms that survive reality: landing zones, migrations, FinOps, and governance for regulated organizations.",
-  availability: "Read the Business page. Mobiz doesn't endorse it. The page is my own practice, kept apart from that job, and it names no Mobiz client. I'll say if the work is mine.",
+  availability: "My own practice is on the Business page.",
 } as const;
 
 export const about = [
@@ -734,7 +734,7 @@ export const courses = [
 
 export const businessPage = {
   audience: "This page is my own practice. It's separate from my job as Head of Cloud Services, MENA at Mobiz IT.",
-  model: "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work, and Mobiz doesn't endorse this practice.",
+  model: "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work.",
   regulatedTitle: "Who this is for",
   regulated: "Enterprise and regulated organizations in MENA. The platform has to hold in Production and in an audit.",
   contexts: [
