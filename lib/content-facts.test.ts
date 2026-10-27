@@ -50,6 +50,20 @@ describe("certifications", () => {
   });
 });
 
+describe("Mobiz separation", () => {
+  it("points to Business quietly and drops the endorsement disclaimer", () => {
+    assert.equal(en.profile.availability, "My own practice is on the Business page.");
+    assert.equal(ar.profile.availability, "ممارستي الخاصة موضحة في صفحة الأعمال.");
+    assert.equal(en.businessPage.model, "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work.");
+    assert.equal(ar.businessPage.model, "Mobiz هو جهة عملي. لا شيء هنا يصف عملاء Mobiz أو عمل Mobiz.");
+    assert.match(en.businessPage.audience, /Head of Cloud Services, MENA at Mobiz IT/);
+    const bundled = JSON.stringify({ en, ar });
+    for (const phrase of ["doesn't endorse", "does not endorse", "names no Mobiz", "I'll say if the work is mine", "لا يتبن"]) {
+      assert.equal(bundled.includes(phrase), false, phrase);
+    }
+  });
+});
+
 describe("hero", () => {
   it("uses the approved positioning, the regulated line, and the six sectors", () => {
     assert.equal(en.ui.home.positioning, "Head of Cloud Services, MENA. Cloud platforms that survive reality.");
