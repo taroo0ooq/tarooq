@@ -110,7 +110,9 @@ describe("credential list", () => {
 
   it("adds every certificate to JSON-LD without an expiry", () => {
     const credentials = profilePageFor("en").mainEntity.hasCredential as Array<Record<string, unknown>>;
+    assert.equal(credentials.length, 13);
     assert.equal(credentials.length, names.length);
+    assert.deepEqual(profilePageFor("ar").mainEntity.hasCredential, credentials);
     credentials.forEach((credential, index) => {
       assert.equal(credential["@type"], "EducationalOccupationalCredential");
       assert.equal(credential.name, names[index]);

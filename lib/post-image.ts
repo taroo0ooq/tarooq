@@ -1,4 +1,5 @@
 import { ALT_LIMIT, PostInputError } from "./post-draft";
+import { absoluteUrl } from "./site-url.mjs";
 
 export const IMAGE_LIMIT = 4 * 1024 * 1024;
 
@@ -54,6 +55,14 @@ export function imageContentType(ext: ImageExt) {
   if (ext === "png") return "image/png";
   if (ext === "jpg") return "image/jpeg";
   return "image/webp";
+}
+
+/** Absolute image URL with a single scheme. Relative paths get the site origin. */
+export function absoluteImageUrl(src: string, base?: string) {
+  const value = src.trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  return base ? absoluteUrl(value, base) : absoluteUrl(value);
 }
 
 export function cleanAlt(value: string, hasImage: boolean) {

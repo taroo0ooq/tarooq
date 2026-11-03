@@ -71,6 +71,8 @@ export function rowToMeta(row: PostRow, supabaseUrl: string): PostMeta {
     html: renderMarkdown(row.body, row.lang),
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
+    tag: "",
+    updatedAt: row.updated_at || "",
   };
 }
 

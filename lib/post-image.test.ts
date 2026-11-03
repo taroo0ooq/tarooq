@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { cleanAlt, readImage, sniffImage } from "./post-image.ts";
+import { absoluteImageUrl, cleanAlt, readImage, sniffImage } from "./post-image.ts";
 import { PostInputError } from "./post-draft.ts";
 
 function png() {
@@ -37,6 +37,16 @@ describe("images", () => {
   it("allows webp on the site and refuses it for LinkedIn", () => {
     assert.equal(readImage({ bytes: webp(), filename: "diagram.webp" }, false)?.ext, "webp");
     assert.throws(() => readImage({ bytes: webp(), filename: "diagram.webp" }, true), /LinkedIn accepts PNG or JPEG/);
+  });
+
+  it("keeps a single scheme on absolute image urls", () => {
+    const supabase = "https://edbgctmcyinzrectewel.supabase.co/storage/v1/object/public/post-images/covers/vmware.png";
+    assert.equal(absoluteImageUrl(supabase), supabase);
+    assert.equal(absoluteImageUrl(`  ${supabase}  `), supabase);
+    assert.equal(absoluteImageUrl("/posts/example.png"), "https://alghazzi.org/posts/example.png");
+    assert.equal(absoluteImageUrl("posts/example.png", "https://alghazzi.org"), "https://alghazzi.org/posts/example.png");
+    assert.equal(absoluteImageUrl(""), "");
+    assert.equal(absoluteImageUrl(supabase).split("https://").length - 1, 1);
   });
 
   it("requires one line of alt text when an image is present", () => {
