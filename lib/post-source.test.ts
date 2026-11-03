@@ -52,6 +52,8 @@ function files(): PostMeta[] {
     html: "<p>Bundled</p>",
     seoTitle: "",
     seoDescription: "",
+    tag: "",
+    updatedAt: "",
   }];
 }
 
@@ -116,5 +118,7 @@ describe("published posts", () => {
     assert.equal(later, undefined);
     const note = result.posts.find((post) => post.slug === "2026-10-21-note");
     assert.equal(note?.image, "/posts/note.png");
+    assert.equal(typeof note?.updatedAt, "string");
+    assert.equal((note?.updatedAt ?? "").length > 0, true);
   });
 });

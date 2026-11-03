@@ -27,6 +27,8 @@ describe("site url", () => {
     assert.equal(absoluteUrl("", base), base);
     assert.equal(absoluteUrl("/posts/hello/", base), `${base}/posts/hello`);
     assert.equal(absoluteUrl("contact", base), `${base}/contact`);
+    const supabase = "https://edbgctmcyinzrectewel.supabase.co/storage/v1/object/public/post-images/a.png";
+    assert.equal(absoluteUrl(supabase, base), supabase);
   });
 
   it("uses the resolved origin as the shared constant", () => {
