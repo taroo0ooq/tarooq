@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "tarooq.vercel.app" }],
+        destination: "https://alghazzi.org/:path*",
+        permanent: true,
+      },
       { source: "/experience", destination: "/", permanent: false },
       { source: "/expertise", destination: "/business", permanent: false },
       { source: "/posts/2026-10-12-regional-capability", destination: "/posts", permanent: true },
