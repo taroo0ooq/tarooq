@@ -6,7 +6,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "I build cloud platforms that actually survive reality.",
   deck: "Tareq Al-Ghazzi, Head of Cloud Services, MENA. Azure platforms that survive reality: landing zones, migrations, FinOps, and governance for regulated organizations.",
-  availability: "My own practice is on the Business page.",
+  availability: "Available for cloud consulting and speaking",
 } as const;
 
 export const about = [

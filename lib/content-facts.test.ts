@@ -51,9 +51,9 @@ describe("certifications", () => {
 });
 
 describe("Mobiz separation", () => {
-  it("points to Business quietly and drops the endorsement disclaimer", () => {
-    assert.equal(en.profile.availability, "My own practice is on the Business page.");
-    assert.equal(ar.profile.availability, "ممارستي الخاصة موضحة في صفحة الأعمال.");
+  it("states consulting and speaking availability and drops the endorsement disclaimer", () => {
+    assert.equal(en.profile.availability, "Available for cloud consulting and speaking");
+    assert.equal(ar.profile.availability, "أستقبل استشارات سحابية ودعوات للتحدث.");
     assert.equal(en.businessPage.model, "Mobiz is my employer. Nothing here describes Mobiz clients or Mobiz work.");
     assert.equal(ar.businessPage.model, "Mobiz هو جهة عملي. لا شيء هنا يصف عملاء Mobiz أو عمل Mobiz.");
     assert.match(en.businessPage.audience, /Head of Cloud Services, MENA at Mobiz IT/);

@@ -13,7 +13,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/tareq-alghazzi",
   statement: "أبني منصات سحابية تصمد في الواقع.",
   deck: "طارق الغزي، رئيس خدمات السحابة في الشرق الأوسط وشمال أفريقيا. منصات Azure تصمد في الواقع: landing zones، وترحيل، وFinOps، وحوكمة للجهات الخاضعة للتنظيم.",
-  availability: "ممارستي الخاصة موضحة في صفحة الأعمال.",
+  availability: "أستقبل استشارات سحابية ودعوات للتحدث.",
 } as const;
 
 export const about = [
