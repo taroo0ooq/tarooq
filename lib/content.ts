@@ -753,7 +753,7 @@ export const businessPage = {
     "Security and resilience, then a handover that leaves owners.",
   ],
   engagement: "The usual shape is a regional operating model and a landing zone the team can run. Security and resilience belong in that design.",
-  credibility: "I'm Tareq Al-Ghazzi. I've worked in Saudi Arabia since 2012. I lead Cloud Services for MENA at Mobiz IT, and I keep this practice separate from that role.",
+  credibility: "I'm Tareq Al-Ghazzi. I've worked in Saudi Arabia since 2010. I lead Cloud Services for MENA at Mobiz IT, and I keep this practice separate from that role.",
   closeTitle: "If the constraint is real, write to me in Riyadh.",
   close: "Tell me the region, the regulatory context, and what done needs to look like. I'll say whether it's work I take on.",
 } as const;
