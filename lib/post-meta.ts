@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getCopy } from "./copy";
 import { localizePath, type Locale } from "./locale";
 import { postCanonicalPath, postLanguage } from "./post-locale";
+import { absoluteImageUrl } from "./post-image";
 import { getPublishedPost } from "./published-posts";
 import { absoluteUrl, pageMetadata } from "./site";
 
@@ -17,7 +18,8 @@ export async function postMetadata(slug: string, locale: Locale): Promise<Metada
   const canonical = absoluteUrl(path);
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.description;
-  const image = post.image ? [{ url: post.image, alt: post.imageAlt || post.title }] : undefined;
+  const imageUrl = post.image ? absoluteImageUrl(post.image) : "";
+  const image = imageUrl ? [{ url: imageUrl, alt: post.imageAlt || post.title }] : undefined;
   return pageMetadata(
     path,
     {

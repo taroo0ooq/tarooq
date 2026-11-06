@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
 export const personId = "https://alghazzi.org/#person";
+export const websiteId = "https://alghazzi.org/#website";
 
 type ProfilePageLd = {
   "@context": string;
@@ -43,5 +44,18 @@ export function personReference() {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": personId,
+  };
+}
+
+export function websiteLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": websiteId,
+    url: "https://alghazzi.org",
+    name: "Tareq Al-Ghazzi",
+    alternateName: "طارق الغزي",
+    inLanguage: ["en", "ar"],
+    publisher: { "@id": personId },
   };
 }

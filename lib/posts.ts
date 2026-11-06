@@ -19,6 +19,8 @@ export type PostMeta = {
   html: string;
   seoTitle: string;
   seoDescription: string;
+  tag: string;
+  updatedAt: string;
 };
 
 const postsDir = path.join(process.cwd(), "content", "posts");
@@ -102,6 +104,8 @@ function readPost(fileName: string): PostMeta | null {
     html: renderMarkdown(body, data.lang ?? ""),
     seoTitle: data.seoTitle ?? "",
     seoDescription: data.seoDescription ?? "",
+    tag: data.tag ?? "",
+    updatedAt: data.updatedAt || data.updated || "",
   };
 }
 

@@ -9,12 +9,15 @@
     "@type": "Person",
     "@id": "https://alghazzi.org/#person",
     "name": "Tareq Al-Ghazzi",
-    "alternateName": ["طارق الغزي", "Tareq Alghazzi", "Tareq Al-Gazzi", "Tareq Al Ghazzi", "tarooq"],
+    "alternateName": ["طارق الغزي", "Tareq Alghazzi", "Tareq Al Ghazzi", "Tareq Al-Gazzi", "tarooq"],
     "url": "https://alghazzi.org",
+    "mainEntityOfPage": "https://alghazzi.org",
     "jobTitle": "Head of Cloud Services, MENA",
     "worksFor": {
       "@type": "Organization",
-      "name": "Mobiz IT"
+      "@id": "https://alghazzi.org/#org-mobiz",
+      "name": "Mobiz IT",
+      "url": "https://mobizinc.com"
     },
     "address": {
       "@type": "PostalAddress",
